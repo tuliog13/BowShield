@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, BowShieldActivity!</string>
+    <string name="app_name">BowShield</string>
+    
+    <string name="scan_button">BowShield</string>
+    <string name="wait_button">BowShield</string>
+
+</resources>
