@@ -41,7 +41,7 @@ public class Game extends Screen implements OnDirectionChanged {
 	private Player mPlayerOne;
 	private Player mPlayerTwo;
 
-	public Game(int id) {
+	public Game(int id) { 
 		super(id);
 		// TODO Auto-generated constructor stub
 	}
