@@ -47,21 +47,20 @@ public class BluetoothChatService {
 			.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
 
 	private final BluetoothAdapter mAdapter;
-	private IOnBluetoothConnectListener connectionListener;
+	// private IOnBluetoothConnectListener connectionListener;
 	private AcceptThread mAcceptThread;
 	private ConnectThread mConnectThread;
 	private ConnectedThread mConnectedThread;
 	private int mState;
 
-	public static final int STATE_NONE = 0; // we're doing nothing
-	public static final int STATE_LISTEN = 1; // now listening for incoming
-												// connections
-	public static final int STATE_CONNECTING = 2; // now initiating an outgoing
-													// connection
+	public static final int STATE_NONE = 0;
+	public static final int STATE_LISTEN = 1;
+	public static final int STATE_CONNECTING = 2;
 	public static final int STATE_CONNECTED = 3;
 
 	OnMessageReceivedListener listener;
 	static BluetoothChatService instance;
+	private Handler mHandler;
 
 	private BluetoothChatService(BluetoothAdapter adapter) {
 		mAdapter = adapter;
@@ -79,8 +78,12 @@ public class BluetoothChatService {
 		this.listener = listener;
 	}
 
-	public void setListener(IOnBluetoothConnectListener listener) {
-		this.connectionListener = listener;
+	// public void setListener(IOnBluetoothConnectListener listener) {
+	// this.connectionListener = listener;
+	// }
+
+	public void setHandler(Handler handler) {
+		this.mHandler = handler;
 	}
 
 	public synchronized int getState() {
@@ -104,7 +107,7 @@ public class BluetoothChatService {
 			mAcceptThread.start();
 		}
 
-		connectionListener.onWaitingConnection();
+		mHandler.sendEmptyMessage(STATE_LISTEN);
 	}
 
 	public synchronized void connect(BluetoothDevice device) {
@@ -121,7 +124,7 @@ public class BluetoothChatService {
 
 		mConnectThread = new ConnectThread(device);
 		mConnectThread.start();
-		connectionListener.onConnecting();
+		mHandler.sendEmptyMessage(STATE_CONNECTING);
 	}
 
 	public synchronized void connected(BluetoothSocket socket,
@@ -145,7 +148,7 @@ public class BluetoothChatService {
 		mConnectedThread = new ConnectedThread(socket);
 		mConnectedThread.start();
 
-		connectionListener.onConnected();
+		mHandler.sendEmptyMessage(STATE_CONNECTED);
 	}
 
 	public synchronized void stop() {
@@ -166,20 +169,23 @@ public class BluetoothChatService {
 	public void write(String message) {
 		ConnectedThread r;
 		synchronized (this) {
-			if (mState != STATE_CONNECTED)
-				return;
 			r = mConnectedThread;
 		}
 		byte[] mBytes = message.getBytes();
-		r.write(mBytes);
+		
+		try {
+			r.write(mBytes);
+		} catch (Exception e) {
+
+		}
 	}
 
 	private void connectionFailed() {
-		connectionListener.onConnectionLost();
+		mHandler.sendEmptyMessage(STATE_NONE);
 	}
 
 	private void connectionLost() {
-		connectionListener.onConnectionLost();
+		mHandler.sendEmptyMessage(STATE_NONE);
 	}
 
 	private class AcceptThread extends Thread {
@@ -220,7 +226,7 @@ public class BluetoothChatService {
 		public void cancel() {
 			try {
 				mmServerSocket.close();
-			} catch (IOException e) {
+			} catch (Exception e) {
 			}
 		}
 	}
@@ -280,7 +286,7 @@ public class BluetoothChatService {
 	}
 
 	private class ConnectedThread extends Thread {
-		
+
 		private final BluetoothSocket mmSocket;
 		private final InputStream mmInStream;
 		private final OutputStream mmOutStream;
