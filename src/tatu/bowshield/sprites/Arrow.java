@@ -2,8 +2,10 @@ package tatu.bowshield.sprites;
 
 import java.util.EventListener;
 
+import tatu.bowshield.Util.DebugLog;
 import tatu.bowshield.bluetooth.OnDirectionChanged;
 import tatu.bowshield.control.Constants;
+import tatu.bowshield.control.GamePhysicalData;
 
 public class Arrow extends GameSprite implements EventListener{
 
@@ -16,6 +18,8 @@ public class Arrow extends GameSprite implements EventListener{
 	private float inicialX;
 	private float inicialY;
 	
+	private int type;
+	
 	public static OnDirectionChanged sListener;
 	
 	public Arrow(final String filepath,float X, float Y) {
@@ -24,13 +28,17 @@ public class Arrow extends GameSprite implements EventListener{
 		inicialX = X;
 		inicialY = Y;
 		
+		type = GamePhysicalData.GAME_TYPE;
+		
 	}
 
 	float decrementoX;
 	float decrementoY;
 
 	public void Move(boolean canMove, float angulo, float força, int direcao) {
+		
 		if (canMove) {
+			
 			if(direcao == 1)
 			{
 				novoX += velocidadeX;
@@ -50,23 +58,26 @@ public class Arrow extends GameSprite implements EventListener{
 			
 			if(novoX > 800 || novoX < 0 || novoY > 480 || novoY < 0)
 			{
-				sListener.onArrowOutofScreen();
+				sListener.onArrowOutofScreen(type);
 				configPreLaunch(angulo, força);
 				canMove = false;
 			}
 			
 		} else {
+			
 			if(direcao == 1)
-			configPreLaunch(angulo, força);
+				configPreLaunch(angulo, força);
 			else
 			{
 				configPreLaunch(-angulo, força);
 			}
+			
 		}
 	}
-	public static void setOnDirectionChangedListener(OnDirectionChanged listener){
+	public void setOnDirectionChangedListener(OnDirectionChanged listener){
     	sListener = listener;
     }
+	
 	public void configPreLaunch(float angulo, float força){
 	    pSprite.setPosition(inicialX, inicialY);
         float radians = (float) (angulo * Math.PI / 180);

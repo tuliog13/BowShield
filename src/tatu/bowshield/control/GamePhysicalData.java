@@ -7,27 +7,31 @@ import org.andengine.input.touch.TouchEvent;
 import tatu.bowshield.Util.DebugLog;
 import tatu.bowshield.activity.BowShieldGameActivity;
 import tatu.bowshield.bluetooth.OnDirectionChanged;
+import tatu.bowshield.screens.Game;
 import android.view.MotionEvent;
 
-public abstract class GamePhysicalData implements EventListener{
+public class GamePhysicalData implements EventListener{
 
-    private static float  mForce;
-    private static float  mAngle;
-    public static float  mDistance;
-    public static int  mDirecao;
+    private  float  mForce;
+    private  float  mAngle;
+    public  float  mDistance;
+    public  int  mDirecao;
     
+    public static final int SERVER_TYPE = 0, CLIENT_TYPE = 1;
     public static OnDirectionChanged sListener;
     
-    public static boolean sShoted;
+    public static int GAME_TYPE;
     
-    {
+    public boolean sShoted;
+    
+    public GamePhysicalData(){
         sShoted = false;
     }
 
     public static float          X = 0;
     public static float          Y = 0;
 
-    public static boolean calculateTouch(TouchEvent pSceneTouchEvent, BowShieldGameActivity gameReference) {
+    public boolean calculateTouch(TouchEvent pSceneTouchEvent, Game gameReference) {
 
         int myEventAction = pSceneTouchEvent.getAction();
 
@@ -45,7 +49,7 @@ public abstract class GamePhysicalData implements EventListener{
                 
             case MotionEvent.ACTION_MOVE:
             	
-            	PlayersController.get_currentPlayer().flipHorizontal1(mDirecao);
+            	PlayersController.getMyPlayer().flipHorizontal1(mDirecao);
             	
                 // sprite.setRotation((float) (X * 0.5));
                 mDistance = (float) Math.sqrt(Math.pow((X - currentX), 2) + Math.pow((Y - currentY), 2));
@@ -75,9 +79,23 @@ public abstract class GamePhysicalData implements EventListener{
                 
             case MotionEvent.ACTION_UP:
             	DebugLog.log("enter");
-                sShoted = true;
                 mDistance = 0;
-                gameReference.sendMessage(mAngle + "," + mForce);
+                
+                float ang;
+                
+                if(mDirecao == 1)
+                {
+                	ang = mAngle;
+                }
+                else
+                {
+                	ang = -mAngle;
+                }
+                
+                
+                
+                gameReference.sendMessage(ang + "@" + mForce + "@" + mDirecao + "#");
+                sShoted = true;
                 break;
         }
 
@@ -105,23 +123,23 @@ public abstract class GamePhysicalData implements EventListener{
     	sListener = listener;
     }
 
-    public static float getForca() {
+    public float getForca() {
         return mForce;
     }
 
-    public static float getDistance() {
+    public float getDistance() {
         return mDistance;
     }
 
-    public static float getAngulo() {
+    public float getAngulo() {
         return mAngle;
     }
     
-    public static void setAngle(float angle){
+    public void setAngle(float angle){
         mAngle = angle;
     }
 
-    public static void setForce(float force){
+    public void setForce(float force){
         mForce = force;
     }
 }

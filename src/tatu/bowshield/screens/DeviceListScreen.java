@@ -33,13 +33,14 @@ import tatu.bowshield.component.ButtonManager;
 import tatu.bowshield.component.ListView;
 import tatu.bowshield.component.OnListItemClickListener;
 import tatu.bowshield.control.Constants;
+import tatu.bowshield.control.GamePhysicalData;
 import tatu.bowshield.control.IOnBluetoothConnectListener;
 import tatu.bowshield.control.IOnButtonTouch;
 import tatu.bowshield.control.ScreenManager;
 import tatu.bowshield.sprites.GameSprite;
 
 public class DeviceListScreen extends Screen implements IOnButtonTouch,
-		IOnBluetoothConnectListener, OnListItemClickListener {
+		OnListItemClickListener {
 
 	private String PATH_BUTTON = "gfx/buttonn.png";
 	private String PATH_BUTTON_PRESSED = "gfx/buttonp.png";
@@ -62,10 +63,10 @@ public class DeviceListScreen extends Screen implements IOnButtonTouch,
 	private BluetoothChatService mChatService;
 
 	private int devicesCount = 0;
+	private Handler mHandler;
 
 	public DeviceListScreen(int id) {
 		super(id);
-
 	}
 
 	@Override
@@ -91,10 +92,34 @@ public class DeviceListScreen extends Screen implements IOnButtonTouch,
 
 			@Override
 			public void run() {
+
+				mHandler = new Handler() {
+					public void handleMessage(Message msg) {
+						switch (msg.what) {
+						case BluetoothChatService.STATE_CONNECTED:
+							DebugLog.log("Connected");
+							ScreenManager.changeScreen(2);
+							break;
+
+						case BluetoothChatService.STATE_CONNECTING:
+							DebugLog.log("Connecting");
+							break;
+
+						case BluetoothChatService.STATE_LISTEN:
+							DebugLog.log("Waiting Connection");
+							break;
+
+						case BluetoothChatService.STATE_NONE:
+							DebugLog.log("Connection Lost");
+							break;
+						}
+					};
+				};
+
 				mBtAdapter = BluetoothAdapter.getDefaultAdapter();
 
 				mChatService = BluetoothChatService.getInstance(mBtAdapter);
-				mChatService.setListener(DeviceListScreen.this);
+				mChatService.setHandler(mHandler);
 			}
 		});
 
@@ -104,10 +129,9 @@ public class DeviceListScreen extends Screen implements IOnButtonTouch,
 				.extractFromTexture(mBackgroundTexture);
 
 		getScene().setBackground(
-				new SpriteBackground(new Sprite(0, 0,
-						Constants.CAMERA_WIDTH,
-						Constants.CAMERA_HEIGHT, mBackgroundRegion,
-						GameSprite.getGameReference()
+				new SpriteBackground(new Sprite(0, 0, Constants.CAMERA_WIDTH,
+						Constants.CAMERA_HEIGHT, mBackgroundRegion, GameSprite
+								.getGameReference()
 								.getVertexBufferObjectManager())));
 
 		deviceList = new ListView(300, 0);
@@ -170,13 +194,15 @@ public class DeviceListScreen extends Screen implements IOnButtonTouch,
 		case BTN_CREATE:
 			ensureDiscoverable();
 			mChatService.start();
+			GamePhysicalData.GAME_TYPE = GamePhysicalData.SERVER_TYPE;
+			DebugLog.log("START CALLED!");
 			break;
 
 		case BTN_JOIN:
 			deviceList.clear();
 			ScreenManager.reDraw();
-
 			doDiscovery();
+			GamePhysicalData.GAME_TYPE = GamePhysicalData.CLIENT_TYPE;
 			break;
 
 		default:
@@ -228,37 +254,15 @@ public class DeviceListScreen extends Screen implements IOnButtonTouch,
 	}
 
 	@Override
-	public void onConnected() {
-		DebugLog.log("Connected");
-		ScreenManager.changeScreen(2);
-	}
-
-	@Override
-	public void onConnecting() {
-		DebugLog.log("Connecting");
-		// TODO: Put a menssage to display that is connecting...
-	}
-
-	@Override
-	public void onConnectionLost() {
-		DebugLog.log("Connection Lost");
-	}
-
-	@Override
-	public void onWaitingConnection() {
-		DebugLog.log("Waiting Connection");
-	}
-
-	@Override
 	public void onItemClick(int position, Object container) {
-		
+
 		mBtAdapter.cancelDiscovery();
 
 		String address = (String) container;
 
 		BluetoothDevice device = mBtAdapter.getRemoteDevice(address);
 		mChatService.connect(device);
-		
+
 	}
 
 }

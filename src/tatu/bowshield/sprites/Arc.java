@@ -10,8 +10,8 @@ public class Arc extends GameSprite{
 		super(filepath,X,Y);
 	}
 
-	public void Move(float angulo, float força) {
-		if(GamePhysicalData.mDirecao == 1)
+	public void Move(float angulo, float força,int direcao) {
+		if(direcao == 1)
 		{
 			this.pSprite.setRotation(angulo);
 		}

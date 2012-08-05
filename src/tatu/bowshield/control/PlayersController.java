@@ -26,7 +26,8 @@ public class PlayersController {
 	}
 	public static void Update()
 	{
-		_currentPlayer.Move();
+		_PlayerTwo.Move();
+		_PlayerOne.Move();
 	}
 	
 	public static void Draw()
@@ -35,8 +36,12 @@ public class PlayersController {
 		_PlayerOne.Draw();
 	}
 	
-	public static Player get_currentPlayer() {
-		return _currentPlayer;
+	public static Player getMyPlayer() {
+		if(GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE){
+			return get_PlayerOne();
+		}else{
+			return get_PlayerTwo();
+		}
 	}
 
 	public static void set_currentPlayer(Player _currentPlayer) {
@@ -57,6 +62,18 @@ public class PlayersController {
 
 	public static void set_PlayerTwo(Player _PlayerTwo) {
 		PlayersController._PlayerTwo = _PlayerTwo;
+	}
+	public static void configureGamePlayers() {
+		if(GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE){
+			get_PlayerOne().setMyPosition(0, 310);
+			get_PlayerTwo().setMyPosition(700, 310);
+			get_PlayerTwo().flipHorizontal(2);
+		}else{
+			get_PlayerOne().setMyPosition(0, 310);
+			get_PlayerTwo().setMyPosition(700, 310);
+			
+			get_PlayerTwo().flipHorizontal(2);
+		}
 	}
 	
 }

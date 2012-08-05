@@ -1,6 +1,7 @@
 package tatu.bowshield.sprites;
 
 import org.andengine.entity.scene.Scene;
+import org.andengine.input.touch.TouchEvent;
 
 import tatu.bowshield.bluetooth.OnDirectionChanged;
 import tatu.bowshield.control.GamePhysicalData;
@@ -12,6 +13,15 @@ public class Player extends GameSprite{
 	private Arrow mArrow;
 	private Rope mRope;
 	
+	private GamePhysicalData mGameData;
+	
+	public Arrow getmArrow() {
+		return mArrow;
+	}
+
+	public void setmArrow(Arrow mArrow) {
+		this.mArrow = mArrow;
+	}
 	private int mLife;
 	
 	public Player(final String filepath,float X, float Y) {
@@ -21,13 +31,30 @@ public class Player extends GameSprite{
 		mArrow = new Arrow(Game.PATH_ARROW, X + 60, Y + 63);
 		mRope = new Rope(Game.PATH_ROPE, X + 60, Y + 63);
 		
+		mGameData = new GamePhysicalData();
+		
 	}
-
+	
+	public GamePhysicalData getGameData()
+	{
+		return this.mGameData;
+	}
+	
+	public void setMyPosition(float x, float y)
+	{
+		this.setPosition(x, y);
+		mArc.setPosition(x + 35, y - 25);
+		mArrow.setPosition(x + 60, y + 63);
+		mRope.setPosition(x + 60, y + 63);
+	}
+	
 	public void Move() {
-		mArrow.Move(GamePhysicalData.sShoted, GamePhysicalData.getAngulo(),
-				GamePhysicalData.getForca(), GamePhysicalData.mDirecao);
-		mRope.Move(GamePhysicalData.getAngulo(), GamePhysicalData.getDistance());
-		mArc.Move(GamePhysicalData.getAngulo(), GamePhysicalData.getForca());
+		
+		mArrow.Move(mGameData.sShoted, mGameData.getAngulo(),
+				mGameData.getForca(), mGameData.mDirecao);
+		mRope.Move(mGameData.getAngulo(), mGameData.getDistance(),mGameData.mDirecao);
+		mArc.Move(mGameData.getAngulo(), mGameData.getForca(),mGameData.mDirecao);
+		
 	}
 	
 	@Override
@@ -37,7 +64,6 @@ public class Player extends GameSprite{
 		mArc.Draw();
 		mArrow.Draw();
 		mRope.Draw();
-		
 	}
 	
 	public void flipHorizontal1(int direction)
