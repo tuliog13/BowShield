@@ -14,7 +14,12 @@ public class Button extends GameSprite {
 		super(filepath, X, Y);
 		this.mId = id;
 	}
-
+	
+	public void setImageResorce()
+	{
+		
+	}
+	
 	public boolean onTouchEvent(TouchEvent pSceneTouchEvent) {
 		return super.onTouchEvent(pSceneTouchEvent);
 	}

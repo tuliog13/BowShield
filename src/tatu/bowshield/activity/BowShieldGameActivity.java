@@ -44,12 +44,19 @@ public class BowShieldGameActivity extends SimpleBaseGameActivity implements OnM
     private TextureLoader        mLoader;
     private Scene                myScene;
 
+    
+    public static int DEVICE_WIDTH;
+    public static int DEVICE_HEIGHT;
+    
     @Override
     public EngineOptions onCreateEngineOptions() {
 
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
-
+        
+        DEVICE_WIDTH = metrics.widthPixels;
+        DEVICE_HEIGHT = metrics.heightPixels;
+        
         final Camera camera = new Camera(0, 0, Constants.CAMERA_WIDTH, Constants.CAMERA_HEIGHT);
         return new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, new FillResolutionPolicy(), camera);
         

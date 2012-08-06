@@ -8,6 +8,7 @@ import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.TextureRegionFactory;
 
 import tatu.bowshield.Util.DebugLog;
+import tatu.bowshield.activity.BowShieldGameActivity;
 import tatu.bowshield.bluetooth.BluetoothChatService;
 import tatu.bowshield.bluetooth.OnDirectionChanged;
 import tatu.bowshield.bluetooth.OnMessageReceivedListener;
@@ -62,7 +63,7 @@ public class Game extends Screen implements OnDirectionChanged,
 		if(GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE){
 		
 			mPlayerOne = new Player(PATH_PLAYER1, 0, 310);
-			mPlayerTwo = new Player(PATH_PLAYER1, 1400, 310);
+			mPlayerTwo = new Player(PATH_PLAYER1, 1500, 310);
 		
 		}
 		else
