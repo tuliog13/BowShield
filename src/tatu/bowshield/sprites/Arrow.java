@@ -28,7 +28,10 @@ public class Arrow extends GameSprite implements EventListener{
 		inicialX = X;
 		inicialY = Y;
 		
-		type = GamePhysicalData.GAME_TYPE;
+		if(inicialX < 400)
+		type = 1;
+		else
+			type = 2;
 		
 	}
 
@@ -58,9 +61,9 @@ public class Arrow extends GameSprite implements EventListener{
 			
 			if(novoX > 800 || novoX < 0 || novoY > 480 || novoY < 0)
 			{
-				sListener.onArrowOutofScreen(type);
-				configPreLaunch(angulo, força);
-				canMove = false;
+				//sListener.onArrowOutofScreen(type);
+				//configPreLaunch(angulo, força);
+				//canMove = false;
 			}
 			
 		} else {
