@@ -59,8 +59,17 @@ public class Game extends Screen implements OnDirectionChanged,
 		mBackgroundRegion = TextureRegionFactory
 				.extractFromTexture(mBackgroundTexture);
 		
-		mPlayerOne = new Player(PATH_PLAYER1, 0, 310);
-		mPlayerTwo = new Player(PATH_PLAYER1, 700, 310);
+		if(GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE){
+		
+			mPlayerOne = new Player(PATH_PLAYER1, 0, 310);
+			mPlayerTwo = new Player(PATH_PLAYER1, 1400, 310);
+		
+		}
+		else
+		{
+			mPlayerOne = new Player(PATH_PLAYER1, -800, 310);
+			mPlayerTwo = new Player(PATH_PLAYER1, 700, 310);
+		}
 		
 		PlayersController.set_PlayerOne(mPlayerOne);
 		PlayersController.set_PlayerTwo(mPlayerTwo);
@@ -74,7 +83,8 @@ public class Game extends Screen implements OnDirectionChanged,
 								.getVertexBufferObjectManager())));
 
 		GamePhysicalData.setOnDirectionChangedListener(this);
-		PlayersController.getMyPlayer().getmArrow().setOnDirectionChangedListener(this);
+		PlayersController.get_PlayerOne().getmArrow().setOnDirectionChangedListener(this);
+		PlayersController.get_PlayerTwo().getmArrow().setOnDirectionChangedListener(this);
 		
 		GameSprite.getGameReference().runOnUiThread(new Runnable() {
 
@@ -223,26 +233,18 @@ public class Game extends Screen implements OnDirectionChanged,
 			PlayersController.get_PlayerOne().getGameData().setAngle(angle);
 			PlayersController.get_PlayerOne().getGameData().setForce(force);
 		}
-//		PlayersController.getMyPlayer().getmArrow().configPreLaunch(angle, force);
-//
-//		//GamePhysicalData.sShoted = true;
-//		//GamePhysicalData.mDistance = 0;
-//		//GamePhysicalData.mDirecao = (int) direction;
-//		PlayersController.getMyPlayer().flipHorizontal((int) direction);
-//
-//		//GamePhysicalData.setAngle(angle);
-//		//GamePhysicalData.setForce(force);
+
 	}
 
 	@Override
 	public void onArrowOutofScreen(int type) {
 		// TODO Auto-generated method stub
-		if(GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE){
-			PlayersController.get_PlayerTwo().getGameData().sShoted = false;
+		if(type == 1){
+			//PlayersController.get_PlayerOne().getGameData().sShoted = false;
 		}
 		else
 		{
-			PlayersController.get_PlayerOne().getGameData().sShoted = false;
+			//PlayersController.get_PlayerTwo().getGameData().sShoted = false;
 		}
 	}
 }
