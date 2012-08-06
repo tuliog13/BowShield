@@ -129,7 +129,12 @@ public class GamePhysicalData implements EventListener{
     	DisplayMetrics metrics = new DisplayMetrics();
         GameSprite.getGameReference().getWindowManager().getDefaultDisplay().getMetrics(metrics);
     	
-    	float forceResult = (force* metrics.widthPixels)/800;
+    	float forceResult = force;
+    	
+    	if(metrics.widthPixels == 800)
+    	{
+    		forceResult -= 0.2f;
+    	}
     	
 		return force;
     }
