@@ -6,18 +6,25 @@ import tatu.bowshield.Util.DebugLog;
 import tatu.bowshield.control.IOnButtonTouch;
 import tatu.bowshield.sprites.GameSprite;
 
-public class Button extends GameSprite {
+public class Button extends GameButtom {
 
 	private int mId;
+	private boolean active;
 	
-	public Button(String filepath, float X, float Y, int id) {
-		super(filepath, X, Y);
+	public Button(String filepath,String filepath2, float X, float Y, int id) {
+		super(filepath,filepath2, X, Y);
 		this.mId = id;
+		active = false;
 	}
 	
-	public void setImageResorce()
+	public boolean isActive()
 	{
-		
+		return active;
+	}
+	
+	public void setActive(boolean active)
+	{
+		this.active = active;
 	}
 	
 	public boolean onTouchEvent(TouchEvent pSceneTouchEvent) {

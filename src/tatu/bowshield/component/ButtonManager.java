@@ -12,7 +12,7 @@ public class ButtonManager {
 
 	List<Button> buttons;
 	IOnButtonTouch listener;
-
+	
 	public ButtonManager(IOnButtonTouch listener) {
 		this.listener = listener;
 		this.buttons = new ArrayList<Button>();
@@ -29,16 +29,35 @@ public class ButtonManager {
 		
 		switch (event.getAction()) {
 		case TouchEvent.ACTION_DOWN:
+			
+			for (Button button : buttons) {
+				if((x >= button.getX() && x <= button.getX() + button.getWidth()) &&
+						(y >= button.getY() && y <= button.getY() + button.getHeight())){
+					button.setTouchDown(true);
+					button.setActive(true);
+				}
+			}
+			
 			break;
 
 		case TouchEvent.ACTION_MOVE:
+			
+			for (Button button : buttons) {
+				if(!((x >= button.getX() && x <= button.getX() + button.getWidth()) &&
+						(y >= button.getY() && y <= button.getY() + button.getHeight()))){
+					button.setTouchDown(false);
+					button.setActive(false);
+				}
+			}
+			
 			break;
 		case TouchEvent.ACTION_UP:
 			
 			for (Button button : buttons) {
 				if((x >= button.getX() && x <= button.getX() + button.getWidth()) &&
 						(y >= button.getY() && y <= button.getY() + button.getHeight())){
-					listener.onButtonTouch(button.getId());
+					if(button.isActive())listener.onButtonTouch(button.getId());
+					button.setTouchDown(false);
 				}
 			}
 			
@@ -55,6 +74,7 @@ public class ButtonManager {
 	public void detach(){
 		for (Button button : buttons) {
 			GameSprite.getGameReference().getScene().detachChild(button.getSprite());
+			GameSprite.getGameReference().getScene().detachChild(button.getSprite2());
 		}
 	}
 }

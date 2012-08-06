@@ -73,9 +73,9 @@ public class DeviceListScreen extends Screen implements IOnButtonTouch,
 	public void Initialize() {
 		// TODO Auto-generated method stub
 
-		btnCreateGame = new Button(PATH_BUTTON, 0, 0, BTN_CREATE);
-		btnJoinGame = new Button(PATH_BUTTON_PRESSED, 0, 100, BTN_JOIN);
-		btnSkip = new Button(PATH_BUTTON, 0, 200, 2);
+		btnCreateGame = new Button(PATH_BUTTON,PATH_BUTTON_PRESSED, 0, 0, BTN_CREATE);
+		btnJoinGame = new Button(PATH_BUTTON,PATH_BUTTON_PRESSED, 0, 100, BTN_JOIN);
+		btnSkip = new Button(PATH_BUTTON,PATH_BUTTON_PRESSED, 0, 200, 2);
 
 		bManager = new ButtonManager(this);
 		bManager.addButton(btnCreateGame);
