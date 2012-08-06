@@ -66,10 +66,10 @@ public class PlayersController {
 	public static void configureGamePlayers() {
 		if(GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE){
 			get_PlayerOne().setMyPosition(0, 310);
-			get_PlayerTwo().setMyPosition(700, 310);
+			get_PlayerTwo().setMyPosition(1400, 310);
 			get_PlayerTwo().flipHorizontal(2);
 		}else{
-			get_PlayerOne().setMyPosition(0, 310);
+			get_PlayerOne().setMyPosition(-800, 310);
 			get_PlayerTwo().setMyPosition(700, 310);
 			
 			get_PlayerTwo().flipHorizontal(2);
