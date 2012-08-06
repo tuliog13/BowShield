@@ -8,6 +8,10 @@ import tatu.bowshield.Util.DebugLog;
 import tatu.bowshield.activity.BowShieldGameActivity;
 import tatu.bowshield.bluetooth.OnDirectionChanged;
 import tatu.bowshield.screens.Game;
+import tatu.bowshield.sprites.GameSprite;
+import android.text.BoringLayout.Metrics;
+import android.text.style.MetricAffectingSpan;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 
 public class GamePhysicalData implements EventListener{
@@ -92,15 +96,15 @@ public class GamePhysicalData implements EventListener{
                 	ang = -mAngle;
                 }
                 
+                DebugLog.log(mForce+"");
                 
-                
-                gameReference.sendMessage(ang + "@" + mForce + "@" + mDirecao + "#");
+                gameReference.sendMessage(ang + "@" + getProporcionalForce(mForce) + "@" + mDirecao + "#");
                 sShoted = true;
                 break;
         }
 
-        mForce = mDistance / 100; // MUDAR
-
+        mForce = (mDistance / 100); // MUDAr
+        
         if (angle <= 90 && angle >= -90) {
             mAngle = -angle;
         }
@@ -117,6 +121,17 @@ public class GamePhysicalData implements EventListener{
         }
 
         return true;
+    }
+    
+    public float getProporcionalForce(float force)
+    {
+    	
+    	DisplayMetrics metrics = new DisplayMetrics();
+        GameSprite.getGameReference().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+    	
+    	float forceResult = (force* metrics.widthPixels)/800;
+    	
+		return force;
     }
     
     public static void setOnDirectionChangedListener(OnDirectionChanged listener){
