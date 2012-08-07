@@ -3,7 +3,11 @@ package tatu.bowshield.screens;
 import org.andengine.entity.scene.Scene;
 import org.andengine.input.touch.TouchEvent;
 
+import android.view.KeyEvent;
+
+import tatu.bowshield.control.Constants;
 import tatu.bowshield.control.GamePhysicalData;
+import tatu.bowshield.control.ScreenManager;
 import tatu.bowshield.control.TextureLoader;
 import tatu.bowshield.sprites.GameSprite;
 
@@ -41,6 +45,11 @@ public abstract class Screen {
 	{
 		
 	}
+	
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+        
+        return false;
+    }
 	
 	public static void resetScene()
 	{

@@ -20,6 +20,8 @@ import org.andengine.ui.activity.SimpleBaseGameActivity;
 import tatu.bowshield.Util.DebugLog;
 import tatu.bowshield.bluetooth.BluetoothChatService;
 import tatu.bowshield.bluetooth.OnMessageReceivedListener;
+import tatu.bowshield.component.PopUp;
+import tatu.bowshield.component.PopUpLayout;
 import tatu.bowshield.control.Constants;
 import tatu.bowshield.control.GamePhysicalData;
 import tatu.bowshield.control.ScreenManager;
@@ -44,7 +46,6 @@ public class BowShieldGameActivity extends SimpleBaseGameActivity implements OnM
     private TextureLoader        mLoader;
     private Scene                myScene;
 
-    
     public static int DEVICE_WIDTH;
     public static int DEVICE_HEIGHT;
     
@@ -96,6 +97,8 @@ public class BowShieldGameActivity extends SimpleBaseGameActivity implements OnM
         
         Screen.setScene(myScene);
         
+        PopUp.Inicialize();
+        
         Screen splash = new Splash(Constants.SCREEN_SPLASH);
         Screen deviceListScreen = new DeviceListScreen(Constants.SCREEN_DEVICE);
         Screen gameScreen = new Game(Constants.SCREEN_GAME);
@@ -105,6 +108,7 @@ public class BowShieldGameActivity extends SimpleBaseGameActivity implements OnM
         ScreenManager.addScreen(gameScreen);
         
         ScreenManager.changeScreen(Constants.SCREEN_SPLASH);
+        
         
         return myScene;
     }
@@ -159,7 +163,12 @@ public class BowShieldGameActivity extends SimpleBaseGameActivity implements OnM
 
     @Override
     public void onUpdate(float pSecondsElapsed) {
-        ScreenManager.getCurrentScreen().Update();
+        
+    	if(!PopUp.isShowing())
+    	{
+    		ScreenManager.getCurrentScreen().Update();
+    	}
+        PopUp.UpdatePopUp();
     }
 
     @Override
@@ -169,24 +178,23 @@ public class BowShieldGameActivity extends SimpleBaseGameActivity implements OnM
 
     @Override
     public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
-        
-        ScreenManager.getCurrentScreen().onSceneTouchEvent(pSceneTouchEvent);
-
+    	if(!PopUp.isShowing() && PopUp.popupUnloadDone)
+    	{
+    		ScreenManager.getCurrentScreen().onSceneTouchEvent(pSceneTouchEvent);
+    	}
+    	else
+    	{
+    		PopUp.TouchEvent(pSceneTouchEvent);
+    	}
         return false;
     }
     
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            if(ScreenManager.getCurrentScreen().getId() > Constants.SCREEN_SPLASH)
-            {
-            	ScreenManager.changeScreen(ScreenManager.getCurrentScreen().getId() - 1);
-            }
-            else
-            {
-            	finish();
-            }
-        }
+    	if(!PopUp.isShowing() && PopUp.popupUnloadDone)
+    	{
+           ScreenManager.getCurrentScreen().onKeyDown(keyCode, event);
+    	}
         return false;
     }
 

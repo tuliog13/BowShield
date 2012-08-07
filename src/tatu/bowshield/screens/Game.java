@@ -15,12 +15,14 @@ import tatu.bowshield.bluetooth.OnMessageReceivedListener;
 import tatu.bowshield.control.Constants;
 import tatu.bowshield.control.GamePhysicalData;
 import tatu.bowshield.control.PlayersController;
+import tatu.bowshield.control.ScreenManager;
 import tatu.bowshield.sprites.Arrow;
 import tatu.bowshield.sprites.GameSprite;
 import tatu.bowshield.sprites.Player;
 import android.bluetooth.BluetoothAdapter;
 import android.graphics.PointF;
 import android.util.Log;
+import android.view.KeyEvent;
 
 public class Game extends Screen implements OnDirectionChanged,
 		OnMessageReceivedListener {
@@ -160,6 +162,15 @@ public class Game extends Screen implements OnDirectionChanged,
 		mBackgroundRegion = null;
 	}
 
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		
+		ScreenManager.changeScreen(getId() - 1);
+		
+		return super.onKeyDown(keyCode, event);
+	}
+	
 	@Override
 	public void onDirectionChanged() {
 		//mPlayerOne.flipHorizontal1(GamePhysicalData.mDirecao);

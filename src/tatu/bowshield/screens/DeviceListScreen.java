@@ -19,6 +19,7 @@ import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
@@ -186,6 +187,15 @@ public class DeviceListScreen extends Screen implements IOnButtonTouch,
 		super.Destroy();
 	}
 
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		
+		ScreenManager.changeScreen(getId() - 1);
+		
+		return super.onKeyDown(keyCode, event);
+	}
+	
 	@Override
 	public void onButtonTouch(int buttonId) {
 
