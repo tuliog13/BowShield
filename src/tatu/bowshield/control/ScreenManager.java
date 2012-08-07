@@ -7,7 +7,10 @@ import java.util.List;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.input.touch.TouchEvent;
 
+import android.view.KeyEvent;
+
 import tatu.bowshield.screens.Screen;
+import tatu.bowshield.screens.SimpleScreen;
 import tatu.bowshield.sprites.GameSprite;
 
 public class ScreenManager {
@@ -40,10 +43,39 @@ public class ScreenManager {
 		_currentScreen.Draw();
 	}
 	
+	public static void showSimpleScreen(int id)
+	{
+		for(SimpleScreen screen : _currentScreen.get_simpleScreens())
+		{
+			if(screen.getId() == id)
+			{
+				screen.Show();
+			}
+		}
+	}
+	
+	public static void hideSimpleScreen(int id)
+	{
+		for(SimpleScreen screen : _currentScreen.get_simpleScreens())
+		{
+			if(screen.getId() == id)
+			{
+				screen.Hide();
+			}
+		}
+	}
+	
 	public static void Update()
 	{
 		
 		_currentScreen.Update();
+		if(_currentScreen.get_simpleScreens() != null)
+		{
+			for(SimpleScreen screen : _currentScreen.get_simpleScreens())
+			{
+				screen.Update();
+			}
+		}
 
 	}
 	public static void reDraw()
@@ -71,7 +103,48 @@ public class ScreenManager {
 	public static void onSceneTouchEvent(TouchEvent pSceneTouchEvent) {
 		// TODO Auto-generated method stub
 
-		_currentScreen.onSceneTouchEvent(pSceneTouchEvent);
+		if(!hasASimpleScreenActived())
+		{
+			_currentScreen.onSceneTouchEvent(pSceneTouchEvent);
+		}
+		else
+		{
+			for(SimpleScreen screen : _currentScreen.get_simpleScreens())
+			{
+				screen.Update();
+			}
+		}
+		
+	}
+
+	public static boolean hasASimpleScreenActived()
+	{
+		if(_currentScreen.get_simpleScreens() != null)
+		{
+			for(SimpleScreen screen : _currentScreen.get_simpleScreens())
+			{
+				if(screen.isShowing())
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public static void onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		if(!hasASimpleScreenActived())
+		{
+			_currentScreen.onKeyDown(keyCode, event);
+		}
+		else
+		{
+			for(SimpleScreen screen : _currentScreen.get_simpleScreens())
+			{
+				screen.onKeyDown(keyCode, event);
+			}
+		}
 	}
 	
 }

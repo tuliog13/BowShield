@@ -1,5 +1,8 @@
 package tatu.bowshield.screens;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.andengine.entity.scene.Scene;
 import org.andengine.input.touch.TouchEvent;
 
@@ -17,6 +20,7 @@ public abstract class Screen {
 	
 	protected static TextureLoader _loader;
 	protected static Scene _scene;
+	protected List<SimpleScreen> _simpleScreens;
 	
 	public Screen(int id)
 	{
@@ -41,6 +45,24 @@ public abstract class Screen {
 		
 	}
 	
+	public void addSimpleScreen(SimpleScreen screen)
+	{
+		if(_simpleScreens == null)
+		{
+			_simpleScreens = new ArrayList<SimpleScreen>();
+		}
+		
+		_simpleScreens.add(screen);
+	}
+	
+	public List<SimpleScreen> get_simpleScreens() {
+		return _simpleScreens;
+	}
+
+	public void set_simpleScreens(List<SimpleScreen> _simpleScreens) {
+		this._simpleScreens = _simpleScreens;
+	}
+
 	public void Destroy()
 	{
 		

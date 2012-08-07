@@ -45,9 +45,18 @@ public class Menu extends Screen implements IOnButtonTouch,
 
 	private String PATH_BUTTON = "gfx/buttonn.png";
 	private String PATH_BUTTON_PRESSED = "gfx/buttonp.png";
+	private String PATH_BUTTON_HELP = "gfx/btn_help.png";
+	private String PATH_BUTTON_ABOUT = "gfx/btn_about.png";
 
+	private String PATH_IMAGE_HELP = "gfx/help_screen.png";
+	private String PATH_IMAGE_ABOUT = "gfx/about_screen.png";
+	
 	private final int BTN_CREATE = 0;
 	private final int BTN_JOIN = 1;
+	private final int BTN_SKIP = 2;
+	private final int BTN_HELP = 3;
+	private final int BTN_ABOUT = 4;
+	
 
 	private String PATH_BACKGROUND = "gfx/deviceBack.jpg";
 	private Texture mBackgroundTexture;
@@ -56,6 +65,9 @@ public class Menu extends Screen implements IOnButtonTouch,
 	Button btnCreateGame;
 	Button btnJoinGame;
 	Button btnSkip;
+	
+	Button btnAbout;
+	Button btnHelp;
 
 	ButtonManager bManager;
 	ListView deviceList;
@@ -66,6 +78,10 @@ public class Menu extends Screen implements IOnButtonTouch,
 	private int devicesCount = 0;
 	private Handler mHandler;
 
+	private SimpleScreen helpScreen;
+	private SimpleScreen AboutScreen;
+	
+	
 	public Menu(int id) {
 		super(id);
 	}
@@ -76,13 +92,25 @@ public class Menu extends Screen implements IOnButtonTouch,
 
 		btnCreateGame = new Button(PATH_BUTTON,PATH_BUTTON_PRESSED, 0, 0, BTN_CREATE);
 		btnJoinGame = new Button(PATH_BUTTON,PATH_BUTTON_PRESSED, 0, 100, BTN_JOIN);
-		btnSkip = new Button(PATH_BUTTON,PATH_BUTTON_PRESSED, 0, 200, 2);
-
+		btnSkip = new Button(PATH_BUTTON,PATH_BUTTON_PRESSED, 0, 200, BTN_SKIP);
+		btnHelp = new Button(PATH_BUTTON_HELP, PATH_BUTTON_HELP, 0, 380, BTN_HELP);
+		btnAbout = new Button(PATH_BUTTON_ABOUT, PATH_BUTTON_ABOUT, 600, 380, BTN_ABOUT);
+		
+		
+		
 		bManager = new ButtonManager(this);
 		bManager.addButton(btnCreateGame);
 		bManager.addButton(btnJoinGame);
 		bManager.addButton(btnSkip);
-
+		bManager.addButton(btnHelp);
+		bManager.addButton(btnAbout);
+		
+		helpScreen = new SimpleScreen(Constants.SIMPLE_SCREEN_HELP,PATH_IMAGE_HELP);
+		AboutScreen = new SimpleScreen(Constants.SIMPLE_SCREEN_ABOUT,PATH_IMAGE_ABOUT);
+		
+		addSimpleScreen(helpScreen);
+		addSimpleScreen(AboutScreen);
+		
 		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
 		GameSprite.getGameReference().registerReceiver(mReceiver, filter);
 
@@ -147,12 +175,14 @@ public class Menu extends Screen implements IOnButtonTouch,
 	public void Update() {
 		// TODO Auto-generated method stub
 		super.Update();
+		//helpScreen.Update();
 	}
-
+	
 	@Override
 	public boolean onSceneTouchEvent(TouchEvent pSceneTouchEvent) {
 		bManager.updateButtons(pSceneTouchEvent);
 		deviceList.updateItems(pSceneTouchEvent);
+		
 		return super.onSceneTouchEvent(pSceneTouchEvent);
 	}
 
@@ -167,7 +197,7 @@ public class Menu extends Screen implements IOnButtonTouch,
 		
 		bManager.drawButtons();
 		deviceList.draw();
-
+		
 		super.Draw();
 	}
 
@@ -216,8 +246,16 @@ public class Menu extends Screen implements IOnButtonTouch,
 			GamePhysicalData.GAME_TYPE = GamePhysicalData.CLIENT_TYPE;
 			break;
 
-		default:
+		case BTN_SKIP:
 			ScreenManager.changeScreen(2);
+			break;
+			
+		case BTN_HELP:
+			ScreenManager.showSimpleScreen(Constants.SIMPLE_SCREEN_HELP);
+			break;
+			
+		case BTN_ABOUT:
+			ScreenManager.showSimpleScreen(Constants.SIMPLE_SCREEN_ABOUT);
 			break;
 
 		}

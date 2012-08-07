@@ -193,7 +193,7 @@ public class BowShieldGameActivity extends SimpleBaseGameActivity implements OnM
     public boolean onKeyDown(int keyCode, KeyEvent event) {
     	if(!PopUp.isShowing() && PopUp.popupUnloadDone)
     	{
-           ScreenManager.getCurrentScreen().onKeyDown(keyCode, event);
+           ScreenManager.onKeyDown(keyCode, event);
     	}
         return false;
     }
