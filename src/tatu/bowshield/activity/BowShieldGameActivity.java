@@ -26,7 +26,7 @@ import tatu.bowshield.control.Constants;
 import tatu.bowshield.control.GamePhysicalData;
 import tatu.bowshield.control.ScreenManager;
 import tatu.bowshield.control.TextureLoader;
-import tatu.bowshield.screens.DeviceListScreen;
+import tatu.bowshield.screens.Menu;
 import tatu.bowshield.screens.Game;
 import tatu.bowshield.screens.Screen;
 import tatu.bowshield.screens.Splash;
@@ -100,7 +100,7 @@ public class BowShieldGameActivity extends SimpleBaseGameActivity implements OnM
         PopUp.Inicialize();
         
         Screen splash = new Splash(Constants.SCREEN_SPLASH);
-        Screen deviceListScreen = new DeviceListScreen(Constants.SCREEN_DEVICE);
+        Screen deviceListScreen = new Menu(Constants.SCREEN_DEVICE);
         Screen gameScreen = new Game(Constants.SCREEN_GAME);
         
         ScreenManager.addScreen(splash);
@@ -166,7 +166,7 @@ public class BowShieldGameActivity extends SimpleBaseGameActivity implements OnM
         
     	if(!PopUp.isShowing())
     	{
-    		ScreenManager.getCurrentScreen().Update();
+    		ScreenManager.Update();
     	}
         PopUp.UpdatePopUp();
     }
@@ -180,7 +180,7 @@ public class BowShieldGameActivity extends SimpleBaseGameActivity implements OnM
     public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
     	if(!PopUp.isShowing() && PopUp.popupUnloadDone)
     	{
-    		ScreenManager.getCurrentScreen().onSceneTouchEvent(pSceneTouchEvent);
+    		ScreenManager.onSceneTouchEvent(pSceneTouchEvent);
     	}
     	else
     	{

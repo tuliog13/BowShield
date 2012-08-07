@@ -79,12 +79,6 @@ public class Game extends Screen implements OnDirectionChanged,
 		
 		PlayersController.configureGamePlayers();
 		
-		getScene().setBackground(
-				new SpriteBackground(new Sprite(0, 0, Constants.CAMERA_WIDTH,
-						Constants.CAMERA_HEIGHT, mBackgroundRegion, GameSprite
-								.getGameReference()
-								.getVertexBufferObjectManager())));
-
 		GamePhysicalData.setOnDirectionChangedListener(this);
 		PlayersController.get_PlayerOne().getmArrow().setOnDirectionChangedListener(this);
 		PlayersController.get_PlayerTwo().getmArrow().setOnDirectionChangedListener(this);
@@ -134,6 +128,12 @@ public class Game extends Screen implements OnDirectionChanged,
 		// TODO Auto-generated method stub
 		super.Draw();
 
+		getScene().setBackground(
+				new SpriteBackground(new Sprite(0, 0, Constants.CAMERA_WIDTH,
+						Constants.CAMERA_HEIGHT, mBackgroundRegion, GameSprite
+								.getGameReference()
+								.getVertexBufferObjectManager())));
+		
 		// PlayersController.Draw();
 		if (PlayersController.getMyPlayer() != null) {
 			PlayersController.Draw();

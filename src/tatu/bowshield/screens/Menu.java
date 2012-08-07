@@ -40,7 +40,7 @@ import tatu.bowshield.control.IOnButtonTouch;
 import tatu.bowshield.control.ScreenManager;
 import tatu.bowshield.sprites.GameSprite;
 
-public class DeviceListScreen extends Screen implements IOnButtonTouch,
+public class Menu extends Screen implements IOnButtonTouch,
 		OnListItemClickListener {
 
 	private String PATH_BUTTON = "gfx/buttonn.png";
@@ -66,7 +66,7 @@ public class DeviceListScreen extends Screen implements IOnButtonTouch,
 	private int devicesCount = 0;
 	private Handler mHandler;
 
-	public DeviceListScreen(int id) {
+	public Menu(int id) {
 		super(id);
 	}
 
@@ -129,11 +129,6 @@ public class DeviceListScreen extends Screen implements IOnButtonTouch,
 		mBackgroundRegion = TextureRegionFactory
 				.extractFromTexture(mBackgroundTexture);
 
-		getScene().setBackground(
-				new SpriteBackground(new Sprite(0, 0, Constants.CAMERA_WIDTH,
-						Constants.CAMERA_HEIGHT, mBackgroundRegion, GameSprite
-								.getGameReference()
-								.getVertexBufferObjectManager())));
 
 		deviceList = new ListView(300, 0);
 		deviceList.setOnListItemClickListener(this);
@@ -164,6 +159,12 @@ public class DeviceListScreen extends Screen implements IOnButtonTouch,
 	@Override
 	public void Draw() {
 
+		getScene().setBackground(
+				new SpriteBackground(new Sprite(0, 0, Constants.CAMERA_WIDTH,
+						Constants.CAMERA_HEIGHT, mBackgroundRegion, GameSprite
+								.getGameReference()
+								.getVertexBufferObjectManager())));
+		
 		bManager.drawButtons();
 		deviceList.draw();
 

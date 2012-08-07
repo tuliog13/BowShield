@@ -40,9 +40,6 @@ public class Splash extends Screen implements OnPopupResult{
 		mBackgroundTexture = getLoader().load(PATH_BACKGROUND);
         mBackgroundTexture.load();
         mBackgroundRegion = TextureRegionFactory.extractFromTexture(mBackgroundTexture);
-
-        getScene().setBackground(new SpriteBackground(new Sprite(0, 0, Constants.CAMERA_WIDTH, Constants.CAMERA_HEIGHT, mBackgroundRegion,
-                GameSprite.getGameReference().getVertexBufferObjectManager())));
         
         PopUp.setListener(this);
         
@@ -93,6 +90,10 @@ public class Splash extends Screen implements OnPopupResult{
 	public void Draw() {
 		// TODO Auto-generated method stub
 		super.Draw();
+		
+		getScene().setBackground(new SpriteBackground(new Sprite(0, 0, Constants.CAMERA_WIDTH, Constants.CAMERA_HEIGHT, mBackgroundRegion,
+                GameSprite.getGameReference().getVertexBufferObjectManager())));
+		
 	}
 	
 	@Override
