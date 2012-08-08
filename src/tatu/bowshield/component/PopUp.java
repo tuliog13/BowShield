@@ -24,6 +24,9 @@ public class PopUp implements EventListener {
 	private static PopUpLayout mPopupLayout;
 	private static Rectangle rec;
 	
+	private static Rectangle recCover;
+	protected static Sprite pSpriteCover;
+	
 	private static OnPopupResult sListener;
 	
 	private static boolean popupLoadDone;
@@ -52,6 +55,9 @@ public class PopUp implements EventListener {
 		rec = new Rectangle(0, 0, 800, 480, GameSprite.getGameReference().getVertexBufferObjectManager());
 		rec.setColor(0f, 0f, 0f);
 		
+		recCover = new Rectangle(0, 0, 800, 480, GameSprite.getGameReference().getVertexBufferObjectManager());
+		recCover.setColor(0f, 0f, 0f);
+		
 		GameSprite.getGameReference().getScene().attachChild(rec);
 		rec.setVisible(false);
 		
@@ -63,6 +69,10 @@ public class PopUp implements EventListener {
 		mRegion = TextureRegionFactory.extractFromTexture(mTexture);
 
 		pSprite = new Sprite(0, 0, mRegion,
+				GameSprite.getGameReference().getVertexBufferObjectManager());
+		GameSprite.getGameReference().getTextureManager().loadTexture(mTexture);
+		
+		pSpriteCover = new Sprite(0, 0, mRegion,
 				GameSprite.getGameReference().getVertexBufferObjectManager());
 		GameSprite.getGameReference().getTextureManager().loadTexture(mTexture);
 		
@@ -130,6 +140,19 @@ public class PopUp implements EventListener {
 		popupUnloadDone = false;
 	}
 	
+	public static void forceClose()
+	{
+		isShowing = false;
+		mPopupLayout.Destroy();
+		popupLoadDone = false;
+		popupUnloadDone = false;
+		pSprite.setVisible(false);
+		rec.setVisible(false);
+		popupUnloadDone = true;
+		recCover.detachSelf();
+		pSpriteCover.detachSelf();
+	}
+	
 	public static void UpdatePopUp()
 	{
 		if(isShowing)
@@ -180,6 +203,8 @@ public class PopUp implements EventListener {
 			{
 				pSprite.setVisible(false);
 				popupUnloadDone = true;
+				recCover.detachSelf();
+				pSpriteCover.detachSelf();
 			}
 			
 			if(pSprite.getWidth() > 0)
@@ -206,6 +231,22 @@ public class PopUp implements EventListener {
 			}
 			
 		}
+		recCover.setVisible(rec.isVisible());
+		recCover.setAlpha(rec.getAlpha());
+		
+		pSpriteCover.setVisible(pSprite.isVisible());
+		pSpriteCover.setX(pSprite.getX());
+		pSpriteCover.setY(pSprite.getY());
+		pSpriteCover.setWidth(pSprite.getWidth());
+		pSpriteCover.setHeight(pSprite.getHeight());
+	}
+
+	public static void bringToFront() {
+		// TODO Auto-generated method stub
+		
+		GameSprite.getGameReference().getScene().attachChild(recCover);
+		GameSprite.getGameReference().getScene().attachChild(pSpriteCover);
+		
 	}
 	
 

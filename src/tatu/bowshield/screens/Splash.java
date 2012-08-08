@@ -14,7 +14,7 @@ import tatu.bowshield.control.Constants;
 import tatu.bowshield.control.GamePhysicalData;
 import tatu.bowshield.control.OnPopupResult;
 import tatu.bowshield.control.ScreenManager;
-import tatu.bowshield.popups.YesOrNo;
+import tatu.bowshield.popups.ConfirmDialog;
 import tatu.bowshield.sprites.GameSprite;
 
 import android.view.KeyEvent;
@@ -80,7 +80,7 @@ public class Splash extends Screen implements OnPopupResult{
 		// TODO Auto-generated method stub
 		
 		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-			PopUp.showPopUp(new YesOrNo(500, 350));
+			PopUp.showPopUp(new ConfirmDialog(500, 350));
         }
 		
 		return super.onKeyDown(keyCode, event);

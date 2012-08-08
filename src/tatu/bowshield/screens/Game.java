@@ -12,6 +12,8 @@ import tatu.bowshield.activity.BowShieldGameActivity;
 import tatu.bowshield.bluetooth.BluetoothChatService;
 import tatu.bowshield.bluetooth.OnDirectionChanged;
 import tatu.bowshield.bluetooth.OnMessageReceivedListener;
+import tatu.bowshield.component.Button;
+import tatu.bowshield.component.PopUp;
 import tatu.bowshield.control.Constants;
 import tatu.bowshield.control.GamePhysicalData;
 import tatu.bowshield.control.PlayersController;
@@ -41,10 +43,10 @@ public class Game extends Screen implements OnDirectionChanged,
 
 	public static Player mPlayerOne;
     private Player mPlayerTwo;
-
+    
 	private BluetoothChatService mChatService;
 
-
+	private Results resultsScreen;
 
 	public Game(int id) { 
 
@@ -73,6 +75,10 @@ public class Game extends Screen implements OnDirectionChanged,
 			mPlayerOne = new Player(PATH_PLAYER1, -800, 310);
 			mPlayerTwo = new Player(PATH_PLAYER1, 700, 310);
 		}
+		
+		resultsScreen = new Results(0, "gfx/game_over.png");
+		
+		addSimpleScreen(resultsScreen);
 		
 		PlayersController.set_PlayerOne(mPlayerOne);
 		PlayersController.set_PlayerTwo(mPlayerTwo);
@@ -120,6 +126,12 @@ public class Game extends Screen implements OnDirectionChanged,
 	public boolean onSceneTouchEvent(TouchEvent pSceneTouchEvent) {
 			PlayersController.get_PlayerOne().getGameData().calculateTouch(pSceneTouchEvent, this);
 			PlayersController.get_PlayerTwo().getGameData().calculateTouch(pSceneTouchEvent, this);
+			
+			if(pSceneTouchEvent.getX()> 780 && pSceneTouchEvent.getY() <  30)
+			{
+				ScreenManager.showSimpleScreen(0);
+			}
+			
 		return false;
 	}
 
@@ -152,8 +164,8 @@ public class Game extends Screen implements OnDirectionChanged,
 			@Override
 			public void run() {
 
-				mPlayerOne.Destroy(getScene());
-				// mPlayerTwo.Destroy(getScene());
+				PlayersController.Destroy();
+				
 			}
 
 		});
@@ -167,6 +179,8 @@ public class Game extends Screen implements OnDirectionChanged,
 		// TODO Auto-generated method stub
 		
 		ScreenManager.changeScreen(getId() - 1);
+		
+		
 		
 		return super.onKeyDown(keyCode, event);
 	}

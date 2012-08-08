@@ -54,6 +54,12 @@ public class SimpleScreen extends Screen{
 		GameSprite.getGameReference().getScene().attachChild(backgroundImage.getSprite());
 	}
 	
+	public void Destroy()
+	{
+		backgroundImage.getSprite().setVisible(false);
+		backgroundImage.getSprite().detachSelf();
+	}
+	
 	public void Hide()
 	{
 		isShowing = false;

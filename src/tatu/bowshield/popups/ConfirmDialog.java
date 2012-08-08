@@ -18,7 +18,7 @@ import org.andengine.input.touch.TouchEvent;
 
 import tatu.bowshield.control.Constants;
 
-public class YesOrNo extends PopUpLayout implements IOnButtonTouch{
+public class ConfirmDialog extends PopUpLayout implements IOnButtonTouch{
 
 	private String PATH_BUTTON = "gfx/buttonn.png";
 	private String PATH_BUTTON_PRESSED = "gfx/buttonp.png";
@@ -32,7 +32,7 @@ public class YesOrNo extends PopUpLayout implements IOnButtonTouch{
 	
 	GameSprite sprite;
 	
-	public YesOrNo(int width, int heigth)
+	public ConfirmDialog(int width, int heigth)
 	{
 		btnYes = new Button(PATH_BUTTON,PATH_BUTTON_PRESSED, 167, 270, BTN_YES);
 		btnNo = new Button(PATH_BUTTON,PATH_BUTTON_PRESSED, 413, 270, BTN_NO);

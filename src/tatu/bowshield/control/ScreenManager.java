@@ -34,6 +34,7 @@ public class ScreenManager {
 
 		if(_currentScreen != null)
 		{
+			DestroySimpleScreens();
 			_currentScreen.Destroy();
 		}
 		
@@ -117,6 +118,18 @@ public class ScreenManager {
 		
 	}
 
+	public static void DestroySimpleScreens()
+	{
+		if(_currentScreen.get_simpleScreens() != null)
+		{
+			for(SimpleScreen screen : _currentScreen.get_simpleScreens())
+			{	
+				screen.Destroy();
+			}
+		}
+		_currentScreen.set_simpleScreens(null);
+	}
+	
 	public static boolean hasASimpleScreenActived()
 	{
 		if(_currentScreen.get_simpleScreens() != null)

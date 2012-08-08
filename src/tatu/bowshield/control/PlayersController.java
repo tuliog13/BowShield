@@ -2,6 +2,7 @@ package tatu.bowshield.control;
 
 import tatu.bowshield.Util.DebugLog;
 import tatu.bowshield.activity.BowShieldGameActivity;
+import tatu.bowshield.sprites.GameSprite;
 import tatu.bowshield.sprites.Player;
 
 public class PlayersController {
@@ -75,6 +76,11 @@ public class PlayersController {
 			
 			get_PlayerTwo().flipHorizontal(2);
 		}
+	}
+	public static void Destroy() {
+		// TODO Auto-generated method stub
+		_PlayerOne.Destroy(GameSprite.getGameReference().getScene());
+		_PlayerTwo.Destroy(GameSprite.getGameReference().getScene());
 	}
 	
 }
