@@ -48,8 +48,8 @@ public class Menu extends Screen implements IOnButtonTouch,
 	private String PATH_BUTTON_HELP = "gfx/btn_help.png";
 	private String PATH_BUTTON_ABOUT = "gfx/btn_about.png";
 
-	private String PATH_IMAGE_HELP = "gfx/help_screen.png";
-	private String PATH_IMAGE_ABOUT = "gfx/about_screen.png";
+	private String PATH_IMAGE_HELP = "gfx/telas/help_screen.png";
+	private String PATH_IMAGE_ABOUT = "gfx/telas/about_screen.png";
 	
 	private final int BTN_CREATE = 0;
 	private final int BTN_JOIN = 1;
@@ -58,7 +58,7 @@ public class Menu extends Screen implements IOnButtonTouch,
 	private final int BTN_ABOUT = 4;
 	
 
-	private String PATH_BACKGROUND = "gfx/deviceBack.jpg";
+	private String PATH_BACKGROUND = "gfx/telas/deviceBack.jpg";
 	private Texture mBackgroundTexture;
 	private ITextureRegion mBackgroundRegion;
 

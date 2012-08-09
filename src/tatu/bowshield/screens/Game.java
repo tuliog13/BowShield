@@ -30,7 +30,7 @@ public class Game extends Screen implements OnDirectionChanged,
 		OnMessageReceivedListener {
 
 	// Game
-	public static String PATH_BACKGROUND = "gfx/bg.png";
+	public static String PATH_BACKGROUND = "gfx/telas/gameBg.png";
 	public static String PATH_PLAYER1 = "gfx/arq.png";
 	public static String PATH_PLAYER2 = "gfx/pers.png";
 	public static String PATH_ARC = "gfx/arco.png";
@@ -66,17 +66,17 @@ public class Game extends Screen implements OnDirectionChanged,
 		
 		if(GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE){
 		
-			mPlayerOne = new Player(PATH_PLAYER1, 0, 310);
-			mPlayerTwo = new Player(PATH_PLAYER1, 1500, 310);
+			mPlayerOne = new Player(PATH_PLAYER1, 60, 330);
+			mPlayerTwo = new Player(PATH_PLAYER1, 1500, 330);
 		
 		}
 		else
 		{
-			mPlayerOne = new Player(PATH_PLAYER1, -800, 310);
-			mPlayerTwo = new Player(PATH_PLAYER1, 700, 310);
+			mPlayerOne = new Player(PATH_PLAYER1, -800, 330);
+			mPlayerTwo = new Player(PATH_PLAYER1, 700, 330);
 		}
 		
-		resultsScreen = new Results(0, "gfx/game_over.png");
+		resultsScreen = new Results(0, "gfx/telas/game_over.png");
 		
 		addSimpleScreen(resultsScreen);
 		

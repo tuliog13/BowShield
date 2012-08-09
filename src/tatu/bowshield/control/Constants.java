@@ -6,7 +6,8 @@ public class Constants {
 	public static final int 			SCREEN_DEVICE = 1;
 	public static final int 			SCREEN_GAME = 2;
 	 
-	public static final float 			VALUE_VELOCITY_Y = 0.04f;
+	public static final float 			GRAVITY = 0.07f;
+	public static final float 			FORCE_NUMBER = 6;
 	
 	public static final float         	CAMERA_WIDTH    = 800;
     public static final float         	CAMERA_HEIGHT   = 480;

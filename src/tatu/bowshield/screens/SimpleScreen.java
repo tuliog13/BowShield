@@ -7,7 +7,7 @@ import tatu.bowshield.sprites.GameSprite;
 public class SimpleScreen extends Screen{
 
 	private GameSprite backgroundImage;
-	private int currentAlpha;
+	protected int currentAlpha;
 	private int id;
 	
 	public boolean isShowing() {
@@ -93,8 +93,19 @@ public class SimpleScreen extends Screen{
 			else
 			{
 				GameSprite.getGameReference().getScene().detachChild(backgroundImage.getSprite());
+				if(ScreenManager.getCurrentScreen().hasSimpleScreens())
+				{
+					for(SimpleScreen screen : ScreenManager.getCurrentScreen().get_simpleScreens())
+					{
+						screen.onCallChildrenDetach();
+					}
+				}
 			}
 		}
+		
+	}
+	public void onCallChildrenDetach() {
+		// TODO Auto-generated method stub
 		
 	}
 }

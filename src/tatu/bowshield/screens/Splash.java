@@ -22,7 +22,7 @@ import android.view.MotionEvent;
 
 public class Splash extends Screen implements OnPopupResult{
 
-	private String               PATH_BACKGROUND = "gfx/splash.png";
+	private String               PATH_BACKGROUND = "gfx/telas/splash.png";
     private Texture              mBackgroundTexture;
     private ITextureRegion       mBackgroundRegion;
 	

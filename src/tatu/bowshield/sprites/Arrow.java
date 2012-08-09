@@ -47,7 +47,7 @@ public class Arrow extends GameSprite implements EventListener{
 				novoX += velocidadeX;
 				novoY += velocidadeY;
 	
-				velocidadeY += Constants.VALUE_VELOCITY_Y;
+				velocidadeY += Constants.GRAVITY;
 				pSprite.setPosition(novoX, novoY);
 			}
 			else
@@ -55,7 +55,7 @@ public class Arrow extends GameSprite implements EventListener{
 				novoX -= velocidadeX;
 				novoY -= velocidadeY;
 	
-				velocidadeY -= Constants.VALUE_VELOCITY_Y;
+				velocidadeY -= Constants.GRAVITY;
 				pSprite.setPosition(novoX, novoY);
 			}
 			
@@ -84,8 +84,8 @@ public class Arrow extends GameSprite implements EventListener{
 	public void configPreLaunch(float angulo, float força){
 	    pSprite.setPosition(inicialX, inicialY);
         float radians = (float) (angulo * Math.PI / 180);
-        velocidadeX = (float) (Math.cos(radians) * 7 * força);
-        velocidadeY = (float) (Math.sin(radians) * 7 * força);
+        velocidadeX = (float) (Math.cos(radians) * Constants.FORCE_NUMBER * força);
+        velocidadeY = (float) (Math.sin(radians) * Constants.FORCE_NUMBER * força);
         novoX = pSprite.getX();
         novoY = pSprite.getY();
 	}

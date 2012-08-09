@@ -112,12 +112,15 @@ public class ScreenManager {
 		{
 			for(SimpleScreen screen : _currentScreen.get_simpleScreens())
 			{
-				screen.Update();
+				if(screen.isShowing())
+				{
+					screen.onSceneTouchEvent(pSceneTouchEvent);
+				}
 			}
 		}
 		
 	}
-
+	
 	public static void DestroySimpleScreens()
 	{
 		if(_currentScreen.get_simpleScreens() != null)

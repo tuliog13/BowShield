@@ -55,6 +55,23 @@ public abstract class Screen {
 		_simpleScreens.add(screen);
 	}
 	
+	public boolean hasSimpleScreens()
+	{
+		return (_simpleScreens != null);
+	}
+	
+	public SimpleScreen getActivedSimpleScreen()
+	{
+		for(SimpleScreen screen : _simpleScreens)
+		{
+			if(screen.isShowing())
+			{
+				return screen;
+			}
+		}
+		return null;
+	}
+	
 	public List<SimpleScreen> get_simpleScreens() {
 		return _simpleScreens;
 	}

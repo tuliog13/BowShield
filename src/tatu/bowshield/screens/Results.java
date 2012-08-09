@@ -1,23 +1,44 @@
 package tatu.bowshield.screens;
 
+import org.andengine.input.touch.TouchEvent;
+
+import tatu.bowshield.Util.DebugLog;
+import tatu.bowshield.component.Button;
+import tatu.bowshield.component.ButtonManager;
 import tatu.bowshield.component.PopUp;
 import tatu.bowshield.control.Constants;
+import tatu.bowshield.control.GamePhysicalData;
+import tatu.bowshield.control.IOnButtonTouch;
 import tatu.bowshield.control.OnPopupResult;
 import tatu.bowshield.control.ScreenManager;
 import tatu.bowshield.popups.ConfirmDialog;
 import tatu.bowshield.sprites.GameSprite;
 import android.view.KeyEvent;
 
-public class Results extends SimpleScreen implements OnPopupResult{
+public class Results extends SimpleScreen implements OnPopupResult, IOnButtonTouch{
 
 	private int id;
 	
-
+	Button btnPlayAgain;
+	Button btnBackToMenu;
+	
+	ButtonManager bManager;
+	
 	public Results(int id, String filepath) {
 		super(id, filepath);
 		// TODO Auto-generated constructor stub
 		
 		PopUp.setListener(this);
+		
+		btnPlayAgain = new Button("gfx/buttonn.png","gfx/buttonp.png", 170, 288, 0);
+		btnBackToMenu = new Button("gfx/buttonn.png","gfx/buttonp.png", 420, 288, 1);
+		
+		bManager = new ButtonManager(this);
+		bManager.addButton(btnPlayAgain);
+		bManager.addButton(btnBackToMenu);
+		
+		//IMPORTANTE : PARA ADICIONAR COMPONENTES EM UMA SIMPLESCREEN 
+		// É PRECISO SETAR O ALPHA DA SPRITE NO UPDATE COM O ALPHA DO PAI
 		
 	}
 		
@@ -33,7 +54,7 @@ public class Results extends SimpleScreen implements OnPopupResult{
 	public void Show() {
 		// TODO Auto-generated method stub
 		super.Show();
-		
+		bManager.drawButtons();
 		
 	}
 	
@@ -41,6 +62,9 @@ public class Results extends SimpleScreen implements OnPopupResult{
 	public void Update() {
 		// TODO Auto-generated method stub
 		super.Update();
+		
+		btnBackToMenu.getSprite().setAlpha(currentAlpha);
+		btnPlayAgain.getSprite().setAlpha(currentAlpha);
 		
 	}
 	
@@ -62,6 +86,34 @@ public class Results extends SimpleScreen implements OnPopupResult{
 	}
 	
 	@Override
+	public void onCallChildrenDetach() {
+		// TODO Auto-generated method stub
+		super.onCallChildrenDetach();
+		
+		bManager.detach();
+		
+	}
+	
+	@Override
+	public boolean onSceneTouchEvent(TouchEvent pSceneTouchEvent) {
+		// TODO Auto-generated method stub
+		
+		bManager.updateButtons(pSceneTouchEvent);
+		
+		return super.onSceneTouchEvent(pSceneTouchEvent);
+		
+	}
+	
+	@Override
+	public void Destroy() {
+		// TODO Auto-generated method stub
+		super.Destroy();
+		
+		bManager.detach();
+		
+	}
+	
+	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
 		
@@ -69,6 +121,26 @@ public class Results extends SimpleScreen implements OnPopupResult{
 		PopUp.bringToFront();
 		
 		return false;
+	}
+
+	@Override
+	public void onButtonTouch(int buttonId) {
+		// TODO Auto-generated method stub
+		
+		switch (buttonId) {
+
+		case 0: // play angain
+
+			ScreenManager.hideSimpleScreen(this.id);
+			
+			break;
+
+		case 1: // Menu
+			ScreenManager.changeScreen(1);
+			break;
+
+		}
+		
 	}
 	
 }

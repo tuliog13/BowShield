@@ -30,7 +30,7 @@ public class Player extends GameSprite{
 		mArc = new Arc(Game.PATH_ARC, X + 35, Y - 25);
 		mArrow = new Arrow(Game.PATH_ARROW, X + 60, Y + 63);
 		mRope = new Rope(Game.PATH_ROPE, X + 60, Y + 63);
-		
+		mArc.pSprite.setVisible(false);
 		mGameData = new GamePhysicalData();
 		
 	}
