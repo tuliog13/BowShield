@@ -101,6 +101,7 @@ public class ListView implements IOnButtonTouch {
 			}
 		}
 		mCount = 0;
+		manager.buttons.clear();
 	}
 
 	@Override

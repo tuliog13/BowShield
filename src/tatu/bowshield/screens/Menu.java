@@ -233,6 +233,7 @@ public class Menu extends Screen implements IOnButtonTouch,
 			ScreenManager.reDraw();
 			scanDevices();
 			GamePhysicalData.GAME_TYPE = GamePhysicalData.CLIENT_TYPE;
+			DebugLog.log("Searching for devices... ");
 			break;
 
 		case BTN_SKIP:
