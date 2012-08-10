@@ -5,28 +5,16 @@ import org.andengine.entity.text.Text;
 
 import tatu.bowshield.sprites.GameSprite;
 
-public class ListItem extends GameSprite {
+public class ListItem extends Button {
 
 	private String mText;
 	private Object mContainer;
 	private Text mTextSprite;
 
-	public ListItem(String filepath, float X, float Y) {
-		super(filepath, X, Y);
-		// TODO Auto-generated constructor stub
+	public ListItem(String text, String path1, String path2, float x, float y, int position){
+		super(path1, path2, x, y, position);
 	}
 
-	@Override
-	public void Draw() {
-		super.Draw();
-		
-		Scene scene = GameSprite.getGameReference().getScene();
-
-		try {
-			scene.attachChild(mTextSprite);
-		} catch (Exception e) {
-		}
-	}
 	
 	public String getText() {
 		return mText;

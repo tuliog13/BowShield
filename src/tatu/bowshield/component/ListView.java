@@ -1,8 +1,6 @@
 package tatu.bowshield.component;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.andengine.entity.scene.Scene;
 import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.font.Font;
@@ -10,19 +8,22 @@ import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 
+import tatu.bowshield.control.IOnButtonTouch;
 import tatu.bowshield.sprites.GameSprite;
 
-public class ListView {
+public class ListView implements IOnButtonTouch {
 
-	private String PATH_ITEM = "gfx/itemBG.png";
 	private String PATH_FONT = "gfx/Arial.TTF";
+	
+	private String PATH_BUTTON = "gfx/buttonn.png";
+	private String PATH_BUTTON_PRESSED = "gfx/buttonp.png";
 
-	private List<ListItem> mItems;
+	private ButtonManager manager;
 	private int mX;
-	private int mItemHeight;
 	private Font mTextFont;
-
-	private OnListItemClickListener mListener;
+	private int mCount;
+	
+	OnListItemClickListener itemListener;
 
 	public ListView(int x, int y) {
 
@@ -38,78 +39,73 @@ public class ListView {
 		GameSprite.getGameReference().getEngine().getTextureManager()
 				.loadTexture(mTextFontTextureAtlas);
 
-		ListItem emptyItem = new ListItem(PATH_ITEM, x, y);
-		mItemHeight = emptyItem.getHeight();
-		mItems = new ArrayList<ListItem>();
-
+		mCount = 0;
+		manager = new ButtonManager(this);
 		this.mX = x;
 	}
 
 	public void addItem(String text, Object container) {
-		int y, count = mItems.size();
-		y = count * mItemHeight;
-
-		ListItem newItem = new ListItem(PATH_ITEM, mX, y);
-		newItem.setText(text);
+		
+		int y = 200 * mCount;
+		mCount++;
+		
+		ListItem newItem = new ListItem(text, PATH_BUTTON, PATH_BUTTON_PRESSED, mX, y, mCount - 1);
 		newItem.setContainer(container);
 
 		Text mText = new Text(mX, y, mTextFont, text, GameSprite
 				.getGameReference().getVertexBufferObjectManager());
 		newItem.setTextSprite(mText);
 
-		mItems.add(newItem);
+		manager.addButton(newItem);
 	}
 
 	public void clear() {
 		detach();
-		mItems.clear();
 	}
 
 	public void updateItems(TouchEvent event) {
 
-		float x = event.getX();
-		float y = event.getY();
-		
-		switch (event.getAction()) {
-		case TouchEvent.ACTION_DOWN:
-			break;
+		manager.updateButtons(event);
 
-		case TouchEvent.ACTION_MOVE:
-			break;
-		case TouchEvent.ACTION_UP:
-			
-			for (int i = 0; i < mItems.size(); i++) {
-				ListItem item = mItems.get(i);
-
-				if ((x >= item.getX() && x <= item.getX() + item.getWidth())
-						&& (y >= item.getY() && y <= item.getY() + item.getHeight())) {
-					mListener.onItemClick(i, item.getContainer());
-				}
-			}
-			
-			break;
-		}
-
-		
 	}
 
 	public void draw() {
-		for (int i = 0; i < mItems.size(); i++) {
-			mItems.get(i).Draw();
+		
+		Scene scene = GameSprite.getGameReference().getScene();
+		manager.drawButtons();
+		
+		for(Button b : manager.getButtons()){
+			ListItem item = (ListItem) b;
+			
+			try {
+				scene.attachChild(item.getTextSprite());
+			} catch (Exception e) {
+			}
 		}
+		
 	}
 
 	public void setOnListItemClickListener(OnListItemClickListener listener) {
-		mListener = listener;
+		itemListener = listener;
 	}
 
 	public void detach() {
-		for (int i = 0; i < mItems.size(); i++) {
-			GameSprite.getGameReference().getScene()
-					.detachChild(mItems.get(i).getSprite());
-
-			GameSprite.getGameReference().getScene()
-					.detachChild(mItems.get(i).getTextSprite());
+		
+		manager.detach();
+		Scene scene = GameSprite.getGameReference().getScene();
+		for(Button b : manager.getButtons()){
+			ListItem item = (ListItem) b;
+			try {
+				scene.detachChild(item.getTextSprite());
+			} catch (Exception e) {
+			}
 		}
+		mCount = 0;
+	}
+
+	@Override
+	public void onButtonTouch(int buttonId) {
+		Object container = ((ListItem) manager.getButtons().get(buttonId)).getContainer();
+		itemListener.onItemClick(buttonId, container);
 	}
 }

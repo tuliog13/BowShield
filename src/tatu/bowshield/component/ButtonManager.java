@@ -77,4 +77,8 @@ public class ButtonManager {
 			GameSprite.getGameReference().getScene().detachChild(button.getSprite2());
 		}
 	}
+	
+	public List<Button> getButtons(){
+		return buttons;
+	}
 }

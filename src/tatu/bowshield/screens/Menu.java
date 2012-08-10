@@ -7,27 +7,7 @@ import org.andengine.opengl.texture.Texture;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.TextureRegionFactory;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothClass;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.media.MediaPlayer.OnBufferingUpdateListener;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import tatu.bowshield.Util.DebugLog;
-import tatu.bowshield.activity.BowShieldGameActivity;
-import tatu.bowshield.activity.R;
 import tatu.bowshield.bluetooth.BluetoothChatService;
 import tatu.bowshield.component.Button;
 import tatu.bowshield.component.ButtonManager;
@@ -35,10 +15,19 @@ import tatu.bowshield.component.ListView;
 import tatu.bowshield.component.OnListItemClickListener;
 import tatu.bowshield.control.Constants;
 import tatu.bowshield.control.GamePhysicalData;
-import tatu.bowshield.control.IOnBluetoothConnectListener;
 import tatu.bowshield.control.IOnButtonTouch;
 import tatu.bowshield.control.ScreenManager;
 import tatu.bowshield.sprites.GameSprite;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+import android.view.KeyEvent;
 
 public class Menu extends Screen implements IOnButtonTouch,
 		OnListItemClickListener {
@@ -233,7 +222,7 @@ public class Menu extends Screen implements IOnButtonTouch,
 		switch (buttonId) {
 
 		case BTN_CREATE:
-			ensureDiscoverable();
+			makeDiscoverable();
 			mChatService.start();
 			GamePhysicalData.GAME_TYPE = GamePhysicalData.SERVER_TYPE;
 			DebugLog.log("START CALLED!");
@@ -242,7 +231,7 @@ public class Menu extends Screen implements IOnButtonTouch,
 		case BTN_JOIN:
 			deviceList.clear();
 			ScreenManager.reDraw();
-			doDiscovery();
+			scanDevices();
 			GamePhysicalData.GAME_TYPE = GamePhysicalData.CLIENT_TYPE;
 			break;
 
@@ -282,7 +271,7 @@ public class Menu extends Screen implements IOnButtonTouch,
 		}
 	};
 
-	private void doDiscovery() {
+	private void scanDevices() {
 
 		if (mBtAdapter.isDiscovering()) {
 			mBtAdapter.cancelDiscovery();
@@ -292,7 +281,7 @@ public class Menu extends Screen implements IOnButtonTouch,
 		Log.v("TESTE", "Discovery started!");
 	}
 
-	private void ensureDiscoverable() {
+	private void makeDiscoverable() {
 		if (mBtAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
 			Intent discoverableIntent = new Intent(
 					BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
