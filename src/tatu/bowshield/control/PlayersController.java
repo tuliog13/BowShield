@@ -19,9 +19,9 @@ public class PlayersController {
 		else
 			set_currentPlayer(_PlayerOne);
 	}
-	public static Player getWatingPlayer()
+	public static Player getOpponentPlayer()
 	{
-		if(_currentPlayer == _PlayerOne)
+		if(GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE)
 			return _PlayerTwo;
 		else
 			return _PlayerOne;

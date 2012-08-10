@@ -15,6 +15,7 @@ import tatu.bowshield.bluetooth.OnMessageReceivedListener;
 import tatu.bowshield.component.Button;
 import tatu.bowshield.component.PopUp;
 import tatu.bowshield.control.Constants;
+import tatu.bowshield.control.FruitController;
 import tatu.bowshield.control.GamePhysicalData;
 import tatu.bowshield.control.PlayersController;
 import tatu.bowshield.control.ScreenManager;
@@ -100,6 +101,9 @@ public class Game extends Screen implements OnDirectionChanged,
 		});
 
 		DebugLog.log("Initialize called!");
+		
+		FruitController.Initialize(5, PlayersController.getOpponentPlayer());
+		
 	}
 
 	@Override
@@ -116,10 +120,11 @@ public class Game extends Screen implements OnDirectionChanged,
 		// PlayersController.Update();
 		if (PlayersController.getMyPlayer() != null) {
 			PlayersController.Update();
+			FruitController.Update();
 		} else {
 			DebugLog.log("Player null update");
 		}
-
+		
 	}
 
 	@Override
@@ -152,6 +157,9 @@ public class Game extends Screen implements OnDirectionChanged,
 		} else {
 			DebugLog.log("Player null draw");
 		}
+		
+		FruitController.Draw();
+		
 	}
 
 	@Override
@@ -165,7 +173,7 @@ public class Game extends Screen implements OnDirectionChanged,
 			public void run() {
 
 				PlayersController.Destroy();
-				
+				FruitController.Destroy();
 			}
 
 		});
