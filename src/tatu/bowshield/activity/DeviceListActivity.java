@@ -144,7 +144,7 @@ public class DeviceListActivity extends Activity {
 							Toast.LENGTH_SHORT).show();
 					break;
 				case BluetoothChatService.STATE_LISTEN:
-				case BluetoothChatService.STATE_NONE:
+				case BluetoothChatService.STATE_LOST:
 					// mTitle.setText(R.string.title_not_connected);
 					// Toast.makeText(getApplicationContext(), "NONE",
 					// Toast.LENGTH_SHORT).show();

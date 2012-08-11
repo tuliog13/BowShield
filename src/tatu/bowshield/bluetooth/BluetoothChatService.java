@@ -22,16 +22,14 @@ import java.io.OutputStream;
 import java.util.UUID;
 
 import tatu.bowshield.Util.DebugLog;
-import tatu.bowshield.activity.DeviceListActivity;
-import tatu.bowshield.control.IOnBluetoothConnectListener;
+import tatu.bowshield.sprites.GameSprite;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
-import android.os.Bundle;
+import android.content.Context;
 import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
+import android.telephony.TelephonyManager;
 
 /**
  * This class does all the work for setting up and managing Bluetooth
@@ -53,7 +51,7 @@ public class BluetoothChatService {
 	private ConnectedThread mConnectedThread;
 	private int mState;
 
-	public static final int STATE_NONE = 0;
+	public static final int STATE_LOST = 0;
 	public static final int STATE_LISTEN = 1;
 	public static final int STATE_CONNECTING = 2;
 	public static final int STATE_CONNECTED = 3;
@@ -64,7 +62,7 @@ public class BluetoothChatService {
 
 	private BluetoothChatService(BluetoothAdapter adapter) {
 		mAdapter = adapter;
-		mState = STATE_NONE;
+		mState = STATE_LOST;
 	}
 
 	public static BluetoothChatService getInstance(BluetoothAdapter adapter) {
@@ -77,10 +75,6 @@ public class BluetoothChatService {
 	public void setOnMenssageReceivedListener(OnMessageReceivedListener listener) {
 		this.listener = listener;
 	}
-
-	// public void setListener(IOnBluetoothConnectListener listener) {
-	// this.connectionListener = listener;
-	// }
 
 	public void setHandler(Handler handler) {
 		this.mHandler = handler;
@@ -111,6 +105,11 @@ public class BluetoothChatService {
 	}
 
 	public synchronized void connect(BluetoothDevice device) {
+
+		if (mAcceptThread != null) {
+			mAcceptThread.cancel();
+			mAcceptThread = null;
+		}
 
 		if (mConnectThread != null) {
 			mConnectThread.cancel();
@@ -172,7 +171,7 @@ public class BluetoothChatService {
 			r = mConnectedThread;
 		}
 		byte[] mBytes = message.getBytes();
-		
+
 		try {
 			r.write(mBytes);
 		} catch (Exception e) {
@@ -181,11 +180,11 @@ public class BluetoothChatService {
 	}
 
 	private void connectionFailed() {
-		mHandler.sendEmptyMessage(STATE_NONE);
+		mHandler.sendEmptyMessage(STATE_LOST);
 	}
 
 	private void connectionLost() {
-		mHandler.sendEmptyMessage(STATE_NONE);
+		mHandler.sendEmptyMessage(STATE_LOST);
 	}
 
 	private class AcceptThread extends Thread {
@@ -243,30 +242,25 @@ public class BluetoothChatService {
 		public ConnectThread(BluetoothDevice device) {
 			mmDevice = device;
 			BluetoothSocket tmp = null;
-
+			mAdapter.cancelDiscovery();
 			// Get a BluetoothSocket for a connection with the
 			// given BluetoothDevice
 			try {
-				tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
-			} catch (IOException e) {
+				 tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
+			} catch (Exception e) {
+				e.printStackTrace();
+				mHandler.sendEmptyMessage(STATE_LOST);
 			}
 			mmSocket = tmp;
 		}
 
 		public void run() {
-			mAdapter.cancelDiscovery();
-
+			
 			try {
-				DebugLog.log("Connecting...");
 				mmSocket.connect();
-				DebugLog.log("Connected!");
 			} catch (Exception e) {
 				DebugLog.log("Error connecting: " + e.getMessage());
 				connectionFailed();
-				try {
-					mmSocket.close();
-				} catch (IOException e2) {
-				}
 				return;
 			}
 
@@ -341,10 +335,10 @@ public class BluetoothChatService {
 		}
 
 		public void cancel() {
-			try {
-				mmSocket.close();
-			} catch (IOException e) {
-			}
+//			try {
+//				mmSocket.close();
+//			} catch (IOException e) {
+//			}
 		}
 	}
 }

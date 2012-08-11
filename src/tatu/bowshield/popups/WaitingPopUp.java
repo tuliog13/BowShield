@@ -7,31 +7,20 @@ import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 
-import tatu.bowshield.component.Button;
-import tatu.bowshield.component.ListView;
 import tatu.bowshield.component.PopUpLayout;
-import tatu.bowshield.screens.Menu;
 import tatu.bowshield.sprites.GameSprite;
-import android.bluetooth.BluetoothDevice;
 
-public class ScanPopUp extends PopUpLayout {
+public class WaitingPopUp extends PopUpLayout {
 
-	ListView mDeviceList;
-	private Text mErrorMessage;
+	private Text mWatingText;
+	// private Text mConnectingText;
 	private Font mTextFont;
-	private Menu mMenu;
-	
-	Button okButton;
-	
-	public static final int OK_BUTTON = 5;
+	private Scene mScene;
+	public boolean attached = false;
 
-	public ScanPopUp(Menu menuScreen) {
-
+	public WaitingPopUp(Scene scene) {
 		WIDTH = 700;
 		HEIGHT = 380;
-
-		mDeviceList = new ListView(300, 100);
-		mDeviceList.setOnListItemClickListener(menuScreen);
 
 		BitmapTextureAtlas mTextFontTextureAtlas = new BitmapTextureAtlas(
 				GameSprite.getGameReference().getTextureManager(), 512, 512,
@@ -45,42 +34,57 @@ public class ScanPopUp extends PopUpLayout {
 		GameSprite.getGameReference().getEngine().getTextureManager()
 				.loadTexture(mTextFontTextureAtlas);
 
-		mErrorMessage = new Text(300, 200, mTextFont,
-				"Um erro ocorreu!", GameSprite
+		mWatingText = new Text(300, 200, mTextFont,
+				"Jogo criado, aguardando oponente.", GameSprite
 						.getGameReference().getVertexBufferObjectManager());
-		
-		mMenu = menuScreen;
-		
-		okButton = new Button(menuScreen.PATH_BUTTON, menuScreen.PATH_BUTTON_ABOUT, 250, 380,
-				OK_BUTTON);
-		
-		mMenu.bManager.addButton(okButton);
-		
+
+		// mConnectingText = new Text(300, 300, mTextFont,
+		// "Alguem parece estar chegando...", GameSprite
+		// .getGameReference().getVertexBufferObjectManager());
+		mScene = scene;
 	}
 
 	@Override
 	public void onDraw() {
-		mDeviceList.draw();
+		if (!attached) {
+			try {
+				mScene.attachChild(mWatingText);
+				attached = true;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override
 	public void Update() {
-		
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
 	public void TouchEvent(org.andengine.input.touch.TouchEvent event) {
-		mDeviceList.updateItems(event);
+		// TODO Auto-generated method stub
+
+	}
+
+	public void setConnecting() {
+		try {
+			mScene.detachChild(mWatingText);
+			// mScene.attachChild(mConnectingText);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void Destroy() {
-		mDeviceList.clear();
-		mMenu.bManager.removeButton(okButton);
+		try {
+			mScene.detachChild(mWatingText);
+			// mScene.detachChild(mConnectingText);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
-	public void addBluetooth(BluetoothDevice device) {
-		mDeviceList.addItem(device.getName(), device.getAddress());
-	}
-	
 }

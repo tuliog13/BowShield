@@ -4,7 +4,9 @@ public class Constants {
 	
 	public static final int 			SCREEN_SPLASH = 0;
 	public static final int 			SCREEN_DEVICE = 1;
-	public static final int 			SCREEN_GAME = 2;
+	public static final int 			SCREEN_CUTSCENE = 2;
+	public static final int 			SCREEN_GAME = 3;
+	
 	 
 	public static final float 			GRAVITY = 0.07f;
 	public static final float 			FORCE_NUMBER = 6;

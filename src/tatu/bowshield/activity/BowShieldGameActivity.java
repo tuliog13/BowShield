@@ -26,6 +26,7 @@ import tatu.bowshield.control.Constants;
 import tatu.bowshield.control.GamePhysicalData;
 import tatu.bowshield.control.ScreenManager;
 import tatu.bowshield.control.TextureLoader;
+import tatu.bowshield.screens.CutScene;
 import tatu.bowshield.screens.Menu;
 import tatu.bowshield.screens.Game;
 import tatu.bowshield.screens.Screen;
@@ -39,163 +40,125 @@ import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
-public class BowShieldGameActivity extends SimpleBaseGameActivity implements OnMessageReceivedListener, IUpdateHandler,
-        IOnSceneTouchListener {
+public class BowShieldGameActivity extends SimpleBaseGameActivity implements
+		IUpdateHandler, IOnSceneTouchListener {
 
-    private BluetoothChatService mChatService;
-    private TextureLoader        mLoader;
-    private Scene                myScene;
+	private BluetoothChatService mChatService;
+	private TextureLoader mLoader;
+	private Scene myScene;
 
-    public static int DEVICE_WIDTH;
-    public static int DEVICE_HEIGHT;
-    
-    @Override
-    public EngineOptions onCreateEngineOptions() {
+	public static int DEVICE_WIDTH;
+	public static int DEVICE_HEIGHT;
 
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        
-        DEVICE_WIDTH = metrics.widthPixels;
-        DEVICE_HEIGHT = metrics.heightPixels;
-        
-        final Camera camera = new Camera(0, 0, Constants.CAMERA_WIDTH, Constants.CAMERA_HEIGHT);
-        return new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, new FillResolutionPolicy(), camera);
-        
-        //mChatService = BluetoothChatService.getInstance();
-      //  mChatService.setOnMenssageReceivedListener(this);
+	@Override
+	public EngineOptions onCreateEngineOptions() {
 
-        
+		DisplayMetrics metrics = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-    }
+		DEVICE_WIDTH = metrics.widthPixels;
+		DEVICE_HEIGHT = metrics.heightPixels;
 
-    @Override
-    public void onCreateResources() {
-    	mLoader = new TextureLoader(this, getAssets());
-    	Screen.setLoader(mLoader);
-    	
-    	GameSprite.setGameReference(this);
-    	
-    }
+		final Camera camera = new Camera(0, 0, Constants.CAMERA_WIDTH,
+				Constants.CAMERA_HEIGHT);
+		return new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED,
+				new FillResolutionPolicy(), camera);
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return true;
-    }
+	}
 
-    public Scene getScene() {
-        return this.myScene;
-    }
+	@Override
+	public void onCreateResources() {
+		mLoader = new TextureLoader(this, getAssets());
+		Screen.setLoader(mLoader);
 
-    @Override
-    public Scene onCreateScene() {
+		GameSprite.setGameReference(this);
 
-        this.mEngine.registerUpdateHandler(new FPSLogger());
-        
-        myScene = new Scene();
-        myScene.setOnSceneTouchListener(this);
-        myScene.registerUpdateHandler(this);
-        
-        Screen.setScene(myScene);
-        
-        PopUp.Inicialize();
-        
-        Screen splash = new Splash(Constants.SCREEN_SPLASH);
-        Screen deviceListScreen = new Menu(Constants.SCREEN_DEVICE);
-        Screen gameScreen = new Game(Constants.SCREEN_GAME);
-        
-        ScreenManager.addScreen(splash);
-        ScreenManager.addScreen(deviceListScreen);
-        ScreenManager.addScreen(gameScreen);
-        
-        ScreenManager.changeScreen(Constants.SCREEN_SPLASH);
-        
-        
-        return myScene;
-    }
+	}
 
-    public void Draw() {
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		return true;
+	}
 
-    }
+	public Scene getScene() {
+		return this.myScene;
+	}
 
-    public Engine getEngine() {
-        return this.mEngine;
-    }
+	@Override
+	public Scene onCreateScene() {
 
-    public BowShieldGameActivity getGameReference() {
-        return this;
-    }
+		this.mEngine.registerUpdateHandler(new FPSLogger());
 
-    public TextureLoader getTextureLoader() {
-        return mLoader;
-    }
+		myScene = new Scene();
+		myScene.setOnSceneTouchListener(this);
+		myScene.registerUpdateHandler(this);
 
-    @Override
-    public void sendMessage(String message) {
-        DebugLog.log("Message sended: " + message);
-        //mChatService.write(message);
-    }
+		Screen.setScene(myScene);
 
-    @Override
-    public void onMessageReceived(String message) {
-        DebugLog.log("Message received: " + message);
-        
-        
-//        float angle, force;
-//        int i;
-//        
-//        for(i = 0; i < message.length() && message.charAt(i) != ','; i++);
-//        
-//        String s = message.substring(0, i);
-//        angle = Float.parseFloat(s);
-//        
-//        s = message.substring(i + 1);
-//        force = Float.parseFloat(s);
-//        
-//        mArrow.configPreLaunch(angle, force);
-//        
-//        GamePhysicalData.sShoted = true;
-//        GamePhysicalData.mDistance = 0;
-//        
-//        GamePhysicalData.setAngle(angle);
-//        GamePhysicalData.setForce(force);
-        
-    }
+		PopUp.Inicialize();
 
-    @Override
-    public void onUpdate(float pSecondsElapsed) {
-        
-    	if(!PopUp.isShowing())
-    	{
-    		ScreenManager.Update();
-    	}
-        PopUp.UpdatePopUp();
-    }
+		Screen splash = new Splash(Constants.SCREEN_SPLASH);
+		Screen deviceListScreen = new Menu(Constants.SCREEN_DEVICE);
+		Screen cutScene = new CutScene(Constants.SCREEN_CUTSCENE);
+		Screen gameScreen = new Game(Constants.SCREEN_GAME);
 
-    @Override
-    public void reset() {
-        // TODO Auto-generated method stub
-    }
+		ScreenManager.addScreen(splash);
+		ScreenManager.addScreen(deviceListScreen);
+		ScreenManager.addScreen(cutScene);
+		ScreenManager.addScreen(gameScreen);
+		
+		ScreenManager.changeScreen(Constants.SCREEN_SPLASH);
 
-    @Override
-    public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
-    	if(!PopUp.isShowing() && PopUp.popupUnloadDone)
-    	{
-    		ScreenManager.onSceneTouchEvent(pSceneTouchEvent);
-    	}
-    	else
-    	{
-    		PopUp.TouchEvent(pSceneTouchEvent);
-    	}
-        return false;
-    }
-    
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-    	if(!PopUp.isShowing() && PopUp.popupUnloadDone)
-    	{
-           ScreenManager.onKeyDown(keyCode, event);
-    	}
-        return false;
-    }
+		return myScene;
+	}
+
+	public void Draw() {
+
+	}
+
+	public Engine getEngine() {
+		return this.mEngine;
+	}
+
+	public BowShieldGameActivity getGameReference() {
+		return this;
+	}
+
+	public TextureLoader getTextureLoader() {
+		return mLoader;
+	}
+
+	@Override
+	public void onUpdate(float pSecondsElapsed) {
+
+		if (!PopUp.isShowing()) {
+			ScreenManager.Update();
+		}
+
+		PopUp.UpdatePopUp();
+	}
+
+	@Override
+	public void reset() {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
+		if (!PopUp.isShowing() && PopUp.popupUnloadDone) {
+			ScreenManager.onSceneTouchEvent(pSceneTouchEvent);
+		} else {
+			PopUp.TouchEvent(pSceneTouchEvent);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (!PopUp.isShowing() && PopUp.popupUnloadDone) {
+			ScreenManager.onKeyDown(keyCode, event);
+		}
+		return false;
+	}
 
 }

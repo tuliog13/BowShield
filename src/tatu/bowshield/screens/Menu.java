@@ -13,10 +13,13 @@ import tatu.bowshield.component.Button;
 import tatu.bowshield.component.ButtonManager;
 import tatu.bowshield.component.ListView;
 import tatu.bowshield.component.OnListItemClickListener;
+import tatu.bowshield.component.PopUp;
 import tatu.bowshield.control.Constants;
 import tatu.bowshield.control.GamePhysicalData;
 import tatu.bowshield.control.IOnButtonTouch;
 import tatu.bowshield.control.ScreenManager;
+import tatu.bowshield.popups.ScanPopUp;
+import tatu.bowshield.popups.WaitingPopUp;
 import tatu.bowshield.sprites.GameSprite;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -26,26 +29,27 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Message;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.KeyEvent;
 
 public class Menu extends Screen implements IOnButtonTouch,
 		OnListItemClickListener {
 
-	private String PATH_BUTTON = "gfx/buttonn.png";
-	private String PATH_BUTTON_PRESSED = "gfx/buttonp.png";
+	public String PATH_BUTTON = "gfx/buttonn.png";
+	public String PATH_BUTTON_PRESSED = "gfx/buttonp.png";
+	
 	private String PATH_BUTTON_HELP = "gfx/btn_help.png";
-	private String PATH_BUTTON_ABOUT = "gfx/btn_about.png";
+	public String PATH_BUTTON_ABOUT = "gfx/btn_about.png";
 
 	private String PATH_IMAGE_HELP = "gfx/telas/help_screen.png";
 	private String PATH_IMAGE_ABOUT = "gfx/telas/about_screen.png";
-	
+
 	private final int BTN_CREATE = 0;
 	private final int BTN_JOIN = 1;
 	private final int BTN_SKIP = 2;
 	private final int BTN_HELP = 3;
 	private final int BTN_ABOUT = 4;
-	
 
 	private String PATH_BACKGROUND = "gfx/telas/deviceBack.jpg";
 	private Texture mBackgroundTexture;
@@ -54,23 +58,23 @@ public class Menu extends Screen implements IOnButtonTouch,
 	Button btnCreateGame;
 	Button btnJoinGame;
 	Button btnSkip;
-	
+
 	Button btnAbout;
 	Button btnHelp;
 
-	ButtonManager bManager;
-	ListView deviceList;
+	public ButtonManager bManager;
 
 	private BluetoothAdapter mBtAdapter;
 	private BluetoothChatService mChatService;
 
-	private int devicesCount = 0;
 	private Handler mHandler;
 
 	private SimpleScreen helpScreen;
 	private SimpleScreen AboutScreen;
-	
-	
+
+	private ScanPopUp mScanPopUp;
+	private WaitingPopUp mWaitingPopUp;
+
 	public Menu(int id) {
 		super(id);
 	}
@@ -79,27 +83,31 @@ public class Menu extends Screen implements IOnButtonTouch,
 	public void Initialize() {
 		// TODO Auto-generated method stub
 
-		btnCreateGame = new Button(PATH_BUTTON,PATH_BUTTON_PRESSED, 0, 0, BTN_CREATE);
-		btnJoinGame = new Button(PATH_BUTTON,PATH_BUTTON_PRESSED, 0, 100, BTN_JOIN);
-		btnSkip = new Button(PATH_BUTTON,PATH_BUTTON_PRESSED, 0, 200, BTN_SKIP);
-		btnHelp = new Button(PATH_BUTTON_HELP, PATH_BUTTON_HELP, 0, 380, BTN_HELP);
-		btnAbout = new Button(PATH_BUTTON_ABOUT, PATH_BUTTON_ABOUT, 600, 380, BTN_ABOUT);
-		
-		
-		
+		btnCreateGame = new Button(PATH_BUTTON, PATH_BUTTON_PRESSED, 0, 0,
+				BTN_CREATE);
+		btnJoinGame = new Button(PATH_BUTTON, PATH_BUTTON_PRESSED, 0, 100,
+				BTN_JOIN);
+		btnSkip = new Button(PATH_BUTTON, PATH_BUTTON_PRESSED, 0, 200, BTN_SKIP);
+		btnHelp = new Button(PATH_BUTTON_HELP, PATH_BUTTON_HELP, 0, 380,
+				BTN_HELP);
+		btnAbout = new Button(PATH_BUTTON_ABOUT, PATH_BUTTON_ABOUT, 600, 380,
+				BTN_ABOUT);
+
 		bManager = new ButtonManager(this);
 		bManager.addButton(btnCreateGame);
 		bManager.addButton(btnJoinGame);
 		bManager.addButton(btnSkip);
 		bManager.addButton(btnHelp);
 		bManager.addButton(btnAbout);
-		
-		helpScreen = new SimpleScreen(Constants.SIMPLE_SCREEN_HELP,PATH_IMAGE_HELP);
-		AboutScreen = new SimpleScreen(Constants.SIMPLE_SCREEN_ABOUT,PATH_IMAGE_ABOUT);
-		
+
+		helpScreen = new SimpleScreen(Constants.SIMPLE_SCREEN_HELP,
+				PATH_IMAGE_HELP);
+		AboutScreen = new SimpleScreen(Constants.SIMPLE_SCREEN_ABOUT,
+				PATH_IMAGE_ABOUT);
+
 		addSimpleScreen(helpScreen);
 		addSimpleScreen(AboutScreen);
-		
+
 		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
 		GameSprite.getGameReference().registerReceiver(mReceiver, filter);
 
@@ -116,7 +124,8 @@ public class Menu extends Screen implements IOnButtonTouch,
 						switch (msg.what) {
 						case BluetoothChatService.STATE_CONNECTED:
 							DebugLog.log("Connected");
-							ScreenManager.changeScreen(2);
+							PopUp.forceClose();
+							ScreenManager.changeScreen(Constants.SCREEN_CUTSCENE);
 							break;
 
 						case BluetoothChatService.STATE_CONNECTING:
@@ -127,8 +136,13 @@ public class Menu extends Screen implements IOnButtonTouch,
 							DebugLog.log("Waiting Connection");
 							break;
 
-						case BluetoothChatService.STATE_NONE:
+						case BluetoothChatService.STATE_LOST:
 							DebugLog.log("Connection Lost");
+
+							if (mChatService != null) {
+								mChatService.stop();
+							}
+
 							break;
 						}
 					};
@@ -146,10 +160,6 @@ public class Menu extends Screen implements IOnButtonTouch,
 		mBackgroundRegion = TextureRegionFactory
 				.extractFromTexture(mBackgroundTexture);
 
-
-		deviceList = new ListView(300, 0);
-		deviceList.setOnListItemClickListener(this);
-
 		super.Initialize();
 
 	}
@@ -164,14 +174,12 @@ public class Menu extends Screen implements IOnButtonTouch,
 	public void Update() {
 		// TODO Auto-generated method stub
 		super.Update();
-		//helpScreen.Update();
+		// helpScreen.Update();
 	}
-	
+
 	@Override
 	public boolean onSceneTouchEvent(TouchEvent pSceneTouchEvent) {
 		bManager.updateButtons(pSceneTouchEvent);
-		deviceList.updateItems(pSceneTouchEvent);
-		
 		return super.onSceneTouchEvent(pSceneTouchEvent);
 	}
 
@@ -183,10 +191,8 @@ public class Menu extends Screen implements IOnButtonTouch,
 						Constants.CAMERA_HEIGHT, mBackgroundRegion, GameSprite
 								.getGameReference()
 								.getVertexBufferObjectManager())));
-		
+
 		bManager.drawButtons();
-		deviceList.draw();
-		
 		super.Draw();
 	}
 
@@ -199,7 +205,6 @@ public class Menu extends Screen implements IOnButtonTouch,
 			@Override
 			public void run() {
 				bManager.detach();
-				deviceList.detach();
 			}
 
 		});
@@ -210,40 +215,51 @@ public class Menu extends Screen implements IOnButtonTouch,
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
-		
+
 		ScreenManager.changeScreen(getId() - 1);
-		
-		return super.onKeyDown(keyCode, event);
+
+		PopUp.hidePopUp();
+		return false;
+		//return super.onKeyDown(keyCode, event);
 	}
-	
+
 	@Override
 	public void onButtonTouch(int buttonId) {
 
 		switch (buttonId) {
 
 		case BTN_CREATE:
+
+			PopUp.showPopUp(mWaitingPopUp = new WaitingPopUp(getScene()));
+
 			makeDiscoverable();
 			mChatService.start();
 			GamePhysicalData.GAME_TYPE = GamePhysicalData.SERVER_TYPE;
+			PopUp.bringToFront();
+
 			DebugLog.log("START CALLED!");
 			break;
 
 		case BTN_JOIN:
-			deviceList.clear();
+
+			PopUp.showPopUp(mScanPopUp = new ScanPopUp(this));
+
 			ScreenManager.reDraw();
 			scanDevices();
 			GamePhysicalData.GAME_TYPE = GamePhysicalData.CLIENT_TYPE;
+			PopUp.bringToFront();
+
 			DebugLog.log("Searching for devices... ");
 			break;
 
 		case BTN_SKIP:
-			ScreenManager.changeScreen(2);
+			ScreenManager.changeScreen(Constants.SCREEN_CUTSCENE);
 			break;
-			
+
 		case BTN_HELP:
 			ScreenManager.showSimpleScreen(Constants.SIMPLE_SCREEN_HELP);
 			break;
-			
+
 		case BTN_ABOUT:
 			ScreenManager.showSimpleScreen(Constants.SIMPLE_SCREEN_ABOUT);
 			break;
@@ -260,8 +276,9 @@ public class Menu extends Screen implements IOnButtonTouch,
 				BluetoothDevice device = intent
 						.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
-				deviceList.addItem(device.getName(), device.getAddress());
 				ScreenManager.reDraw();
+
+				mScanPopUp.addBluetooth(device);
 
 				DebugLog.log("Device found: " + device.getName());
 			}
@@ -274,22 +291,22 @@ public class Menu extends Screen implements IOnButtonTouch,
 
 	private void scanDevices() {
 
-		if (mBtAdapter.isDiscovering()) {
-			mBtAdapter.cancelDiscovery();
-		}
+		makeDiscoverable();
 
+		mBtAdapter.cancelDiscovery();
 		mBtAdapter.startDiscovery();
+
 		Log.v("TESTE", "Discovery started!");
 	}
 
 	private void makeDiscoverable() {
-		if (mBtAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
+//		if (mBtAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
 			Intent discoverableIntent = new Intent(
 					BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
 			discoverableIntent.putExtra(
 					BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
 			GameSprite.getGameReference().startActivity(discoverableIntent);
-		}
+//		}
 	}
 
 	@Override
@@ -300,6 +317,7 @@ public class Menu extends Screen implements IOnButtonTouch,
 		String address = (String) container;
 
 		BluetoothDevice device = mBtAdapter.getRemoteDevice(address);
+		
 		mChatService.connect(device);
 
 	}

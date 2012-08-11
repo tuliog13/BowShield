@@ -38,11 +38,11 @@ public class FruitController {
 	{
 		if(_fruits != null)
 		{
-			for(Fruit fruit : _fruits)
+			for(int i = 0; i < _fruits.size(); i++)
 			{
-				if(_player.getmArrow().getSprite().collidesWith(fruit.getSprite()))
+				if(_player.getmArrow().getSprite().collidesWith(_fruits.get(i).getSprite()))
 				{
-					fruit.getSprite().detachSelf();
+					_fruits.get(i).getSprite().detachSelf();
 				}
 			}
 		}
