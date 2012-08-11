@@ -16,6 +16,8 @@ import tatu.bowshield.control.ScreenManager;
 import tatu.bowshield.sprites.GameSprite;
 import org.andengine.input.touch.TouchEvent;
 
+import android.view.KeyEvent;
+
 import tatu.bowshield.control.Constants;
 
 public class ConfirmDialog extends PopUpLayout implements IOnButtonTouch{
@@ -97,6 +99,14 @@ public class ConfirmDialog extends PopUpLayout implements IOnButtonTouch{
 	public void TouchEvent(TouchEvent event) {
 		// TODO Auto-generated method stub
 		bManager.updateButtons(event);
+	}
+
+
+
+	@Override
+	public void onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

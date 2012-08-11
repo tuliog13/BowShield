@@ -2,6 +2,8 @@ package tatu.bowshield.component;
 
 import org.andengine.input.touch.TouchEvent;
 
+import android.view.KeyEvent;
+
 public abstract class PopUpLayout {
 	
 	protected int WIDTH;
@@ -13,4 +15,7 @@ public abstract class PopUpLayout {
 	public abstract void TouchEvent(TouchEvent event);
 	
 	public abstract void Destroy();
+	
+	public abstract void onKeyDown(int keyCode, KeyEvent event);
+
 }

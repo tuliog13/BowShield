@@ -216,11 +216,10 @@ public class Menu extends Screen implements IOnButtonTouch,
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
 
-		ScreenManager.changeScreen(getId() - 1);
+		//ScreenManager.changeScreen(getId() - 1);
 
 		PopUp.hidePopUp();
-		return false;
-		//return super.onKeyDown(keyCode, event);
+		return super.onKeyDown(keyCode, event);
 	}
 
 	@Override

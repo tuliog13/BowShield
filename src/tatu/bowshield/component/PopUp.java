@@ -15,6 +15,7 @@ import tatu.bowshield.sprites.GameSprite;
 import org.andengine.input.touch.TouchEvent;
 
 import android.location.GpsStatus.Listener;
+import android.view.KeyEvent;
 
 public class PopUp implements EventListener {
 
@@ -223,6 +224,11 @@ public class PopUp implements EventListener {
 		GameSprite.getGameReference().getScene().attachChild(recCover);
 		GameSprite.getGameReference().getScene().attachChild(pSpriteCover);
 
+	}
+
+	public static void onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		mPopupLayout.onKeyDown(keyCode, event);
 	}
 
 }

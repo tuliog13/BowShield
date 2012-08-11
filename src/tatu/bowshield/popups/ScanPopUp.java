@@ -9,10 +9,12 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 
 import tatu.bowshield.component.Button;
 import tatu.bowshield.component.ListView;
+import tatu.bowshield.component.PopUp;
 import tatu.bowshield.component.PopUpLayout;
 import tatu.bowshield.screens.Menu;
 import tatu.bowshield.sprites.GameSprite;
 import android.bluetooth.BluetoothDevice;
+import android.view.KeyEvent;
 
 public class ScanPopUp extends PopUpLayout {
 
@@ -81,6 +83,12 @@ public class ScanPopUp extends PopUpLayout {
 
 	public void addBluetooth(BluetoothDevice device) {
 		mDeviceList.addItem(device.getName(), device.getAddress());
+	}
+
+	@Override
+	public void onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		PopUp.hidePopUp();
 	}
 	
 }

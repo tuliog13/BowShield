@@ -158,6 +158,10 @@ public class BowShieldGameActivity extends SimpleBaseGameActivity implements
 		if (!PopUp.isShowing() && PopUp.popupUnloadDone) {
 			ScreenManager.onKeyDown(keyCode, event);
 		}
+		else
+		{
+			PopUp.onKeyDown(keyCode, event);
+		}
 		return false;
 	}
 

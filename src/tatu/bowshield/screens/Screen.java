@@ -87,7 +87,7 @@ public abstract class Screen {
 	
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
         
-        return false;
+		return false;
     }
 	
 	public static void resetScene()

@@ -7,6 +7,9 @@ import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 
+import android.view.KeyEvent;
+
+import tatu.bowshield.component.PopUp;
 import tatu.bowshield.component.PopUpLayout;
 import tatu.bowshield.sprites.GameSprite;
 
@@ -85,6 +88,12 @@ public class WaitingPopUp extends PopUpLayout {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		PopUp.hidePopUp();
 	}
 
 }
