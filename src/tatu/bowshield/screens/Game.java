@@ -14,6 +14,7 @@ import tatu.bowshield.bluetooth.OnDirectionChanged;
 import tatu.bowshield.bluetooth.OnMessageReceivedListener;
 import tatu.bowshield.component.Button;
 import tatu.bowshield.component.PopUp;
+import tatu.bowshield.component.PositionControler;
 import tatu.bowshield.control.Constants;
 import tatu.bowshield.control.FruitController;
 import tatu.bowshield.control.GamePhysicalData;
@@ -38,18 +39,22 @@ public class Game extends Screen implements OnDirectionChanged,
 	public static String PATH_ARROW = "gfx/flecha1.png";
 	public static String PATH_ROPE = "gfx/corda.png";
 
+	public static String PATH_CONTROLLER = "gfx/control1.png";
+	public static String PATH_CONTROL = "gfx/control2.png";
+
 	private Texture mBackgroundTexture;
 	private ITextureRegion mBackgroundRegion;
 
-
 	public static Player mPlayerOne;
-    private Player mPlayerTwo;
-    
+	private Player mPlayerTwo;
+
 	private BluetoothChatService mChatService;
 
 	private Results resultsScreen;
+	private float iX, iY;
+	private PositionControler mPositionController;
 
-	public Game(int id) { 
+	public Game(int id) {
 
 		super(id);
 		// TODO Auto-generated constructor stub
@@ -64,32 +69,32 @@ public class Game extends Screen implements OnDirectionChanged,
 		mBackgroundTexture.load();
 		mBackgroundRegion = TextureRegionFactory
 				.extractFromTexture(mBackgroundTexture);
-		
-		if(GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE){
-		
+
+		if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
+
 			mPlayerOne = new Player(PATH_PLAYER1, 60, 330);
 			mPlayerTwo = new Player(PATH_PLAYER1, 1500, 330);
-		
-		}
-		else
-		{
+
+		} else {
 			mPlayerOne = new Player(PATH_PLAYER1, -800, 330);
 			mPlayerTwo = new Player(PATH_PLAYER1, 700, 330);
 		}
-		
+
 		resultsScreen = new Results(0, "gfx/telas/game_over.png");
-		
+
 		addSimpleScreen(resultsScreen);
-		
+
 		PlayersController.set_PlayerOne(mPlayerOne);
 		PlayersController.set_PlayerTwo(mPlayerTwo);
-		
+
 		PlayersController.configureGamePlayers();
-		
+
 		GamePhysicalData.setOnDirectionChangedListener(this);
-		PlayersController.get_PlayerOne().getmArrow().setOnDirectionChangedListener(this);
-		PlayersController.get_PlayerTwo().getmArrow().setOnDirectionChangedListener(this);
-		
+		PlayersController.get_PlayerOne().getmArrow()
+				.setOnDirectionChangedListener(this);
+		PlayersController.get_PlayerTwo().getmArrow()
+				.setOnDirectionChangedListener(this);
+
 		GameSprite.getGameReference().runOnUiThread(new Runnable() {
 
 			@Override
@@ -101,9 +106,11 @@ public class Game extends Screen implements OnDirectionChanged,
 		});
 
 		DebugLog.log("Initialize called!");
-		
+
 		FruitController.Initialize(5, PlayersController.getOpponentPlayer());
-		
+		mPositionController = new PositionControler(PATH_CONTROLLER,
+				PATH_CONTROL, 400, 400);
+
 	}
 
 	@Override
@@ -124,19 +131,32 @@ public class Game extends Screen implements OnDirectionChanged,
 		} else {
 			DebugLog.log("Player null update");
 		}
-		
+
 	}
 
 	@Override
 	public boolean onSceneTouchEvent(TouchEvent pSceneTouchEvent) {
-			PlayersController.get_PlayerOne().getGameData().calculateTouch(pSceneTouchEvent, this);
-			PlayersController.get_PlayerTwo().getGameData().calculateTouch(pSceneTouchEvent, this);
-			
-			if(pSceneTouchEvent.getX()> 780 && pSceneTouchEvent.getY() <  30)
-			{
-				ScreenManager.showSimpleScreen(0);
+
+		if (!mPositionController.update(pSceneTouchEvent)) {
+
+			if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
+				PlayersController.get_PlayerOne().getGameData()
+						.calculateTouch(pSceneTouchEvent, this, true);
+				PlayersController.get_PlayerTwo().getGameData()
+						.calculateTouch(pSceneTouchEvent, this, false);
+			} else {
+				PlayersController.get_PlayerOne().getGameData()
+						.calculateTouch(pSceneTouchEvent, this, false);
+				PlayersController.get_PlayerTwo().getGameData()
+						.calculateTouch(pSceneTouchEvent, this, true);
 			}
-			
+
+		}
+		
+		if (pSceneTouchEvent.getX() > 780 && pSceneTouchEvent.getY() < 30) {
+			ScreenManager.showSimpleScreen(0);
+		}
+
 		return false;
 	}
 
@@ -150,16 +170,18 @@ public class Game extends Screen implements OnDirectionChanged,
 						Constants.CAMERA_HEIGHT, mBackgroundRegion, GameSprite
 								.getGameReference()
 								.getVertexBufferObjectManager())));
-		
+
 		// PlayersController.Draw();
 		if (PlayersController.getMyPlayer() != null) {
 			PlayersController.Draw();
 		} else {
 			DebugLog.log("Player null draw");
 		}
-		
+
+		mPositionController.Draw();
+
 		FruitController.Draw();
-		
+
 	}
 
 	@Override
@@ -185,17 +207,15 @@ public class Game extends Screen implements OnDirectionChanged,
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
-		
+
 		ScreenManager.changeScreen(getId() - 1);
-		
-		
-		
+
 		return super.onKeyDown(keyCode, event);
 	}
-	
+
 	@Override
 	public void onDirectionChanged() {
-		//mPlayerOne.flipHorizontal1(GamePhysicalData.mDirecao);
+		// mPlayerOne.flipHorizontal1(GamePhysicalData.mDirecao);
 	}
 
 	@Override
@@ -205,47 +225,60 @@ public class Game extends Screen implements OnDirectionChanged,
 	}
 
 	@Override
-	public void sendMessage(String message) {
-		DebugLog.log("Message sended: " + message);
-		mChatService.write(message);
+	public void sendMessage(byte type, String message) {
+		mChatService.write(type, message);
 	}
 
 	@Override
-	public void onMessageReceived(String message) {
-		DebugLog.log("Message received: " + message);
+	public void onMessageReceived(byte type, String message) {
+
+		switch (type) {
+		case BluetoothChatService.SHOT:
+			doShotAction(message);
+			break;
+
+		case BluetoothChatService.AIMING_UPDATE:
+			DebugLog.log("Move received: " + message);
+			break;
+		}
+
+	}
+
+	private void doShotAction(String shotInfo) {
 
 		float angle, force, direction;
 		int i, j;
 
-		for (i = 0; i < message.length() && message.charAt(i) != '#'; i++)
-			;
-		
-		message = message.substring(0, i);
-		DebugLog.log("Message: " + message);
-		
-		for (i = 0; i < message.length() && message.charAt(i) != '@'; i++)
+		for (i = 0; i < shotInfo.length() && shotInfo.charAt(i) != '#'; i++)
 			;
 
-		String s = message.substring(0, i);
+		shotInfo = shotInfo.substring(0, i);
+		DebugLog.log("Message: " + shotInfo);
+
+		for (i = 0; i < shotInfo.length() && shotInfo.charAt(i) != '@'; i++)
+			;
+
+		String s = shotInfo.substring(0, i);
 		DebugLog.log("Angle: " + s);
 		angle = Float.parseFloat(s);
 
 		j = i;
 		i += 2;
 
-		for (; i < message.length() && message.charAt(i) != '@'; i++)
+		for (; i < shotInfo.length() && shotInfo.charAt(i) != '@'; i++)
 			;
 
-		s = message.substring(j + 1, i);
+		s = shotInfo.substring(j + 1, i);
 		DebugLog.log("Force: " + s);
 		force = Float.parseFloat(s);
 
-		s = message.substring(i + 1);
+		s = shotInfo.substring(i + 1);
 		DebugLog.log("Direction: " + s);
 		direction = Integer.parseInt(s);
-		
-		if(GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE){
-			PlayersController.get_PlayerTwo().getmArrow().configPreLaunch(angle, force);
+
+		if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
+			PlayersController.get_PlayerTwo().getmArrow()
+					.configPreLaunch(angle, force);
 
 			PlayersController.get_PlayerTwo().getGameData().sShoted = true;
 			PlayersController.get_PlayerTwo().getGameData().mDistance = 0;
@@ -254,10 +287,9 @@ public class Game extends Screen implements OnDirectionChanged,
 
 			PlayersController.get_PlayerTwo().getGameData().setAngle(angle);
 			PlayersController.get_PlayerTwo().getGameData().setForce(force);
-		}
-		else
-		{
-			PlayersController.get_PlayerOne().getmArrow().configPreLaunch(angle, force);
+		} else {
+			PlayersController.get_PlayerOne().getmArrow()
+					.configPreLaunch(angle, force);
 
 			PlayersController.get_PlayerOne().getGameData().sShoted = true;
 			PlayersController.get_PlayerOne().getGameData().mDistance = 0;
@@ -273,12 +305,10 @@ public class Game extends Screen implements OnDirectionChanged,
 	@Override
 	public void onArrowOutofScreen(int type) {
 		// TODO Auto-generated method stub
-		if(type == 1){
-			//PlayersController.get_PlayerOne().getGameData().sShoted = false;
-		}
-		else
-		{
-			//PlayersController.get_PlayerTwo().getGameData().sShoted = false;
+		if (type == 1) {
+			// PlayersController.get_PlayerOne().getGameData().sShoted = false;
+		} else {
+			// PlayersController.get_PlayerTwo().getGameData().sShoted = false;
 		}
 	}
 }
