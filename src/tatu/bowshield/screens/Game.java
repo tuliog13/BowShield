@@ -54,6 +54,9 @@ public class Game extends Screen implements OnDirectionChanged,
 	private float iX, iY;
 	private PositionControler mPositionController;
 
+	private GamePhysicalData myPlayerData;
+	private GamePhysicalData opponentPlayerData;
+	
 	public Game(int id) {
 
 		super(id);
@@ -70,14 +73,17 @@ public class Game extends Screen implements OnDirectionChanged,
 		mBackgroundRegion = TextureRegionFactory
 				.extractFromTexture(mBackgroundTexture);
 
+		myPlayerData = new GamePhysicalData();
+		opponentPlayerData = new GamePhysicalData();
+		
 		if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
 
-			mPlayerOne = new Player(PATH_PLAYER1, 60, 330);
-			mPlayerTwo = new Player(PATH_PLAYER1, 1500, 330);
+			mPlayerOne = new Player(PATH_PLAYER1, 60, 330, myPlayerData);
+			mPlayerTwo = new Player(PATH_PLAYER1, 1500, 330, opponentPlayerData); 
 
 		} else {
-			mPlayerOne = new Player(PATH_PLAYER1, -800, 330);
-			mPlayerTwo = new Player(PATH_PLAYER1, 700, 330);
+			mPlayerOne = new Player(PATH_PLAYER1, -800, 330, opponentPlayerData);
+			mPlayerTwo = new Player(PATH_PLAYER1, 700, 330, myPlayerData);
 		}
 
 		resultsScreen = new Results(0, "gfx/telas/game_over.png");
@@ -137,20 +143,22 @@ public class Game extends Screen implements OnDirectionChanged,
 	@Override
 	public boolean onSceneTouchEvent(TouchEvent pSceneTouchEvent) {
 
+			
 		if (!mPositionController.update(pSceneTouchEvent)) {
 
-			if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
-				PlayersController.get_PlayerOne().getGameData()
-						.calculateTouch(pSceneTouchEvent, this, true);
-				PlayersController.get_PlayerTwo().getGameData()
-						.calculateTouch(pSceneTouchEvent, this, false);
-			} else {
-				PlayersController.get_PlayerOne().getGameData()
-						.calculateTouch(pSceneTouchEvent, this, false);
-				PlayersController.get_PlayerTwo().getGameData()
-						.calculateTouch(pSceneTouchEvent, this, true);
-			}
-
+//			if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
+//				PlayersController.get_PlayerOne().getGameData()
+//						.calculateTouch(pSceneTouchEvent, this, true);
+//				PlayersController.get_PlayerTwo().getGameData()
+//						.calculateTouch(pSceneTouchEvent, this, false);
+//			} else {
+//				PlayersController.get_PlayerOne().getGameData()
+//						.calculateTouch(pSceneTouchEvent, this, false);
+//				PlayersController.get_PlayerTwo().getGameData()
+//						.calculateTouch(pSceneTouchEvent, this, true);
+//			}
+			myPlayerData
+			.calculateTouch(pSceneTouchEvent, this, true);
 		}
 		
 		if (pSceneTouchEvent.getX() > 780 && pSceneTouchEvent.getY() < 30) {

@@ -56,9 +56,15 @@ public class BluetoothChatService {
 	public static final int STATE_CONNECTING = 2;
 	public static final int STATE_CONNECTED = 3;
 
+	/* ADD HERE TYPE OF BLUETOOTH MENSSAGE */
+	public static final byte SHOT = 0;
+	public static final byte AIMING_UPDATE = 1;
+	public static final byte CONFIRM_RECIEVE = 127;
+
 	OnMessageReceivedListener listener;
 	static BluetoothChatService instance;
 	private Handler mHandler;
+	private boolean readyToSend = true;
 
 	private BluetoothChatService(BluetoothAdapter adapter) {
 		mAdapter = adapter;
@@ -165,20 +171,6 @@ public class BluetoothChatService {
 		}
 	}
 
-	public void write(String message) {
-		ConnectedThread r;
-		synchronized (this) {
-			r = mConnectedThread;
-		}
-		byte[] mBytes = message.getBytes();
-
-		try {
-			r.write(mBytes);
-		} catch (Exception e) {
-
-		}
-	}
-
 	private void connectionFailed() {
 		mHandler.sendEmptyMessage(STATE_LOST);
 	}
@@ -230,11 +222,6 @@ public class BluetoothChatService {
 		}
 	}
 
-	/**
-	 * This thread runs while attempting to make an outgoing connection with a
-	 * device. It runs straight through; the connection either succeeds or
-	 * fails.
-	 */
 	private class ConnectThread extends Thread {
 		private final BluetoothSocket mmSocket;
 		private final BluetoothDevice mmDevice;
@@ -243,10 +230,9 @@ public class BluetoothChatService {
 			mmDevice = device;
 			BluetoothSocket tmp = null;
 			mAdapter.cancelDiscovery();
-			// Get a BluetoothSocket for a connection with the
-			// given BluetoothDevice
+
 			try {
-				 tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
+				tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
 			} catch (Exception e) {
 				e.printStackTrace();
 				mHandler.sendEmptyMessage(STATE_LOST);
@@ -255,7 +241,7 @@ public class BluetoothChatService {
 		}
 
 		public void run() {
-			
+
 			try {
 				mmSocket.connect();
 			} catch (Exception e) {
@@ -290,7 +276,6 @@ public class BluetoothChatService {
 			InputStream tmpIn = null;
 			OutputStream tmpOut = null;
 
-			// Get the BluetoothSocket input and output streams
 			try {
 				tmpIn = socket.getInputStream();
 				tmpOut = socket.getOutputStream();
@@ -302,23 +287,30 @@ public class BluetoothChatService {
 		}
 
 		public void run() {
+
+			byte type;
 			byte[] buffer = new byte[1024];
 			int bytes;
 
-			// Keep listening to the InputStream while connected
 			while (true) {
 				try {
-					// Read from the InputStream
-					bytes = mmInStream.read(buffer);
 
-					// Send the obtained bytes to the UI Activity
-					// mHandler.obtainMessage(BluetoothChat.MESSAGE_READ, bytes,
-					// -1, buffer)
-					// .sendToTarget();
-					byte[] readBuf = (byte[]) buffer;
-					// construct a string from the valid bytes in the buffer
-					String readMessage = new String(readBuf, 0, bytes);
-					listener.onMessageReceived(readMessage);
+					type = (byte) mmInStream.read();
+					
+					if (type != CONFIRM_RECIEVE) {
+						bytes = mmInStream.read(buffer);
+
+						byte[] readBuf = (byte[]) buffer;
+						String readMessage = new String(readBuf, 0, bytes);
+
+						sendType(CONFIRM_RECIEVE);
+						listener.onMessageReceived(type, readMessage);
+					}else{
+						readyToSend = true;
+						DebugLog.log("Confirm recevide: ready to send");
+					}
+
+					
 
 				} catch (IOException e) {
 					connectionLost();
@@ -327,18 +319,52 @@ public class BluetoothChatService {
 			}
 		}
 
-		public void write(byte[] buffer) {
+		public void sendMenssage(byte[] buffer) {
 			try {
 				mmOutStream.write(buffer);
-			} catch (IOException e) {
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		public void sendType(byte buffer) {
+			try {
+				mmOutStream.write(buffer);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 
 		public void cancel() {
-//			try {
-//				mmSocket.close();
-//			} catch (IOException e) {
-//			}
+			// try {
+			// mmSocket.close();
+			// } catch (IOException e) {
+			// }
 		}
+	}
+
+	public void write(byte type, String message) {
+		ConnectedThread r;
+		synchronized (this) {
+			r = mConnectedThread;
+		}
+
+		if (readyToSend) {
+			
+			byte[] mBytes = message.getBytes();
+			readyToSend = false;
+
+			try {
+				r.sendType(type);
+				r.sendMenssage(mBytes);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			DebugLog.log("Sended: Type: " + type + " Message: " + message + " - Send blocked!");
+		}else{
+			DebugLog.log("Failed to send: Type: " + type + " Message: " + message + " - Send not done yet!");
+		}
+		
 	}
 }

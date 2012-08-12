@@ -37,7 +37,7 @@ public class WaitingPopUp extends PopUpLayout {
 		GameSprite.getGameReference().getEngine().getTextureManager()
 				.loadTexture(mTextFontTextureAtlas);
 
-		mWatingText = new Text(300, 200, mTextFont,
+		mWatingText = new Text(100, 200, mTextFont,
 				"Jogo criado, aguardando oponente.", GameSprite
 						.getGameReference().getVertexBufferObjectManager());
 
