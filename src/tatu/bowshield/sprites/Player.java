@@ -24,14 +24,14 @@ public class Player extends GameSprite{
 	}
 	private int mLife;
 	
-	public Player(final String filepath,float X, float Y) {
+	public Player(final String filepath,float X, float Y, GamePhysicalData physicalDta) {
 		super(filepath,X,Y);
 
 		mArc = new Arc(Game.PATH_ARC, X + 35, Y - 25);
 		mArrow = new Arrow(Game.PATH_ARROW, X + 60, Y + 63);
 		mRope = new Rope(Game.PATH_ROPE, X + 60, Y + 63);
 		mArc.pSprite.setVisible(false);
-		mGameData = new GamePhysicalData();
+		mGameData = physicalDta;
 		
 	}
 	
