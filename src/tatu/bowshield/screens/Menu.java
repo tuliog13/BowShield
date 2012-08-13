@@ -221,7 +221,7 @@ public class Menu extends Screen implements IOnButtonTouch,
 		PopUp.hidePopUp();
 		return super.onKeyDown(keyCode, event);
 	}
-
+ 
 	@Override
 	public void onButtonTouch(int buttonId) {
 
