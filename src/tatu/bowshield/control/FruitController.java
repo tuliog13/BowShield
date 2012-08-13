@@ -25,11 +25,11 @@ public class FruitController {
 			Random r = new Random();
 			if(GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE)
 			{
-				_fruits.add(new Fruit("gfx/apple.png",r.nextInt(260),r.nextInt(210)));
+				_fruits.add(new Fruit("gfx/apple.png",160,(i * 60)+ 180));
 			}
 			else
 			{
-				_fruits.add(new Fruit("gfx/apple.png",r.nextInt(260) + 500,r.nextInt(210)));
+				_fruits.add(new Fruit("gfx/apple.png",660,(i * 60)+ 180));
 			}
 		}
 	}

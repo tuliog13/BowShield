@@ -71,7 +71,7 @@ public class PlayersController {
 			get_PlayerTwo().setMyPosition(1500, 330);
 			get_PlayerTwo().flipHorizontal(2);
 		}else{
-			get_PlayerOne().setMyPosition(-800, 330);
+			get_PlayerOne().setMyPosition(-740, 330);
 			get_PlayerTwo().setMyPosition(700, 330);
 			
 			get_PlayerTwo().flipHorizontal(2);

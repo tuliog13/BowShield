@@ -18,6 +18,7 @@ import tatu.bowshield.component.PositionControler;
 import tatu.bowshield.control.Constants;
 import tatu.bowshield.control.FruitController;
 import tatu.bowshield.control.GamePhysicalData;
+import tatu.bowshield.control.OpponentView;
 import tatu.bowshield.control.PlayersController;
 import tatu.bowshield.control.ScreenManager;
 import tatu.bowshield.sprites.Arrow;
@@ -27,6 +28,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.graphics.PointF;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 
 public class Game extends Screen implements OnDirectionChanged,
 		OnMessageReceivedListener {
@@ -56,7 +58,7 @@ public class Game extends Screen implements OnDirectionChanged,
 
 	private GamePhysicalData myPlayerData;
 	private GamePhysicalData opponentPlayerData;
-	
+
 	public Game(int id) {
 
 		super(id);
@@ -75,14 +77,14 @@ public class Game extends Screen implements OnDirectionChanged,
 
 		myPlayerData = new GamePhysicalData();
 		opponentPlayerData = new GamePhysicalData();
-		
+
 		if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
 
 			mPlayerOne = new Player(PATH_PLAYER1, 60, 330, myPlayerData);
-			mPlayerTwo = new Player(PATH_PLAYER1, 1500, 330, opponentPlayerData); 
+			mPlayerTwo = new Player(PATH_PLAYER1, 1500, 330, opponentPlayerData);
 
 		} else {
-			mPlayerOne = new Player(PATH_PLAYER1, -800, 330, opponentPlayerData);
+			mPlayerOne = new Player(PATH_PLAYER1, -740, 330, opponentPlayerData);
 			mPlayerTwo = new Player(PATH_PLAYER1, 700, 330, myPlayerData);
 		}
 
@@ -116,6 +118,11 @@ public class Game extends Screen implements OnDirectionChanged,
 		FruitController.Initialize(5, PlayersController.getOpponentPlayer());
 		mPositionController = new PositionControler(PATH_CONTROLLER,
 				PATH_CONTROL, 400, 400);
+		if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
+			OpponentView.Initialize((int) 1, 2);
+		} else {
+			OpponentView.Initialize((int) (800 - OpponentView.WIDTH) - 5, 2);
+		}
 
 	}
 
@@ -134,35 +141,77 @@ public class Game extends Screen implements OnDirectionChanged,
 		if (PlayersController.getMyPlayer() != null) {
 			PlayersController.Update();
 			FruitController.Update();
+			OpponentView.Update(PlayersController.getMyPlayer().getmArrow()
+					.getSprite().getX(), PlayersController.getMyPlayer()
+					.getmArrow().getSprite().getY());
 		} else {
 			DebugLog.log("Player null update");
 		}
 
 	}
 
+	public float X = 0;
+	public float Y = 0;
+
 	@Override
 	public boolean onSceneTouchEvent(TouchEvent pSceneTouchEvent) {
 
-			
 		if (!mPositionController.update(pSceneTouchEvent)) {
 
-//			if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
-//				PlayersController.get_PlayerOne().getGameData()
-//						.calculateTouch(pSceneTouchEvent, this, true);
-//				PlayersController.get_PlayerTwo().getGameData()
-//						.calculateTouch(pSceneTouchEvent, this, false);
-//			} else {
-//				PlayersController.get_PlayerOne().getGameData()
-//						.calculateTouch(pSceneTouchEvent, this, false);
-//				PlayersController.get_PlayerTwo().getGameData()
-//						.calculateTouch(pSceneTouchEvent, this, true);
-//			}
-			myPlayerData
-			.calculateTouch(pSceneTouchEvent, this, true);
+			// if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
+			// PlayersController.get_PlayerOne().getGameData()
+			// .calculateTouch(pSceneTouchEvent, this, true);
+			// PlayersController.get_PlayerTwo().getGameData()
+			// .calculateTouch(pSceneTouchEvent, this, false);
+			// } else {
+			// PlayersController.get_PlayerOne().getGameData()
+			// .calculateTouch(pSceneTouchEvent, this, false);
+			// PlayersController.get_PlayerTwo().getGameData()
+			// .calculateTouch(pSceneTouchEvent, this, true);
+			// }
+			myPlayerData.calculateTouch(pSceneTouchEvent, this, true);
 		}
-		
+
 		if (pSceneTouchEvent.getX() > 780 && pSceneTouchEvent.getY() < 30) {
 			ScreenManager.showSimpleScreen(0);
+		}
+
+		int myEventAction = pSceneTouchEvent.getAction();
+
+		float currentX = pSceneTouchEvent.getX();
+		float currentY = pSceneTouchEvent.getY();
+
+		switch (myEventAction) {
+
+		case MotionEvent.ACTION_DOWN:
+
+			X = OpponentView.getPositionX() - pSceneTouchEvent.getX();
+			Y = OpponentView.getPositionY() - pSceneTouchEvent.getY();
+
+			break;
+
+		case MotionEvent.ACTION_MOVE:
+
+			if (currentX > OpponentView.getPositionX()
+					&& currentX < OpponentView.getPositionX()
+							+ OpponentView.WIDTH
+					&& currentY > OpponentView.getPositionY()
+					&& currentY < OpponentView.getPositionY()
+							+ OpponentView.HEIGTH) {
+
+				if ((X + currentX) >= 0
+						&& (X + currentX) <= 800 - OpponentView.WIDTH) {
+					OpponentView.MoveX(X + currentX);
+				}
+
+				if ((Y + currentY) >= 0
+						&& (Y + currentY) <= 480 - OpponentView.HEIGTH) {
+					OpponentView.MoveY(Y + currentY);
+				}
+
+			}
+
+			break;
 		}
 
 		return false;
@@ -189,7 +238,7 @@ public class Game extends Screen implements OnDirectionChanged,
 		mPositionController.Draw();
 
 		FruitController.Draw();
-
+		OpponentView.Draw();
 	}
 
 	@Override
@@ -204,6 +253,7 @@ public class Game extends Screen implements OnDirectionChanged,
 
 				PlayersController.Destroy();
 				FruitController.Destroy();
+				OpponentView.Destroy();
 			}
 
 		});
