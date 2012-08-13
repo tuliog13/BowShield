@@ -111,7 +111,13 @@ public class OpponentView {
 		_background.setPosition(positionX,positionY);
 		for(int i = 0; i < _fruits.size(); i++)
 		{
+			if(GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE)
+			{
 			_fruits.get(i).setPosition(getAlignedPositionX(660),getAlignedPositionY((i * 60)+ 180));
+			}else
+			{
+				_fruits.get(i).setPosition(getAlignedPositionX(160),getAlignedPositionY((i * 60)+ 180));
+			}
 		}
 		
 		rec1.setPosition(positionX, positionY);

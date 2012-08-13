@@ -97,7 +97,7 @@ public class GamePhysicalData implements EventListener {
 			} else {
 				ang = -mAngle;
 			}
-
+			
 			if (send) {
 				gameReference.sendMessage(BluetoothChatService.SHOT, ang + "@"
 						+ getProporcionalForce(mForce) + "@" + mDirecao + "#");
