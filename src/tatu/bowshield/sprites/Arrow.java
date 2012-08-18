@@ -37,20 +37,20 @@ public class Arrow extends GameSprite implements EventListener {
         else
             type = 2;
 
-        MY_WIDTH = GameSprite.getGameReference().getScreenWidth();
-        MY_HEIGHT = GameSprite.getGameReference().getScreenHeight();
-
-        if (MY_WIDTH == 800) {
-            OPP_WIDTH = 480;
-            OPP_HEIGHT = 320;
-        } else {
-            OPP_WIDTH = 800;
-            OPP_HEIGHT = 480;
-        }
-
-        if (MY_WIDTH <= OPP_WIDTH) {
-            percentX = (MY_WIDTH * 100) / OPP_WIDTH;
-        }
+//        MY_WIDTH = GameSprite.getGameReference().getScreenWidth();
+//        MY_HEIGHT = GameSprite.getGameReference().getScreenHeight();
+//
+//        if (MY_WIDTH == 800) {
+//            OPP_WIDTH = 480;
+//            OPP_HEIGHT = 320;
+//        } else {
+//            OPP_WIDTH = 800;
+//            OPP_HEIGHT = 480;
+//        }
+//
+//        if (MY_WIDTH <= OPP_WIDTH) {
+//            percentX = (MY_WIDTH * 100) / OPP_WIDTH;
+//        }
 
     }
 
@@ -59,12 +59,12 @@ public class Arrow extends GameSprite implements EventListener {
 
     public void Move(boolean canMove, float angulo, float força, int direcao) {
 
-        velocidadeX = 1;
-        velocidadeY = 0;
-
-        if (MY_WIDTH <= OPP_WIDTH) {
-            velocidadeX -= (velocidadeX * (100 - percentX)) / 100;
-        }
+//        velocidadeX = 1;
+//        velocidadeY = 0;
+//
+//        if (MY_WIDTH <= OPP_WIDTH) {
+//            velocidadeX -= (velocidadeX * (100 - percentX)) / 100;
+//        }
 
         if (canMove) {
 
