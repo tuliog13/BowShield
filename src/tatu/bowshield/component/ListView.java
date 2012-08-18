@@ -13,108 +13,101 @@ import tatu.bowshield.sprites.GameSprite;
 
 public class ListView implements IOnButtonTouch {
 
-	private String PATH_FONT = "gfx/Arial.TTF";
+    private String          PATH_FONT           = "gfx/Arial.TTF";
 
-	private String PATH_BUTTON = "gfx/buttonn.png";
-	private String PATH_BUTTON_PRESSED = "gfx/buttonp.png";
+    private String          PATH_BUTTON         = "gfx/buttons/info_normal.png";
+    private String          PATH_BUTTON_PRESSED = "gfx/buttons/info_pressed.png";
 
-	private ButtonManager manager;
-	private int mX, mY;
-	private Font mTextFont;
-	private int mCount;
+    private ButtonManager   manager;
+    private int             mX, mY;
+    private Font            mTextFont;
+    private int             mCount;
 
-	OnListItemClickListener itemListener;
+    OnListItemClickListener itemListener;
 
-	public ListView(int x, int y) {
+    public ListView(int x, int y) {
 
-		BitmapTextureAtlas mTextFontTextureAtlas = new BitmapTextureAtlas(
-				GameSprite.getGameReference().getTextureManager(), 512, 512,
-				TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-		mTextFont = FontFactory.create(GameSprite.getGameReference()
-				.getFontManager(), mTextFontTextureAtlas, 32);
+        BitmapTextureAtlas mTextFontTextureAtlas = new BitmapTextureAtlas(GameSprite.getGameReference()
+                .getTextureManager(), 512, 512, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        mTextFont = FontFactory.create(GameSprite.getGameReference().getFontManager(), mTextFontTextureAtlas, 32);
 
-		GameSprite.getGameReference().getEngine().getFontManager()
-				.loadFont(mTextFont);
+        GameSprite.getGameReference().getEngine().getFontManager().loadFont(mTextFont);
 
-		GameSprite.getGameReference().getEngine().getTextureManager()
-				.loadTexture(mTextFontTextureAtlas);
+        GameSprite.getGameReference().getEngine().getTextureManager().loadTexture(mTextFontTextureAtlas);
 
-		mCount = 0;
-		manager = new ButtonManager(this);
-		this.mX = x;
-		this.mY = y;
+        mCount = 0;
+        manager = new ButtonManager(this);
+        this.mX = x;
+        this.mY = y;
 
-	}
+    }
 
-	public void addItem(String text, Object container) {
+    public void addItem(String text, Object container) {
 
-		int y = (50 * mCount) + mY;
-		mCount++;
+        int y = (50 * mCount) + mY;
+        mCount++;
 
-		ListItem newItem = new ListItem(text, PATH_BUTTON, PATH_BUTTON_PRESSED,
-				mX, y, mCount - 1);
-		newItem.setContainer(container);
+        ListItem newItem = new ListItem(text, PATH_BUTTON, PATH_BUTTON_PRESSED, mX, y, mCount - 1);
+        newItem.setContainer(container);
 
-		try {
-			Text mText = new Text(mX, y, mTextFont, text, GameSprite
-					.getGameReference().getVertexBufferObjectManager());
-			newItem.setTextSprite(mText);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+        try {
+            Text mText = new Text(mX, y, mTextFont, text, GameSprite.getGameReference().getVertexBufferObjectManager());
+            newItem.setTextSprite(mText);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-		manager.addButton(newItem);
-	}
+        manager.addButton(newItem);
+    }
 
-	public void clear() {
-		detach();
-	}
+    public void clear() {
+        detach();
+    }
 
-	public void updateItems(TouchEvent event) {
+    public void updateItems(TouchEvent event) {
 
-		manager.updateButtons(event);
+        manager.updateButtons(event);
 
-	}
+    }
 
-	public void draw() {
+    public void draw() {
 
-		Scene scene = GameSprite.getGameReference().getScene();
-		manager.drawButtons();
+        Scene scene = GameSprite.getGameReference().getScene();
+        manager.drawButtons();
 
-		for (Button b : manager.getButtons()) {
-			ListItem item = (ListItem) b;
+        for (Button b : manager.getButtons()) {
+            ListItem item = (ListItem) b;
 
-			try {
-				scene.attachChild(item.getTextSprite());
-			} catch (Exception e) {
-			}
-		}
+            try {
+                scene.attachChild(item.getTextSprite());
+            } catch (Exception e) {
+            }
+        }
 
-	}
+    }
 
-	public void setOnListItemClickListener(OnListItemClickListener listener) {
-		itemListener = listener;
-	}
+    public void setOnListItemClickListener(OnListItemClickListener listener) {
+        itemListener = listener;
+    }
 
-	public void detach() {
+    public void detach() {
 
-		manager.detach();
-		Scene scene = GameSprite.getGameReference().getScene();
-		for (Button b : manager.getButtons()) {
-			ListItem item = (ListItem) b;
-			try {
-				scene.detachChild(item.getTextSprite());
-			} catch (Exception e) {
-			}
-		}
-		mCount = 0;
-		manager.buttons.clear();
-	}
+        manager.detach();
+        Scene scene = GameSprite.getGameReference().getScene();
+        for (Button b : manager.getButtons()) {
+            ListItem item = (ListItem) b;
+            try {
+                scene.detachChild(item.getTextSprite());
+            } catch (Exception e) {
+            }
+        }
+        mCount = 0;
+        manager.buttons.clear();
+    }
 
-	@Override
-	public void onButtonTouch(int buttonId) {
-		Object container = ((ListItem) manager.getButtons().get(buttonId))
-				.getContainer();
-		itemListener.onItemClick(buttonId, container);
-	}
+    @Override
+    public void onButtonTouch(int buttonId) {
+        Object container = ((ListItem) manager.getButtons().get(buttonId)).getContainer();
+        itemListener.onItemClick(buttonId, container);
+    }
 }

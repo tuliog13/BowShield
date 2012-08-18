@@ -4,42 +4,39 @@ import tatu.bowshield.activity.BowShieldGameActivity;
 import tatu.bowshield.control.GamePhysicalData;
 import android.view.MotionEvent;
 
-public class Arc extends GameSprite{
+public class Arc extends GameSprite {
 
-	public Arc(final String filepath,float X, float Y) {
-		super(filepath,X,Y);
-	}
+    public Arc(final String filepath, float X, float Y) {
+        super(filepath, X, Y);
+    }
 
-	public void Move(float angulo, float força,int direcao) {
-		if(direcao == 1)
-		{
-			this.pSprite.setRotation(angulo);
-		}
-		else
-		{
-			this.pSprite.setRotation(-angulo);
-		}
-		
-		this.pSprite.setRotationCenterX(pSprite.getWidth()/2);
-	}
+    public void Move(float angulo, float força, int direcao) {
+        if (direcao == 1) {
+            this.pSprite.setRotation(angulo);
+        } else {
+            this.pSprite.setRotation(-angulo);
+        }
 
-	public boolean onTouchEvent(MotionEvent event) {
+        this.pSprite.setRotationCenterX(pSprite.getWidth() / 2);
+    }
 
-		int myEventAction = event.getAction();
+    public boolean onTouchEvent(MotionEvent event) {
 
-		float X = event.getX();
+        int myEventAction = event.getAction();
 
-		switch (myEventAction) {
-		case MotionEvent.ACTION_DOWN:
-			break;
-		case MotionEvent.ACTION_MOVE:
-			pSprite.setRotation((float) (X * 0.5));
-			break;
-		case MotionEvent.ACTION_UP:
+        float X = event.getX();
 
-			break;
-		}
+        switch (myEventAction) {
+            case MotionEvent.ACTION_DOWN:
+                break;
+            case MotionEvent.ACTION_MOVE:
+                pSprite.setRotation((float) (X * 0.5));
+                break;
+            case MotionEvent.ACTION_UP:
 
-		return true;
-	}
+                break;
+        }
+
+        return true;
+    }
 }

@@ -12,8 +12,8 @@ import android.content.res.AssetManager;
 public class TextureLoader {
 
     private SimpleBaseGameActivity mReference;
-    private AssetManager mAssets;
-    
+    private AssetManager           mAssets;
+
     public TextureLoader(SimpleBaseGameActivity reference, AssetManager assets) {
         mReference = reference;
         mAssets = assets;

@@ -1,5 +1,5 @@
 package tatu.bowshield.component;
 
 public interface OnListItemClickListener {
-	public void onItemClick(int position, Object container);
+    public void onItemClick(int position, Object container);
 }

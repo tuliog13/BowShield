@@ -19,216 +19,222 @@ import android.view.KeyEvent;
 
 public class PopUp implements EventListener {
 
-	private static float alpha;
-	private static boolean isShowing;
-	private static PopUpLayout mPopupLayout;
-	private static Rectangle rec;
+    private static final String  PATH_POPUP_SCAND           = "gfx/telas/scan.png";
+    
+    private static float         alpha;
+    private static boolean       isShowing;
+    private static PopUpLayout   mPopupLayout;
+    private static Rectangle     rec;
 
-	private static Rectangle recCover;
-	protected static Sprite pSpriteCover;
+    private static Rectangle     recCover;
+    protected static Sprite      pSpriteCover;
 
-	private static OnPopupResult sListener;
+    private static OnPopupResult sListener;
 
-	private static boolean popupLoadDone;
-	public static boolean popupUnloadDone;
+    private static boolean       popupLoadDone;
+    public static boolean        popupUnloadDone;
 
-	private static TextureRegion mRegion;
-	private static Texture mTexture;
+    private static TextureRegion mRegion;
+    private static Texture       mTexture;
 
-	protected static Sprite pSprite;
+    protected static Sprite      pSprite;
 
-	private static int currentWidth;
-	private static int currentHeigth;
+    private static int           currentWidth;
+    private static int           currentHeigth;
 
-	private static int requiredWidth;
-	private static int requiredHeight;
+    private static int           requiredWidth;
+    private static int           requiredHeight;
 
-	private static int requiredX;
-	private static int requiredY;
+    private static int           requiredX;
+    private static int           requiredY;
 
-	private static int currentX;
-	private static int currentY;
+    private static int           currentX;
+    private static int           currentY;
 
-	public static void Inicialize() {
-		alpha = 251;
-		rec = new Rectangle(0, 0, 800, 480, GameSprite.getGameReference()
-				.getVertexBufferObjectManager());
-		rec.setColor(0f, 0f, 0f);
+    public static void Inicialize() {
+        alpha = 251;
+        rec = new Rectangle(0, 0, 800, 480, GameSprite.getGameReference().getVertexBufferObjectManager());
+        rec.setColor(0f, 0f, 0f);
 
-		recCover = new Rectangle(0, 0, 800, 480, GameSprite.getGameReference()
-				.getVertexBufferObjectManager());
-		recCover.setColor(0f, 0f, 0f);
+        recCover = new Rectangle(0, 0, 800, 480, GameSprite.getGameReference().getVertexBufferObjectManager());
+        recCover.setColor(0f, 0f, 0f);
 
-		GameSprite.getGameReference().getScene().attachChild(rec);
-		rec.setVisible(false);
+        GameSprite.getGameReference().getScene().attachChild(rec);
+        rec.setVisible(false);
 
-		TextureLoader loader = GameSprite.getGameReference().getTextureLoader();
+        TextureLoader loader = GameSprite.getGameReference().getTextureLoader();
 
-		mTexture = loader.load("gfx/popupbg.png");
-		mTexture.load();
+        mTexture = loader.load(PATH_POPUP_SCAND);
+        mTexture.load();
 
-		mRegion = TextureRegionFactory.extractFromTexture(mTexture);
+        mRegion = TextureRegionFactory.extractFromTexture(mTexture);
 
-		pSprite = new Sprite(0, 0, mRegion, GameSprite.getGameReference()
-				.getVertexBufferObjectManager());
-		GameSprite.getGameReference().getTextureManager().loadTexture(mTexture);
+        pSprite = new Sprite(0, 0, mRegion, GameSprite.getGameReference().getVertexBufferObjectManager());
+        GameSprite.getGameReference().getTextureManager().loadTexture(mTexture);
 
-		pSpriteCover = new Sprite(0, 0, mRegion, GameSprite.getGameReference()
-				.getVertexBufferObjectManager());
-		GameSprite.getGameReference().getTextureManager().loadTexture(mTexture);
+        pSpriteCover = new Sprite(0, 0, mRegion, GameSprite.getGameReference().getVertexBufferObjectManager());
+        GameSprite.getGameReference().getTextureManager().loadTexture(mTexture);
 
-		GameSprite.getGameReference().getScene().attachChild(pSprite);
-		pSprite.setVisible(false);
-		pSprite.setWidth(0);
-		pSprite.setHeight(0);
+        GameSprite.getGameReference().getScene().attachChild(pSprite);
+        pSprite.setVisible(false);
+        pSprite.setWidth(0);
+        pSprite.setHeight(0);
 
-		popupLoadDone = false;
-		popupUnloadDone = true;
-	}
+        popupLoadDone = false;
+        popupUnloadDone = true;
+    }
 
-	public static void setListener(OnPopupResult listener) {
-		sListener = listener;
-	}
+    public static void setListener(OnPopupResult listener) {
+        sListener = listener;
+    }
 
-	public static boolean isShowing() {
-		return isShowing;
-	}
+    public static boolean isShowing() {
+        return isShowing;
+    }
 
-	public static void TouchEvent(TouchEvent event) {
-		if (popupLoadDone) {
-			mPopupLayout.TouchEvent(event);
-		}
-	}
+    public static void TouchEvent(TouchEvent event) {
+        if (popupLoadDone) {
+            mPopupLayout.TouchEvent(event);
+        }
+    }
 
-	public static void sendResult(int result) {
-		sListener.onResultReceived(result);
-	}
+    public static void sendResult(int result) {
+        sListener.onResultReceived(result);
+    }
 
-	public static void showPopUp(PopUpLayout popupLayout) {
+    public static void setBackground(String path){
+        TextureLoader loader = GameSprite.getGameReference().getTextureLoader();
 
-		mPopupLayout = popupLayout;
+        mTexture = loader.load(path);
+        mTexture.load();
+        
+    }
+    
+    public static void showPopUp(PopUpLayout popupLayout) {
 
-		isShowing = true;
-		rec.setVisible(true);
+        mPopupLayout = popupLayout;
 
-		currentHeigth = 0;
-		currentWidth = 0;
-		currentX = 400;
-		currentY = 240;
+        isShowing = true;
+        rec.setVisible(true);
 
-		requiredX = (800 - popupLayout.WIDTH) / 2;
-		requiredY = (480 - popupLayout.HEIGHT) / 2;
+        currentHeigth = 0;
+        currentWidth = 0;
+        currentX = 400;
+        currentY = 240;
 
-		pSprite.setPosition(currentX, currentY);
+        requiredX = (800 - popupLayout.WIDTH) / 2;
+        requiredY = (480 - popupLayout.HEIGHT) / 2;
 
-		requiredWidth = popupLayout.WIDTH;
-		requiredHeight = popupLayout.HEIGHT;
+        pSprite.setPosition(currentX, currentY);
 
-		pSprite.setVisible(true);
+        requiredWidth = popupLayout.WIDTH;
+        requiredHeight = popupLayout.HEIGHT;
 
-	}
+        pSprite.setVisible(true);
 
-	public static void hidePopUp() {
-		isShowing = false;
-		mPopupLayout.Destroy();
-		popupLoadDone = false;
-		popupUnloadDone = false;
-	}
+    }
 
-	public static void forceClose() {
-		isShowing = false;
-		mPopupLayout.Destroy();
-		popupLoadDone = false;
-		popupUnloadDone = false;
-		pSprite.setVisible(false);
-		rec.setVisible(false);
-		popupUnloadDone = true;
-		recCover.detachSelf();
-		pSpriteCover.detachSelf();
-	}
+    public static void hidePopUp() {
+        isShowing = false;
+        mPopupLayout.Destroy();
+        popupLoadDone = false;
+        popupUnloadDone = false;
+    }
 
-	public static void UpdatePopUp() {
-		if (isShowing) {
-			mPopupLayout.Update();
+    public static void forceClose() {
+        isShowing = false;
+        mPopupLayout.Destroy();
+        popupLoadDone = false;
+        popupUnloadDone = false;
+        pSprite.setVisible(false);
+        rec.setVisible(false);
+        popupUnloadDone = true;
+        recCover.detachSelf();
+        pSpriteCover.detachSelf();
+    }
 
-			rec.setAlpha(alpha);
-			if (alpha > 130) {
-				alpha -= 5;
-			} else // Popup completamente carregado ..
-			{
-				mPopupLayout.onDraw();
-				popupLoadDone = true;
-			}
+    public static void UpdatePopUp() {
+        if (isShowing) {
+            mPopupLayout.Update();
 
-			if (pSprite.getWidth() < requiredWidth) {
-				pSprite.setWidth(currentWidth);
-				currentWidth += 20;
-			}
-			if (pSprite.getHeight() < requiredHeight) {
-				pSprite.setHeight(currentHeigth);
-				currentHeigth += 20;
-			}
+            rec.setAlpha(alpha);
+            if (alpha > 130) {
+                alpha -= 5;
+            } else // Popup completamente carregado ..
+            {
+                mPopupLayout.onDraw();
+                popupLoadDone = true;
+            }
 
-			if (pSprite.getX() > requiredX) {
-				pSprite.setX(currentX);
-				currentX -= 10;
-			}
-			if (pSprite.getY() > requiredY) {
-				pSprite.setY(currentY);
-				currentY -= 10;
-			}
-		} else {
-			rec.setAlpha(alpha);
-			if (alpha < 251) {
-				alpha += 5;
-			} else {
-				pSprite.setVisible(false);
-				popupUnloadDone = true;
-				recCover.detachSelf();
-				pSpriteCover.detachSelf();
-			}
+            if (pSprite.getWidth() < requiredWidth) {
+                pSprite.setWidth(currentWidth);
+                currentWidth += 20;
+            }
+            if (pSprite.getHeight() < requiredHeight) {
+                pSprite.setHeight(currentHeigth);
+                currentHeigth += 20;
+            }
 
-			if (pSprite.getWidth() > 0) {
-				pSprite.setWidth(currentWidth);
-				currentWidth -= 20;
-			}
+            if (pSprite.getX() > requiredX) {
+                pSprite.setX(currentX);
+                currentX -= 10;
+            }
+            if (pSprite.getY() > requiredY) {
+                pSprite.setY(currentY);
+                currentY -= 10;
+            }
+        } else {
+            rec.setAlpha(alpha);
+            if (alpha < 251) {
+                alpha += 5;
+            } else {
+                pSprite.setVisible(false);
+                popupUnloadDone = true;
+                recCover.detachSelf();
+                pSpriteCover.detachSelf();
+            }
 
-			if (pSprite.getHeight() > 0) {
-				pSprite.setHeight(currentHeigth);
-				currentHeigth -= 20;
-			}
+            if (pSprite.getWidth() > 0) {
+                pSprite.setWidth(currentWidth);
+                currentWidth -= 20;
+            }
 
-			if (pSprite.getX() < 400) {
-				pSprite.setX(currentX);
-				currentX += 10;
-			}
-			if (pSprite.getY() < 240) {
-				pSprite.setY(currentY);
-				currentY += 10;
-			}
+            if (pSprite.getHeight() > 0) {
+                pSprite.setHeight(currentHeigth);
+                currentHeigth -= 20;
+            }
 
-		}
-		recCover.setVisible(rec.isVisible());
-		recCover.setAlpha(rec.getAlpha());
+            if (pSprite.getX() < 400) {
+                pSprite.setX(currentX);
+                currentX += 10;
+            }
+            if (pSprite.getY() < 240) {
+                pSprite.setY(currentY);
+                currentY += 10;
+            }
 
-		pSpriteCover.setVisible(pSprite.isVisible());
-		pSpriteCover.setX(pSprite.getX());
-		pSpriteCover.setY(pSprite.getY());
-		pSpriteCover.setWidth(pSprite.getWidth());
-		pSpriteCover.setHeight(pSprite.getHeight());
-	}
+        }
+        recCover.setVisible(rec.isVisible());
+        recCover.setAlpha(rec.getAlpha());
 
-	public static void bringToFront() {
-		// TODO Auto-generated method stub
+        pSpriteCover.setVisible(pSprite.isVisible());
+        pSpriteCover.setX(pSprite.getX());
+        pSpriteCover.setY(pSprite.getY());
+        pSpriteCover.setWidth(pSprite.getWidth());
+        pSpriteCover.setHeight(pSprite.getHeight());
+    }
 
-		GameSprite.getGameReference().getScene().attachChild(recCover);
-		GameSprite.getGameReference().getScene().attachChild(pSpriteCover);
+    public static void bringToFront() {
+        // TODO Auto-generated method stub
 
-	}
+        GameSprite.getGameReference().getScene().attachChild(recCover);
+        GameSprite.getGameReference().getScene().attachChild(pSpriteCover);
 
-	public static void onKeyDown(int keyCode, KeyEvent event) {
-		// TODO Auto-generated method stub
-		mPopupLayout.onKeyDown(keyCode, event);
-	}
+    }
+
+    public static void onKeyDown(int keyCode, KeyEvent event) {
+        // TODO Auto-generated method stub
+        mPopupLayout.onKeyDown(keyCode, event);
+    }
 
 }

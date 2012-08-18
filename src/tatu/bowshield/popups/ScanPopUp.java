@@ -1,13 +1,11 @@
 package tatu.bowshield.popups;
 
-import org.andengine.entity.scene.Scene;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 
-import tatu.bowshield.component.Button;
 import tatu.bowshield.component.ListView;
 import tatu.bowshield.component.PopUp;
 import tatu.bowshield.component.PopUpLayout;
@@ -18,77 +16,70 @@ import android.view.KeyEvent;
 
 public class ScanPopUp extends PopUpLayout {
 
-	ListView mDeviceList;
-	private Text mErrorMessage;
-	private Font mTextFont;
-	private Menu mMenu;
-	
-	Button okButton;
-	
-	public static final int OK_BUTTON = 5;
+    ListView                mDeviceList;
+    private Text            mErrorMessage;
+    private Font            mTextFont;
+    private Menu            mMenu;
 
-	public ScanPopUp(Menu menuScreen) {
+    // Button okButton;
 
-		WIDTH = 700;
-		HEIGHT = 380;
+    public static final int OK_BUTTON = 5;
 
-		mDeviceList = new ListView(300, 100);
-		mDeviceList.setOnListItemClickListener(menuScreen);
+    public ScanPopUp(Menu menuScreen) {
 
-		BitmapTextureAtlas mTextFontTextureAtlas = new BitmapTextureAtlas(
-				GameSprite.getGameReference().getTextureManager(), 512, 512,
-				TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-		mTextFont = FontFactory.create(GameSprite.getGameReference()
-				.getFontManager(), mTextFontTextureAtlas, 32);
+        WIDTH = 700;
+        HEIGHT = 380;
 
-		GameSprite.getGameReference().getEngine().getFontManager()
-				.loadFont(mTextFont);
+        mDeviceList = new ListView(300, 100);
+        mDeviceList.setOnListItemClickListener(menuScreen);
 
-		GameSprite.getGameReference().getEngine().getTextureManager()
-				.loadTexture(mTextFontTextureAtlas);
+        BitmapTextureAtlas mTextFontTextureAtlas = new BitmapTextureAtlas(GameSprite.getGameReference()
+                .getTextureManager(), 512, 512, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        mTextFont = FontFactory.create(GameSprite.getGameReference().getFontManager(), mTextFontTextureAtlas, 32);
 
-		mErrorMessage = new Text(300, 200, mTextFont,
-				"Um erro ocorreu!", GameSprite
-						.getGameReference().getVertexBufferObjectManager());
-		
-		mMenu = menuScreen;
-		
-		okButton = new Button(menuScreen.PATH_BUTTON, menuScreen.PATH_BUTTON_ABOUT, 250, 380,
-				OK_BUTTON);
-		
-		mMenu.bManager.addButton(okButton);
-		
-	}
+        GameSprite.getGameReference().getEngine().getFontManager().loadFont(mTextFont);
 
-	@Override
-	public void onDraw() {
-		mDeviceList.draw();
-	}
+        GameSprite.getGameReference().getEngine().getTextureManager().loadTexture(mTextFontTextureAtlas);
 
-	@Override
-	public void Update() {
-		
-	}
+        mErrorMessage = new Text(300, 200, mTextFont, "Um erro ocorreu!", GameSprite.getGameReference()
+                .getVertexBufferObjectManager());
 
-	@Override
-	public void TouchEvent(org.andengine.input.touch.TouchEvent event) {
-		mDeviceList.updateItems(event);
-	}
+        mMenu = menuScreen;
 
-	@Override
-	public void Destroy() {
-		mDeviceList.clear();
-		mMenu.bManager.removeButton(okButton);
-	}
+        // okButton = new Button(menuScreen.PATH_BUTTON_CREATE, menuScreen.PATH_BUTTON_ABOUT, 250, 380, OK_BUTTON);
+        // mMenu.mButtonManager.addButton(okButton);
 
-	public void addBluetooth(BluetoothDevice device) {
-		mDeviceList.addItem(device.getName(), device.getAddress());
-	}
+    }
 
-	@Override
-	public void onKeyDown(int keyCode, KeyEvent event) {
-		// TODO Auto-generated method stub
-		PopUp.hidePopUp();
-	}
-	
+    @Override
+    public void onDraw() {
+        mDeviceList.draw();
+    }
+
+    @Override
+    public void Update() {
+
+    }
+
+    @Override
+    public void TouchEvent(org.andengine.input.touch.TouchEvent event) {
+        mDeviceList.updateItems(event);
+    }
+
+    @Override
+    public void Destroy() {
+        mDeviceList.clear();
+//        mMenu.mButtonManager.removeButton(okButton);
+    }
+
+    public void addBluetooth(BluetoothDevice device) {
+        mDeviceList.addItem(device.getName(), device.getAddress());
+    }
+
+    @Override
+    public void onKeyDown(int keyCode, KeyEvent event) {
+        // TODO Auto-generated method stub
+        PopUp.hidePopUp();
+    }
+
 }

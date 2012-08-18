@@ -7,39 +7,36 @@ import tatu.bowshield.sprites.GameSprite;
 
 public class ListItem extends Button {
 
-	private String mText;
-	private Object mContainer;
-	private Text mTextSprite;
+    private String mText;
+    private Object mContainer;
+    private Text   mTextSprite;
 
-	public ListItem(String text, String path1, String path2, float x, float y, int position){
-		super(path1, path2, x, y, position);
-	}
+    public ListItem(String text, String path1, String path2, float x, float y, int position) {
+        super(path1, path2, x, y, position);
+    }
 
-	
-	public String getText() {
-		return mText;
-	}
+    public String getText() {
+        return mText;
+    }
 
-	public void setText(String text) {
-		this.mText = text;
-	}
+    public void setText(String text) {
+        this.mText = text;
+    }
 
-	public Object getContainer() {
-		return mContainer;
-	}
+    public Object getContainer() {
+        return mContainer;
+    }
 
-	public void setContainer(Object container) {
-		this.mContainer = container;
-	}
+    public void setContainer(Object container) {
+        this.mContainer = container;
+    }
 
-	public Text getTextSprite() {
-		return mTextSprite;
-	}
+    public Text getTextSprite() {
+        return mTextSprite;
+    }
 
-	public void setTextSprite(Text textSprite) {
-		this.mTextSprite = textSprite;
-	}
-	
-	
+    public void setTextSprite(Text textSprite) {
+        this.mTextSprite = textSprite;
+    }
 
 }

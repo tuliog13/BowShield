@@ -15,113 +15,109 @@ import android.view.MotionEvent;
 
 public class GameSprite {
 
-	// variáveis criadas
-	private TextureRegion mRegion;
-	private Texture mTexture;
+    // variáveis criadas
+    private TextureRegion                mRegion;
+    private Texture                      mTexture;
 
-	protected float X;
-	protected float Y;
+    protected float                      X;
+    protected float                      Y;
 
-	protected Sprite pSprite;
+    protected Sprite                     pSprite;
 
-	private static BowShieldGameActivity mReference;
+    private static BowShieldGameActivity mReference;
 
-	public static BowShieldGameActivity getGameReference() {
-		return mReference;
-	}
+    public static BowShieldGameActivity getGameReference() {
+        return mReference;
+    }
 
-	public static void setGameReference(BowShieldGameActivity mReference) {
-		GameSprite.mReference = mReference;
-	}
+    public static void setGameReference(BowShieldGameActivity mReference) {
+        GameSprite.mReference = mReference;
+    }
 
-	public GameSprite(final String filepath, float X, float Y) {
+    public GameSprite(final String filepath, float X, float Y) {
 
-		this.X = X;
-		this.Y = Y;
+        this.X = X;
+        this.Y = Y;
 
-		TextureLoader loader = mReference.getTextureLoader();
+        TextureLoader loader = mReference.getTextureLoader();
 
-		mTexture = loader.load(filepath);
-		mTexture.load();
+        mTexture = loader.load(filepath);
+        mTexture.load();
 
-		mRegion = TextureRegionFactory.extractFromTexture(mTexture);
+        mRegion = TextureRegionFactory.extractFromTexture(mTexture);
 
-		pSprite = new Sprite(X, Y, mRegion,
-				mReference.getVertexBufferObjectManager());
-		mReference.getTextureManager().loadTexture(mTexture);
-	}
+        pSprite = new Sprite(X, Y, mRegion, mReference.getVertexBufferObjectManager());
+        mReference.getTextureManager().loadTexture(mTexture);
+    }
 
-	public void Update() {
+    public void Update() {
 
-	}
+    }
 
-	public void Draw(float percw, float perch) {
-		pSprite.setPosition(X, Y);
-		mReference.getScene().attachChild(pSprite);
-	}
-	
-	public void setPosition(float x, float y)
-	{
-		this.X = x;
-		this.Y = y;
-		pSprite.setPosition(x, y);
-	}
-	
-	public void Draw() {
-		
-		pSprite.setPosition(X, Y);
-		Scene scene = mReference.getScene();
+    public void Draw(float percw, float perch) {
+        pSprite.setPosition(X, Y);
+        mReference.getScene().attachChild(pSprite);
+    }
 
-		try {
-			scene.attachChild(pSprite);
-		} catch (Exception e) {
-		}
-		
-	}
+    public void setPosition(float x, float y) {
+        this.X = x;
+        this.Y = y;
+        pSprite.setPosition(x, y);
+    }
 
-	public void flipHorizontal(int direction)
-	{
-		if(direction == 2)
-		pSprite.setFlippedHorizontal(true);
-		else
-		{
-			pSprite.setFlippedHorizontal(false);
-		}
-	}
-	
-	public boolean onTouchEvent(TouchEvent pSceneTouchEvent) {
+    public void Draw() {
 
-		int myEventAction = pSceneTouchEvent.getAction();
+        pSprite.setPosition(X, Y);
+        Scene scene = mReference.getScene();
 
-		switch (myEventAction) {
-		case MotionEvent.ACTION_DOWN:
-			break;
-		case MotionEvent.ACTION_MOVE:
-			break;
-		case MotionEvent.ACTION_UP:
-			break;
-		}
+        try {
+            scene.attachChild(pSprite);
+        } catch (Exception e) {
+        }
 
-		return true;
-	}
+    }
 
-	public float getX() {
-		return this.X;
-	}
+    public void flipHorizontal(int direction) {
+        if (direction == 2)
+            pSprite.setFlippedHorizontal(true);
+        else {
+            pSprite.setFlippedHorizontal(false);
+        }
+    }
 
-	public float getY() {
-		return this.Y;
-	}
+    public boolean onTouchEvent(TouchEvent pSceneTouchEvent) {
 
-	public int getWidth() {
-		return mTexture.getWidth();
-	}
+        int myEventAction = pSceneTouchEvent.getAction();
 
-	public int getHeight() {
-		return mTexture.getHeight();
-	}
+        switch (myEventAction) {
+            case MotionEvent.ACTION_DOWN:
+                break;
+            case MotionEvent.ACTION_MOVE:
+                break;
+            case MotionEvent.ACTION_UP:
+                break;
+        }
 
-	public Sprite getSprite() {
-		return this.pSprite;
-	}
+        return true;
+    }
+
+    public float getX() {
+        return this.X;
+    }
+
+    public float getY() {
+        return this.Y;
+    }
+
+    public int getWidth() {
+        return mTexture.getWidth();
+    }
+
+    public int getHeight() {
+        return mTexture.getHeight();
+    }
+
+    public Sprite getSprite() {
+        return this.pSprite;
+    }
 }

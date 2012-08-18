@@ -1,5 +1,5 @@
 package tatu.bowshield.control;
 
 public interface OnPopupResult {
-	public void onResultReceived(int result);
+    public void onResultReceived(int result);
 }
