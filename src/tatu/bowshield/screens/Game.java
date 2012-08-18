@@ -2,8 +2,13 @@ package tatu.bowshield.screens;
 
 import org.andengine.entity.scene.background.SpriteBackground;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
+import org.andengine.opengl.font.Font;
+import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.Texture;
+import org.andengine.opengl.texture.TextureOptions;
+import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.TextureRegionFactory;
 
@@ -59,6 +64,9 @@ public class Game extends Screen implements OnDirectionChanged,
 	private GamePhysicalData myPlayerData;
 	private GamePhysicalData opponentPlayerData;
 
+	private Text mPointText;
+	private Font mTextFont;
+	
 	public Game(int id) {
 
 		super(id);
@@ -123,6 +131,27 @@ public class Game extends Screen implements OnDirectionChanged,
 		} else {
 			OpponentView.Initialize((int) (800 - OpponentView.WIDTH) - 5, 2);
 		}
+		
+		
+		//font
+		
+		BitmapTextureAtlas mTextFontTextureAtlas = new BitmapTextureAtlas(
+				GameSprite.getGameReference().getTextureManager(), 512, 512,
+				TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+		mTextFont = FontFactory.create(GameSprite.getGameReference()
+				.getFontManager(), mTextFontTextureAtlas, 32);
+
+		GameSprite.getGameReference().getEngine().getFontManager()
+				.loadFont(mTextFont);
+
+		GameSprite.getGameReference().getEngine().getTextureManager()
+				.loadTexture(mTextFontTextureAtlas);
+
+		mPointText = new Text(200, 0, mTextFont,
+				"Indio Mira " + PlayersController.getMyPlayer().getmCount() + " - " + PlayersController.getMyPlayer().getmCount() +" Indio Opponent", GameSprite
+						.getGameReference().getVertexBufferObjectManager());
+		
+		
 
 	}
 
@@ -141,13 +170,11 @@ public class Game extends Screen implements OnDirectionChanged,
 		if (PlayersController.getMyPlayer() != null) {
 			PlayersController.Update();
 			FruitController.Update();
-			OpponentView.Update(PlayersController.getMyPlayer().getmArrow()
-					.getSprite().getX(), PlayersController.getMyPlayer()
-					.getmArrow().getSprite().getY());
+			OpponentView.Update();
 		} else {
 			DebugLog.log("Player null update");
 		}
-
+		mPointText.setText("Indio Mira " + PlayersController.getMyPlayer().getmCount() + " - " + PlayersController.getOpponentPlayer().getmCount() +" Indio Opponent");                       
 	}
 
 	public float X = 0;
@@ -201,12 +228,12 @@ public class Game extends Screen implements OnDirectionChanged,
 
 				if ((X + currentX) >= 0
 						&& (X + currentX) <= 800 - OpponentView.WIDTH) {
-					OpponentView.MoveX(X + currentX);
+					//OpponentView.MoveX(X + currentX);
 				}
 
 				if ((Y + currentY) >= 0
 						&& (Y + currentY) <= 480 - OpponentView.HEIGTH) {
-					OpponentView.MoveY(Y + currentY);
+					//OpponentView.MoveY(Y + currentY);
 				}
 
 			}
@@ -231,6 +258,7 @@ public class Game extends Screen implements OnDirectionChanged,
 		// PlayersController.Draw();
 		if (PlayersController.getMyPlayer() != null) {
 			PlayersController.Draw();
+			getScene().attachChild(mPointText);		
 		} else {
 			DebugLog.log("Player null draw");
 		}
@@ -254,6 +282,7 @@ public class Game extends Screen implements OnDirectionChanged,
 				PlayersController.Destroy();
 				FruitController.Destroy();
 				OpponentView.Destroy();
+				mPointText.detachSelf();
 			}
 
 		});

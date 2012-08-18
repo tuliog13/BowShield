@@ -127,6 +127,14 @@ public class GamePhysicalData implements EventListener {
 		return true;
 	}
 
+	public boolean issShoted() {
+		return sShoted;
+	}
+
+	public void setsShoted(boolean newShoted) {
+		sShoted = newShoted;
+	}
+
 	public float getProporcionalForce(float force) {
 
 		DisplayMetrics metrics = new DisplayMetrics();

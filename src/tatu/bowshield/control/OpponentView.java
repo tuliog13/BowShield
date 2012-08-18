@@ -15,6 +15,7 @@ public class OpponentView {
 	public static GameSprite _background;
 	public static GameSprite _opponent;
 	public static GameSprite _arrow;
+	public static GameSprite _arrowEnemy;
 	
 	private static List<Fruit> _fruits;
 	
@@ -45,17 +46,22 @@ public class OpponentView {
 		_arrow.getSprite().setWidth(getAlignedWidth(PlayersController.getOpponentPlayer().getmArrow().getSprite().getWidth()));
 		_arrow.getSprite().setHeight(getAlignedWidth(PlayersController.getOpponentPlayer().getmArrow().getSprite().getHeight()));
 		
+		_arrowEnemy = new GameSprite(_gameReference.PATH_ARROW, getAlignedPositionX(-300), getAlignedPositionY(400));
+		_arrowEnemy.getSprite().setWidth(getAlignedWidth(PlayersController.getOpponentPlayer().getmArrow().getSprite().getWidth()));
+		_arrowEnemy.getSprite().setHeight(getAlignedWidth(PlayersController.getOpponentPlayer().getmArrow().getSprite().getHeight()));
+		
+		
 		_fruits = new ArrayList<Fruit>();
 		
 		for(int i = 0; i < 5 ; i++)
 		{
 			if(GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE)
 			{
-				_fruits.add(new Fruit("gfx/apple.png",getAlignedPositionX(660),getAlignedPositionY((i * 60)+ 180)));
+				_fruits.add(new Fruit("gfx/apple.png",getAlignedPositionX(660),getAlignedPositionY((i * 65)+ 165)));
 			}
 			else
 			{
-				_fruits.add(new Fruit("gfx/apple.png",getAlignedPositionX(160),getAlignedPositionY((i * 60)+ 180)));
+				_fruits.add(new Fruit("gfx/apple.png",getAlignedPositionX(160),getAlignedPositionY((i * 65)+ 165)));
 			}
 		}
 		
@@ -68,33 +74,66 @@ public class OpponentView {
 		
 	}
 	
-	public static void Update(float x, float y)
+	public static void Update()
 	{
+		float myX = PlayersController.getMyPlayer().getmArrow()
+				.getSprite().getX();
+		float myY = PlayersController.getMyPlayer()
+				.getmArrow().getSprite().getY();
+		
+		float opponentX = PlayersController.getOpponentPlayer().getmArrow()
+				.getSprite().getX();
+		float opponentY = PlayersController.getOpponentPlayer()
+				.getmArrow().getSprite().getY();
+		
 		if(GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE){
-			_arrow.setPosition(getAlignedPositionX((int) x - 800), getAlignedPositionY((int) y));
+			
+			_arrow.setPosition(getAlignedPositionX((int) myX - 800), getAlignedPositionY((int) myY));
+			_arrowEnemy.setPosition(getAlignedPositionX((int) opponentX - 800), getAlignedPositionY((int) opponentY));
+			
 			_opponent.setPosition(getAlignedPositionX((int) (PlayersController.getOpponentPlayer().getSprite().getX() - 800)),getAlignedPositionY( 330));
 			
-			if(getAlignedPositionX(x - 800) < positionX || getAlignedPositionX(x - 800) > positionX + WIDTH  || getAlignedPositionY(y) > positionY + HEIGTH || getAlignedPositionY(y) < positionY)
+			if(getAlignedPositionX(myX - 800) < positionX || getAlignedPositionX(myX - 800) > positionX + WIDTH  || getAlignedPositionY(myY) > positionY + HEIGTH || getAlignedPositionY(myY) < positionY)
 			{
 				_arrow.getSprite().setVisible(false);
 			}
 			else
 			{
 				_arrow.getSprite().setVisible(true);
+			}
+			
+			if(getAlignedPositionX(opponentX - 800) < positionX || getAlignedPositionX(opponentX - 800) > positionX + WIDTH  || getAlignedPositionY(opponentY) > positionY + HEIGTH || getAlignedPositionY(opponentY) < positionY)
+			{
+				_arrowEnemy.getSprite().setVisible(false);
+			}
+			else
+			{
+				_arrowEnemy.getSprite().setVisible(true);
 			}
 		}
 		else
 		{
-			_arrow.setPosition(getAlignedPositionX((int) x + 800), getAlignedPositionY((int) y));
+			_arrow.setPosition(getAlignedPositionX((int) myX + 800), getAlignedPositionY((int) myY));
+			_arrowEnemy.setPosition(getAlignedPositionX((int) opponentX + 800), getAlignedPositionY((int) opponentY));
+			
 			_opponent.setPosition(getAlignedPositionX((int) (PlayersController.getOpponentPlayer().getSprite().getX() + 800)),getAlignedPositionY( 330));
 			
-			if(getAlignedPositionX(x + 800) < positionX || getAlignedPositionX(x + 800) > positionX + WIDTH  || getAlignedPositionY(y) > positionY + HEIGTH || getAlignedPositionY(y) < positionY)
+			if(getAlignedPositionX(myX + 800) < positionX || getAlignedPositionX(myX + 800) > positionX + WIDTH  || getAlignedPositionY(myY) > positionY + HEIGTH || getAlignedPositionY(myY) < positionY)
 			{
 				_arrow.getSprite().setVisible(false);
 			}
 			else
 			{
 				_arrow.getSprite().setVisible(true);
+			}
+			
+			if(getAlignedPositionX(opponentX + 800) < positionX || getAlignedPositionX(opponentX + 800) > positionX + WIDTH  || getAlignedPositionY(opponentY) > positionY + HEIGTH || getAlignedPositionY(opponentY) < positionY)
+			{
+				_arrowEnemy.getSprite().setVisible(false);
+			}
+			else
+			{
+				_arrowEnemy.getSprite().setVisible(true);
 			}
 		}
 		
@@ -104,7 +143,10 @@ public class OpponentView {
 			{
 				if(_arrow.getSprite().collidesWith(_fruits.get(i).getSprite()))
 				{
-					_fruits.get(i).getSprite().detachSelf();
+					PlayersController.getMyPlayer().setmCount(1);
+					_fruits.get(i).getSprite().detachSelf();            
+					_fruits.remove(i);
+					PlayersController.getMyPlayer().getGameData().setsShoted(false);
 				}
 			}
 		}
@@ -113,10 +155,10 @@ public class OpponentView {
 		{
 			if(GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE)
 			{
-			_fruits.get(i).setPosition(getAlignedPositionX(660),getAlignedPositionY((i * 60)+ 180));
+			//_fruits.get(i).setPosition(getAlignedPositionX(660),getAlignedPositionY((i * 60)+ 180));
 			}else
 			{
-				_fruits.get(i).setPosition(getAlignedPositionX(160),getAlignedPositionY((i * 60)+ 180));
+			//	_fruits.get(i).setPosition(getAlignedPositionX(160),getAlignedPositionY((i * 60)+ 180));
 			}
 		}
 		
@@ -163,6 +205,7 @@ public class OpponentView {
 		GameSprite.getGameReference().getScene().attachChild(_background.getSprite());
 		GameSprite.getGameReference().getScene().attachChild(_opponent.getSprite());
 		GameSprite.getGameReference().getScene().attachChild(_arrow.getSprite());
+		GameSprite.getGameReference().getScene().attachChild(_arrowEnemy.getSprite());
 		
 		for(Fruit fruit : _fruits)
 		{
@@ -180,6 +223,7 @@ public class OpponentView {
 		GameSprite.getGameReference().getScene().detachChild(_background.getSprite());
 		GameSprite.getGameReference().getScene().detachChild(_opponent.getSprite());
 		GameSprite.getGameReference().getScene().detachChild(_arrow.getSprite());
+		GameSprite.getGameReference().getScene().detachChild(_arrowEnemy.getSprite());
 		
 		for(Fruit fruit : _fruits)
 		{

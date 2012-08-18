@@ -25,11 +25,11 @@ public class FruitController {
 			Random r = new Random();
 			if(GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE)
 			{
-				_fruits.add(new Fruit("gfx/apple.png",160,(i * 60)+ 180));
+				_fruits.add(new Fruit("gfx/apple.png",160,(i * 65)+ 165));
 			}
 			else
 			{
-				_fruits.add(new Fruit("gfx/apple.png",660,(i * 60)+ 180));
+				_fruits.add(new Fruit("gfx/apple.png",660,(i * 65)+ 165));
 			}
 		}
 	}
@@ -42,10 +42,13 @@ public class FruitController {
 			{
 				if(_player.getmArrow().getSprite().collidesWith(_fruits.get(i).getSprite()))
 				{
-					_fruits.get(i).getSprite().detachSelf();
+					PlayersController.getOpponentPlayer().setmCount(1);
+					_fruits.get(i).getSprite().detachSelf();            
+					_fruits.remove(i);
 				}
 			}
 		}
+		
 	}
 	
 	public static void Destroy()

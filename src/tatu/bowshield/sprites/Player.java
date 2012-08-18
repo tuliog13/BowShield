@@ -13,6 +13,15 @@ public class Player extends GameSprite{
 	private Arrow mArrow;
 	private Rope mRope;
 	
+	private int mCount;
+	
+	public int getmCount() {
+		return mCount;
+	}
+
+	public void setmCount(int mCount) {
+		this.mCount += mCount;
+	}
 	private GamePhysicalData mGameData;
 	
 	public Arrow getmArrow() {
@@ -32,7 +41,7 @@ public class Player extends GameSprite{
 		mRope = new Rope(Game.PATH_ROPE, X + 60, Y + 63);
 		mArc.pSprite.setVisible(false);
 		mGameData = physicalDta;
-		
+		mCount = 0;
 	}
 	
 	public GamePhysicalData getGameData()
