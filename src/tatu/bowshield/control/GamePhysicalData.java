@@ -6,7 +6,7 @@ import org.andengine.input.touch.TouchEvent;
 
 import tatu.bowshield.Util.DebugLog;
 import tatu.bowshield.activity.BowShieldGameActivity;
-import tatu.bowshield.bluetooth.BluetoothChatService;
+import tatu.bowshield.bluetooth.BluetoothService;
 import tatu.bowshield.bluetooth.OnDirectionChanged;
 import tatu.bowshield.screens.Game;
 import tatu.bowshield.sprites.GameSprite;
@@ -86,8 +86,6 @@ public class GamePhysicalData implements EventListener {
             case MotionEvent.ACTION_UP:
                 DebugLog.log("UP");
 
-                mDistance = 0;
-
                 float ang;
 
                 if (mDirecao == 1) {
@@ -97,7 +95,7 @@ public class GamePhysicalData implements EventListener {
                 }
 
                 if (send) {
-                    gameReference.sendMessage(BluetoothChatService.SHOT, ang + "@" + getProporcionalForce(mForce) + "@"
+                    gameReference.sendMessage(BluetoothService.SHOT, ang + "@" + getProporcionalForce(mForce) + "@"
                             + mDirecao + "#");
                 }
 
@@ -105,10 +103,9 @@ public class GamePhysicalData implements EventListener {
                 break;
         }
 
-        if(mForce <= 2.5f)mForce = (mDistance / 100) / 1.5f; // Limite de força
+        if (mForce <= 2.5f)
+            mForce = (mDistance / 100) / 1.5f; // Limite de força
 
- 
-        
         if (angle <= 90 && angle >= -90) {
             mAngle = -angle;
         } else {

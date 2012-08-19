@@ -16,7 +16,7 @@
 
 package tatu.bowshield.activity;
 
-import tatu.bowshield.bluetooth.BluetoothChatService;
+import tatu.bowshield.bluetooth.BluetoothService;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -61,7 +61,7 @@ public class DeviceListActivity extends Activity {
     // Member fields
     private BluetoothAdapter     mBtAdapter;
     private ArrayAdapter<String> mNewDevicesArrayAdapter;
-    private BluetoothChatService mChatService;
+    private BluetoothService mChatService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +110,7 @@ public class DeviceListActivity extends Activity {
         // Get the local Bluetooth adapter
         mBtAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        mChatService = BluetoothChatService.getInstance(mBtAdapter);
+        mChatService = BluetoothService.getInstance(mBtAdapter);
         // mChatService.setHandler(mHandler);
 
     }
@@ -123,7 +123,7 @@ public class DeviceListActivity extends Activity {
                                                    if (D)
                                                        Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
                                                    switch (msg.arg1) {
-                                                       case BluetoothChatService.STATE_CONNECTED:
+                                                       case BluetoothService.STATE_CONNECTED:
                                                            // mTitle.setText(R.string.title_connected_to);
                                                            // mTitle.append(mConnectedDeviceName);
                                                            // mConversationArrayAdapter.clear();
@@ -136,13 +136,13 @@ public class DeviceListActivity extends Activity {
                                                            startActivity(it);
 
                                                            break;
-                                                       case BluetoothChatService.STATE_CONNECTING:
+                                                       case BluetoothService.STATE_CONNECTING:
                                                            // mTitle.setText(R.string.title_connecting);
                                                            Toast.makeText(getApplicationContext(), "CONNECTING",
                                                                    Toast.LENGTH_SHORT).show();
                                                            break;
-                                                       case BluetoothChatService.STATE_LISTEN:
-                                                       case BluetoothChatService.STATE_LOST:
+                                                       case BluetoothService.STATE_LISTEN:
+                                                       case BluetoothService.STATE_LOST:
                                                            // mTitle.setText(R.string.title_not_connected);
                                                            // Toast.makeText(getApplicationContext(), "NONE",
                                                            // Toast.LENGTH_SHORT).show();

@@ -18,7 +18,7 @@ import org.andengine.opengl.texture.region.TextureRegionFactory;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 
 import tatu.bowshield.Util.DebugLog;
-import tatu.bowshield.bluetooth.BluetoothChatService;
+import tatu.bowshield.bluetooth.BluetoothService;
 import tatu.bowshield.bluetooth.OnMessageReceivedListener;
 import tatu.bowshield.component.PopUp;
 import tatu.bowshield.component.PopUpLayout;
@@ -42,7 +42,7 @@ import android.view.MotionEvent;
 
 public class BowShieldGameActivity extends SimpleBaseGameActivity implements IUpdateHandler, IOnSceneTouchListener {
 
-    private BluetoothChatService mChatService;
+    private BluetoothService mChatService;
     private TextureLoader        mLoader;
     private Scene                myScene;
 

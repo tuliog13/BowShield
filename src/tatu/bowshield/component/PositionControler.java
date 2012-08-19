@@ -9,6 +9,7 @@ import org.andengine.opengl.texture.region.TextureRegionFactory;
 
 import tatu.bowshield.control.TextureLoader;
 import tatu.bowshield.sprites.GameSprite;
+import android.util.Log;
 
 public class PositionControler {
 
@@ -18,24 +19,30 @@ public class PositionControler {
     private Texture          mTexture;
     private Texture          mTexture2;
 
-    protected float          mX;
-    protected float          mY;
+    protected float          mBackgroundX;
+    protected float          mBackgroundY;
+
+    protected float          mControllerX;
+    protected float          mControllerY;
+
     private float            mWidth;
     private float            mHeight;
+    private float            mCenterX;
+    private float            mCenterTotal;
 
-    protected Sprite         pSprite;
-    protected Sprite         pSprite2;
+    protected Sprite         mBackgroundSprite;
+    protected Sprite         mControllerSprite;
+
+    private float            mLEFT, mRIGHT, mCENTER;
 
     public static final byte STATE_CENTER = 0;
     public static final byte STATE_RIGHT  = 1;
     public static final byte STATE_LEFT   = 2;
+    private byte             STATE;
 
     private boolean          mLock;
 
     public PositionControler(final String filepath1, String filepath2, float X, float Y) {
-
-        this.mX = X;
-        this.mY = Y;
 
         TextureLoader loader = GameSprite.getGameReference().getTextureLoader();
 
@@ -48,16 +55,31 @@ public class PositionControler {
         mRegion = TextureRegionFactory.extractFromTexture(mTexture);
         mRegion2 = TextureRegionFactory.extractFromTexture(mTexture2);
 
-        pSprite = new Sprite(X, Y, mRegion, GameSprite.getGameReference().getVertexBufferObjectManager());
+        mBackgroundSprite = new Sprite(X, Y, mRegion, GameSprite.getGameReference().getVertexBufferObjectManager());
         GameSprite.getGameReference().getTextureManager().loadTexture(mTexture);
 
-        mWidth = pSprite.getWidth();
-        mHeight = pSprite.getHeight();
-
-        pSprite2 = new Sprite(X + 5, Y + 10, mRegion2, GameSprite.getGameReference().getVertexBufferObjectManager());
+        mControllerSprite = new Sprite(X + 5, Y + 7, mRegion2, GameSprite.getGameReference()
+                .getVertexBufferObjectManager());
         GameSprite.getGameReference().getTextureManager().loadTexture(mTexture2);
 
+        mWidth = mBackgroundSprite.getWidth();
+        mHeight = mBackgroundSprite.getHeight();
+        mBackgroundX = mBackgroundSprite.getX();
+        mBackgroundY = mBackgroundSprite.getY();
+        mControllerY = mControllerSprite.getY();
+
+        mLEFT = mBackgroundX;
+        mRIGHT = mBackgroundX + ((mBackgroundSprite.getWidth() / 3) * 2);
+        mCENTER = mBackgroundX + (mWidth / 2);
+
+        mCenterX = mControllerSprite.getX() + (mControllerSprite.getHeight() / 2);
+        mCenterTotal = mCENTER;
+
+        mControllerSprite.setPosition(mCenterTotal - (mControllerSprite.getWidth() / 2), mControllerY);
+        mControllerX = mControllerSprite.getX();
+
         mLock = false;
+        STATE = STATE_CENTER;
     }
 
     public void Draw() {
@@ -65,29 +87,96 @@ public class PositionControler {
         Scene scene = GameSprite.getGameReference().getScene();
 
         try {
-            scene.attachChild(pSprite);
-            scene.attachChild(pSprite2);
+            scene.attachChild(mBackgroundSprite);
+            scene.attachChild(mControllerSprite);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
+    public void update() {
+        if (!mLock) {
+            mCenterX = mControllerX + (mControllerSprite.getWidth() / 2);
+
+            if (mCenterX > mCenterTotal + 2) {
+                mControllerX -= 3;
+                mControllerSprite.setPosition(mControllerX, mControllerY);
+            } else if (mCenterX < mCenterTotal - 2) {
+                mControllerX += 3;
+                mControllerSprite.setPosition(mControllerX, mControllerY);
+            }
+        }
+    }
+
     public boolean update(TouchEvent event) {
 
-        float x = event.getX();
+        float x = event.getX() - (mControllerSprite.getWidth() / 2);
         float y = event.getY();
 
-        if (x > mX && x < mX + mWidth && y > mY && y < mY + mHeight) {
-            pSprite2.setPosition(x, mY);
+        boolean collisionX = x > mBackgroundX && (x + mControllerSprite.getWidth()) < mBackgroundX + mWidth;
+        boolean collisionY = (y - 3) > mBackgroundY && (y + 3) < mBackgroundY + mHeight;
+
+        if ((collisionX && collisionY) || mLock) {
+
+            mControllerX = x;
+
+            if (collisionX) {
+                mControllerSprite.setPosition(mControllerX, mControllerY);
+            }
+
+            float centerX = mControllerX + (mControllerSprite.getWidth() / 2);
+
+            if (centerX > mCenterTotal + 2) {
+                STATE = STATE_RIGHT;
+            } else if (centerX < mCenterTotal - 2) {
+                STATE = STATE_LEFT;
+            } else {
+                STATE = STATE_CENTER;
+            }
+
             mLock = true;
+
+            if (event.getAction() == TouchEvent.ACTION_UP) {
+                mLock = false;
+                mControllerX = mCENTER;
+                mControllerSprite.setPosition(mControllerX, mControllerY);
+                STATE = STATE_CENTER;
+            }
+
+            return true;
         }
 
-        if (event.getAction() == TouchEvent.ACTION_UP) {
-            mLock = false;
-        }
+        return false;
+    }
 
-        return mLock;
+    public void setState(byte state) {
+        STATE = state;
+        switch (STATE) {
+            case STATE_RIGHT:
+                mControllerX = mRIGHT;
+                mLock = true;
+                break;
+
+            case STATE_LEFT:
+                mControllerX = mLEFT;
+                mLock = true;
+                break;
+
+            case STATE_CENTER:
+                mControllerX = mCENTER;
+                break;
+        }
+        mControllerSprite.setPosition(mControllerX, mControllerY);
+    }
+
+    public byte getState() {
+        return STATE;
+    }
+
+    public void Destroy() {
+        GameSprite.getGameReference().getScene().detachChild(mBackgroundSprite);
+        GameSprite.getGameReference().getScene().detachChild(mControllerSprite);
     }
 
 }

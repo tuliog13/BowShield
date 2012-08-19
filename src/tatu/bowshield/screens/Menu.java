@@ -8,7 +8,7 @@ import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.TextureRegionFactory;
 
 import tatu.bowshield.Util.DebugLog;
-import tatu.bowshield.bluetooth.BluetoothChatService;
+import tatu.bowshield.bluetooth.BluetoothService;
 import tatu.bowshield.component.Button;
 import tatu.bowshield.component.ButtonManager;
 import tatu.bowshield.component.ListView;
@@ -66,7 +66,7 @@ public class Menu extends Screen implements IOnButtonTouch, OnListItemClickListe
     public ButtonManager         mButtonManager;
 
     private BluetoothAdapter     mBtAdapter;
-    private BluetoothChatService mChatService;
+    private BluetoothService mChatService;
 
     private Handler              mHandler;
 
@@ -117,21 +117,21 @@ public class Menu extends Screen implements IOnButtonTouch, OnListItemClickListe
                 mHandler = new Handler() {
                     public void handleMessage(Message msg) {
                         switch (msg.what) {
-                            case BluetoothChatService.STATE_CONNECTED:
+                            case BluetoothService.STATE_CONNECTED:
                                 DebugLog.log("Connected");
                                 PopUp.forceClose();
                                 ScreenManager.changeScreen(Constants.SCREEN_CUTSCENE);
                                 break;
 
-                            case BluetoothChatService.STATE_CONNECTING:
+                            case BluetoothService.STATE_CONNECTING:
                                 DebugLog.log("Connecting");
                                 break;
 
-                            case BluetoothChatService.STATE_LISTEN:
+                            case BluetoothService.STATE_LISTEN:
                                 DebugLog.log("Waiting Connection");
                                 break;
 
-                            case BluetoothChatService.STATE_LOST:
+                            case BluetoothService.STATE_LOST:
                                 DebugLog.log("Connection Lost");
 
                                 if (mChatService != null) {
@@ -145,7 +145,7 @@ public class Menu extends Screen implements IOnButtonTouch, OnListItemClickListe
 
                 mBtAdapter = BluetoothAdapter.getDefaultAdapter();
 
-                mChatService = BluetoothChatService.getInstance(mBtAdapter);
+                mChatService = BluetoothService.getInstance(mBtAdapter);
                 mChatService.setHandler(mHandler);
             }
         });

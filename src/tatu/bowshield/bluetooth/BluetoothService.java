@@ -36,7 +36,7 @@ import android.telephony.TelephonyManager;
  * that listens for incoming connections, a thread for connecting with a device, and a thread for performing data
  * transmissions when connected.
  */
-public class BluetoothChatService {
+public class BluetoothService {
 
     private static final String    NAME             = "BluetoothChat";
 
@@ -56,22 +56,22 @@ public class BluetoothChatService {
 
     /* ADD HERE TYPE OF BLUETOOTH MENSSAGE */
     public static final byte       SHOT             = 0;
-    public static final byte       AIMING_UPDATE    = 1;
+    public static final byte       MOVE_PLAYER      = 1;
     public static final byte       CONFIRM_RECIEVE  = 127;
 
     OnMessageReceivedListener      listener;
-    static BluetoothChatService    instance;
+    static BluetoothService        instance;
     private Handler                mHandler;
     private boolean                readyToSend      = true;
 
-    private BluetoothChatService(BluetoothAdapter adapter) {
+    private BluetoothService(BluetoothAdapter adapter) {
         mAdapter = adapter;
         mState = STATE_LOST;
     }
 
-    public static BluetoothChatService getInstance(BluetoothAdapter adapter) {
+    public static BluetoothService getInstance(BluetoothAdapter adapter) {
         if (instance == null) {
-            instance = new BluetoothChatService(adapter);
+            instance = new BluetoothService(adapter);
         }
         return instance;
     }
@@ -246,7 +246,7 @@ public class BluetoothChatService {
                 return;
             }
 
-            synchronized (BluetoothChatService.this) {
+            synchronized (BluetoothService.this) {
                 mConnectThread = null;
             }
 
@@ -293,18 +293,18 @@ public class BluetoothChatService {
 
                     type = (byte) mmInStream.read();
 
-                    if (type != CONFIRM_RECIEVE) {
+//                    if (type != CONFIRM_RECIEVE) {
                         bytes = mmInStream.read(buffer);
 
                         byte[] readBuf = (byte[]) buffer;
                         String readMessage = new String(readBuf, 0, bytes);
 
-                        sendType(CONFIRM_RECIEVE);
+//                        sendType(CONFIRM_RECIEVE);
                         listener.onMessageReceived(type, readMessage);
-                    } else {
-                        readyToSend = true;
-                        DebugLog.log("Confirm recevide: ready to send");
-                    }
+//                    } else {
+//                        readyToSend = true;
+//                        DebugLog.log("Confirm recevide: ready to send");
+//                    }
 
                 } catch (IOException e) {
                     connectionLost();
@@ -343,7 +343,7 @@ public class BluetoothChatService {
             r = mConnectedThread;
         }
 
-        if (readyToSend) {
+//        if (readyToSend) {
 
             byte[] mBytes = message.getBytes();
             readyToSend = false;
@@ -355,10 +355,10 @@ public class BluetoothChatService {
                 e.printStackTrace();
             }
 
-            DebugLog.log("Sended: Type: " + type + " Message: " + message + " - Send blocked!");
-        } else {
-            DebugLog.log("Failed to send: Type: " + type + " Message: " + message + " - Send not done yet!");
-        }
+//            DebugLog.log("Sended: Type: " + type + " Message: " + message + " - Send blocked!");
+//        } else {
+//            DebugLog.log("Failed to send: Type: " + type + " Message: " + message + " - Send not done yet!");
+//        }
 
     }
 }

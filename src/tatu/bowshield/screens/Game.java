@@ -14,7 +14,7 @@ import org.andengine.opengl.texture.region.TextureRegionFactory;
 
 import tatu.bowshield.Util.DebugLog;
 import tatu.bowshield.activity.BowShieldGameActivity;
-import tatu.bowshield.bluetooth.BluetoothChatService;
+import tatu.bowshield.bluetooth.BluetoothService;
 import tatu.bowshield.bluetooth.OnDirectionChanged;
 import tatu.bowshield.bluetooth.OnMessageReceivedListener;
 import tatu.bowshield.component.Button;
@@ -38,33 +38,34 @@ import android.view.MotionEvent;
 public class Game extends Screen implements OnDirectionChanged, OnMessageReceivedListener {
 
     // Game
-    public static String         PATH_BACKGROUND = "gfx/telas/gameBg.png";
-    public static String         PATH_PLAYER1    = "gfx/arq.png";
-    public static String         PATH_PLAYER2    = "gfx/pers.png";
-    public static String         PATH_ARC        = "gfx/arco.png";
-    public static String         PATH_ARROW      = "gfx/flecha1.png";
-    public static String         PATH_ROPE       = "gfx/corda.png";
+    public static String      PATH_BACKGROUND = "gfx/telas/gameBg.png";
+    public static String      PATH_PLAYER1    = "gfx/arq.png";
+    public static String      PATH_PLAYER2    = "gfx/pers.png";
+    public static String      PATH_ARC        = "gfx/arco.png";
+    public static String      PATH_ARROW      = "gfx/flecha1.png";
+    public static String      PATH_ROPE       = "gfx/corda.png";
 
-    public static String         PATH_CONTROLLER = "gfx/control1.png";
-    public static String         PATH_CONTROL    = "gfx/control2.png";
+    public static String      PATH_CONTROLLER = "gfx/control1.png";
+    public static String      PATH_CONTROL    = "gfx/control2.png";
 
-    private Texture              mBackgroundTexture;
-    private ITextureRegion       mBackgroundRegion;
+    private Texture           mBackgroundTexture;
+    private ITextureRegion    mBackgroundRegion;
 
-    public static Player         mPlayerOne;
-    private Player               mPlayerTwo;
+    public static Player      mPlayerOne;
+    private Player            mPlayerTwo;
 
-    private BluetoothChatService mChatService;
+    private BluetoothService  mChatService;
 
-    private Results              resultsScreen;
-    private float                iX, iY;
-    private PositionControler    mPositionController;
+    private Results           resultsScreen;
+    private float             iX, iY;
+    private PositionControler mPositionController;
 
-    private GamePhysicalData     myPlayerData;
-    private GamePhysicalData     opponentPlayerData;
+    private GamePhysicalData  myPlayerData;
+    private GamePhysicalData  opponentPlayerData;
 
-    private Text                 mPointText;
-    private Font                 mTextFont;
+    private Text              mPointText;
+    private Font              mTextFont;
+    private boolean           mCanMovePlayer  = true;
 
     public Game(int id) {
 
@@ -87,7 +88,6 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
         if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
 
             mPlayerOne = new Player(PATH_PLAYER1, 60, 330, myPlayerData);
-           // mPlayerOne = new Player(PATH_PLAYER1, 330, 230, myPlayerData);
             mPlayerTwo = new Player(PATH_PLAYER1, 1500, 330, opponentPlayerData);
 
         } else {
@@ -112,7 +112,7 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
 
             @Override
             public void run() {
-                mChatService = BluetoothChatService.getInstance(BluetoothAdapter.getDefaultAdapter());
+                mChatService = BluetoothService.getInstance(BluetoothAdapter.getDefaultAdapter());
                 mChatService.setOnMenssageReceivedListener(Game.this);
             }
         });
@@ -164,6 +164,7 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
         }
         mPointText.setText("Indio Mira " + PlayersController.getMyPlayer().getmCount() + " - "
                 + PlayersController.getOpponentPlayer().getmCount() + " Indio Opponent");
+        mPositionController.update();
     }
 
     public float X = 0;
@@ -172,19 +173,17 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
     @Override
     public boolean onSceneTouchEvent(TouchEvent pSceneTouchEvent) {
 
-        if (!mPositionController.update(pSceneTouchEvent)) {
-
-            // if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
-            // PlayersController.get_PlayerOne().getGameData()
-            // .calculateTouch(pSceneTouchEvent, this, true);
-            // PlayersController.get_PlayerTwo().getGameData()
-            // .calculateTouch(pSceneTouchEvent, this, false);
-            // } else {
-            // PlayersController.get_PlayerOne().getGameData()
-            // .calculateTouch(pSceneTouchEvent, this, false);
-            // PlayersController.get_PlayerTwo().getGameData()
-            // .calculateTouch(pSceneTouchEvent, this, true);
-            // }
+        if (mCanMovePlayer) {
+            if (!mPositionController.update(pSceneTouchEvent)) {
+                mCanMovePlayer = false;
+            }else
+            {
+                byte state = mPositionController.getState();
+                sendMessage(BluetoothService.MOVE_PLAYER, String.valueOf(state));
+            }
+        } 
+        
+        if(!mCanMovePlayer){
             myPlayerData.calculateTouch(pSceneTouchEvent, this, true);
         }
 
@@ -222,6 +221,12 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
                     }
 
                 }
+
+                break;
+
+            case MotionEvent.ACTION_UP:
+
+                mCanMovePlayer = true;
 
                 break;
         }
@@ -265,6 +270,7 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
                 PlayersController.Destroy();
                 FruitController.Destroy();
                 OpponentView.Destroy();
+                mPositionController.Destroy();
                 mPointText.detachSelf();
             }
 
@@ -303,11 +309,15 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
     public void onMessageReceived(byte type, String message) {
 
         switch (type) {
-            case BluetoothChatService.SHOT:
+            case BluetoothService.SHOT:
                 doShotAction(message);
                 break;
 
-            case BluetoothChatService.AIMING_UPDATE:
+            case BluetoothService.MOVE_PLAYER:
+                
+                byte state = Byte.parseByte(message.substring(0, 1));
+                mPositionController.setState(state);
+                
                 DebugLog.log("Move received: " + message);
                 break;
         }
