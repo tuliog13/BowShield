@@ -19,8 +19,8 @@ import android.view.KeyEvent;
 
 public class PopUp implements EventListener {
 
-    private static final String  PATH_POPUP_SCAND           = "gfx/telas/scan.png";
-    
+    private static final String  PATH_POPUP_SCAND = "gfx/telas/scan.png";
+
     private static float         alpha;
     private static boolean       isShowing;
     private static PopUpLayout   mPopupLayout;
@@ -102,14 +102,14 @@ public class PopUp implements EventListener {
         sListener.onResultReceived(result);
     }
 
-    public static void setBackground(String path){
+    public static void setBackground(String path) {
         TextureLoader loader = GameSprite.getGameReference().getTextureLoader();
 
         mTexture = loader.load(path);
         mTexture.load();
-        
+
     }
-    
+
     public static void showPopUp(PopUpLayout popupLayout) {
 
         mPopupLayout = popupLayout;

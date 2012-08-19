@@ -69,7 +69,7 @@ public class ScanPopUp extends PopUpLayout {
     @Override
     public void Destroy() {
         mDeviceList.clear();
-//        mMenu.mButtonManager.removeButton(okButton);
+        // mMenu.mButtonManager.removeButton(okButton);
     }
 
     public void addBluetooth(BluetoothDevice device) {

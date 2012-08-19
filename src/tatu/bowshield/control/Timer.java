@@ -4,53 +4,58 @@ import org.andengine.engine.handler.IUpdateHandler;
 
 public class Timer implements IUpdateHandler {
     // ===========================================================
-    // Constants          
+    // Constants
     // ===========================================================
 
-    // ===========================================================          
-    // Fields        
+    // ===========================================================
+    // Fields
     // ===========================================================
     private ITimerCallback mCallback;
-    private float mInterval;
+    private float          mInterval;
 
-    private float mSecondsElapsed;
-    // ===========================================================          
-    // Constructors          
+    private float          mSecondsElapsed;
+
+    // ===========================================================
+    // Constructors
     // ===========================================================
     public Timer(final float pInterval, final ITimerCallback pCallback) {
-            this.mInterval = pInterval;
-            this.mCallback = pCallback;
+        this.mInterval = pInterval;
+        this.mCallback = pCallback;
     }
-    // ===========================================================          
-    // Getter & Setter          
+
+    // ===========================================================
+    // Getter & Setter
     // ===========================================================
     public void setInterval(final float pInterval) {
-            this.mInterval = pInterval;
+        this.mInterval = pInterval;
     }
-    // ===========================================================          
-    // Methods for/from SuperClass/Interfaces          
-    // ===========================================================  
+
+    // ===========================================================
+    // Methods for/from SuperClass/Interfaces
+    // ===========================================================
     @Override
     public void onUpdate(float pSecondsElapsed) {
-            this.mSecondsElapsed += pSecondsElapsed;
-            if(this.mSecondsElapsed >= this.mInterval) {
-                    this.mSecondsElapsed -= this.mInterval;
-                    this.mCallback.onTick();
-            }
+        this.mSecondsElapsed += pSecondsElapsed;
+        if (this.mSecondsElapsed >= this.mInterval) {
+            this.mSecondsElapsed -= this.mInterval;
+            this.mCallback.onTick();
+        }
     }
+
     @Override
     public void reset() {
-            this.mSecondsElapsed = 0;
+        this.mSecondsElapsed = 0;
 
     }
-    // ===========================================================          
-    // Methods          
-    // ===========================================================  
 
-    // ===========================================================          
-    // Inner and Anonymous Classes          
+    // ===========================================================
+    // Methods
+    // ===========================================================
+
+    // ===========================================================
+    // Inner and Anonymous Classes
     // ===========================================================
     public interface ITimerCallback {
-            public void onTick();
+        public void onTick();
     }
 }

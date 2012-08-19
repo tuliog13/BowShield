@@ -46,8 +46,8 @@ public class BowShieldGameActivity extends SimpleBaseGameActivity implements IUp
     private TextureLoader        mLoader;
     private Scene                myScene;
 
-    public static float            DEVICE_WIDTH;
-    public static float            DEVICE_HEIGHT;
+    public static float          DEVICE_WIDTH;
+    public static float          DEVICE_HEIGHT;
 
     @Override
     public EngineOptions onCreateEngineOptions() {
