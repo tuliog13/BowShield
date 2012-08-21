@@ -33,6 +33,7 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
 
     // Game
     public static String      PATH_BACKGROUND = "gfx/telas/gameBg.png";
+    public static String      PATH_BACKGROUND1 = "gfx/telas/gameBg1.png";
     public static String      PATH_PLAYER1    = "gfx/red_corpo.png";
     public static String      PATH_PLAYER2    = "gfx/red_corpo.png";
     public static String      PATH_ARC        = "gfx/red_arco.png";
@@ -72,25 +73,31 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
     public void Initialize() {
         // TODO Auto-generated method stub
         super.Initialize();
-
-        mBackgroundTexture = getLoader().load(PATH_BACKGROUND);
-        mBackgroundTexture.load();
-        mBackgroundRegion = TextureRegionFactory.extractFromTexture(mBackgroundTexture);
-
+        
         myPlayerData = new GamePhysicalData();
         opponentPlayerData = new GamePhysicalData();
 
         if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
 
+            mBackgroundTexture = getLoader().load(PATH_BACKGROUND);
+            mPositionController = new PositionControler(PATH_CONTROLLER, PATH_CONTROL, 603, 360);
+            
             mPlayerOne = new Player(PATH_PLAYER1, 60, 340, myPlayerData);
             // mPlayerOne = new Player(PATH_PLAYER1, 330, 230, myPlayerData);
             mPlayerTwo = new Player(PATH_PLAYER1, 1500, 340, opponentPlayerData);
 
         } else {
+            
+            mBackgroundTexture = getLoader().load(PATH_BACKGROUND1);
+            mPositionController = new PositionControler(PATH_CONTROLLER, PATH_CONTROL, 10, 360);
+            
             mPlayerOne = new Player(PATH_PLAYER1, -740, 340, opponentPlayerData);
             mPlayerTwo = new Player(PATH_PLAYER1, 700, 340, myPlayerData);
         }
 
+        mBackgroundTexture.load();
+        mBackgroundRegion = TextureRegionFactory.extractFromTexture(mBackgroundTexture);
+        
         resultsScreen = new Results(0, "gfx/telas/game_over.png");
 
         addSimpleScreen(resultsScreen);
@@ -116,11 +123,10 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
         DebugLog.log("Initialize called!");
 
         FruitController.Initialize(5, PlayersController.getOpponentPlayer());
-        mPositionController = new PositionControler(PATH_CONTROLLER, PATH_CONTROL, 560, 380);
         if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
-            OpponentView.Initialize((int) 1, 2);
-        } else {
             OpponentView.Initialize((int) (800 - OpponentView.WIDTH) - 5, 2);
+        } else {
+            OpponentView.Initialize(1, 2);
         }
 
         // font
@@ -158,7 +164,10 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
             
             byte state = mPositionController.getState();
             sendMessage(BluetoothService.MOVE_PLAYER, String.valueOf(state));
+            
             Sprite spt = PlayersController.getMyPlayer().getSprite();
+            Sprite sptOp = PlayersController.getOpponentPlayer().getSprite();
+            
             float x = spt.getX(), y = spt.getY();
 
             if (state == PositionControler.STATE_RIGHT && x < 500) {
@@ -171,6 +180,19 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
                 PlayersController.getMyPlayer().setMyPosition(--x, y);
             }
             
+            float xop = sptOp.getX(), yop = sptOp.getY();
+
+            if (stateOpponent == PositionControler.STATE_RIGHT && xop < 500) {
+                xop += Constants.PLAYER_VELOCITY;
+                PlayersController.getOpponentPlayer().setMyPosition(xop,yop);
+            }
+
+            if (stateOpponent == PositionControler.STATE_LEFT && xop > 60) {
+                xop -= Constants.PLAYER_VELOCITY;
+                PlayersController.getOpponentPlayer().setMyPosition(--xop, yop);
+            }
+            
+            
         } else {
             DebugLog.log("Player null update");
         }
@@ -181,6 +203,7 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
 
     public float X = 0;
     public float Y = 0;
+    private byte stateOpponent;
 
     @Override
     public boolean onSceneTouchEvent(TouchEvent pSceneTouchEvent) {
@@ -326,8 +349,9 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
             case BluetoothService.MOVE_PLAYER:
 
                 byte state = Byte.parseByte(message.substring(0, 1));
-                mPositionController.setState(state);
-
+                
+                stateOpponent = state;
+                
                 DebugLog.log("Move received: " + message);
                 break;
         }
@@ -366,6 +390,8 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
         DebugLog.log("Direction: " + s);
         direction = Integer.parseInt(s);
 
+        DebugLog.log("dataaaaaas - " + force  + " --- " + angle);
+        
         if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
             PlayersController.get_PlayerTwo().getmArrow().configPreLaunch(angle, force);
 

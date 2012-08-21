@@ -57,7 +57,7 @@ public class PositionControler {
         mBackgroundSprite = new Sprite(X, Y, mRegion, GameSprite.getGameReference().getVertexBufferObjectManager());
         GameSprite.getGameReference().getTextureManager().loadTexture(mTexture);
 
-        mControllerSprite = new Sprite(X + 5, Y + 7, mRegion2, GameSprite.getGameReference()
+        mControllerSprite = new Sprite(X + 5, Y + 5, mRegion2, GameSprite.getGameReference()
                 .getVertexBufferObjectManager());
         GameSprite.getGameReference().getTextureManager().loadTexture(mTexture2);
 
@@ -98,10 +98,10 @@ public class PositionControler {
         if (!mLock) {
             mCenterX = mControllerX + (mControllerSprite.getWidth() / 2);
 
-            if (mCenterX > mCenterTotal + 2) {
+            if (mCenterX > mCenterTotal) {
                 mControllerX -= 3;
                 mControllerSprite.setPosition(mControllerX, mControllerY);
-            } else if (mCenterX < mCenterTotal - 2) {
+            } else if (mCenterX < mCenterTotal) {
                 mControllerX += 3;
                 mControllerSprite.setPosition(mControllerX, mControllerY);
             }
