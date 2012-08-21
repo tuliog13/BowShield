@@ -27,6 +27,14 @@ public class Arc extends GameSprite {
         } else if (state == PlayersController.getMyPlayer().STATE_SHOTED) {
 
         }
+        
+        if (direcao == 1) {
+            this.pSprite.setPosition(x + 20, y + 20);
+        } else {
+            this.pSprite.setPosition(x - 20, y + 20);
+
+        }
+        
     }
 
     public boolean onTouchEvent(MotionEvent event) {

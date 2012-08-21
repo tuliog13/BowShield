@@ -68,7 +68,16 @@ public class Player extends GameSprite {
 
     public void setMyPosition(float x, float y) {
         this.setPosition(x, y);
-        mArc.setPosition(x + 20, y + 20);
+        
+        if (mGameData.mDirecao == 1)
+        {
+            mArc.setPosition(x + 20, y + 20);
+        }
+        else
+        {
+            mArc.setPosition(x - 20, y + 20);
+        }
+        
         mIndicator.setPosition(x - 15, y - 20);
     }
 
