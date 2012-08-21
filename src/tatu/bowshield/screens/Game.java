@@ -116,7 +116,7 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
         DebugLog.log("Initialize called!");
 
         FruitController.Initialize(5, PlayersController.getOpponentPlayer());
-        mPositionController = new PositionControler(PATH_CONTROLLER, PATH_CONTROL, 600, 420);
+        mPositionController = new PositionControler(PATH_CONTROLLER, PATH_CONTROL, 560, 380);
         if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
             OpponentView.Initialize((int) 1, 2);
         } else {
@@ -178,12 +178,12 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
                 Sprite spt = PlayersController.getMyPlayer().getSprite();
                 float x = spt.getX(), y = spt.getY();
 
-                if (state == PositionControler.STATE_RIGHT) {
+                if (state == PositionControler.STATE_RIGHT && x < 500) {
                     x += Constants.PLAYER_VELOCITY;
                     PlayersController.getMyPlayer().setMyPosition(x, y);
                 }
 
-                if (state == PositionControler.STATE_LEFT) {
+                if (state == PositionControler.STATE_LEFT && x > 60) {
                     x -= Constants.PLAYER_VELOCITY;
                     PlayersController.getMyPlayer().setMyPosition(--x, y);
                 }

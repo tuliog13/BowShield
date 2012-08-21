@@ -112,10 +112,12 @@ public class PositionControler {
 
         float x = event.getX() - (mControllerSprite.getWidth() / 2);
         float y = event.getY();
-
-        boolean collisionX = x > mBackgroundX && (x + mControllerSprite.getWidth()) < mBackgroundX + mWidth;
-        boolean collisionY = (y - 3) > mBackgroundY && (y + 3) < mBackgroundY + mHeight;
-
+        int toleranceY = 50;
+        int toleranceX = 5;
+            
+        boolean collisionX = x > (mBackgroundX - toleranceX) && (x + mControllerSprite.getWidth()) < mBackgroundX + mWidth + toleranceX;
+        boolean collisionY = y > (mBackgroundY - toleranceY) && y < (mBackgroundY + mHeight + toleranceY);
+        
         if ((collisionX && collisionY) || mLock) {
 
             mControllerX = x;

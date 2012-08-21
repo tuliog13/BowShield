@@ -9,7 +9,7 @@ public class Constants {
 
     public static final float GRAVITY             = 0.09f;
     public static final float FORCE_NUMBER        = 5;
-    public static final float PLAYER_VELOCITY     = 5;
+    public static final float PLAYER_VELOCITY     = 7;
 
     public static final float CAMERA_WIDTH        = 800;
     public static final float CAMERA_HEIGHT       = 480;
