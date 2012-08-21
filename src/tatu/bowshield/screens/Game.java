@@ -155,6 +155,22 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
             PlayersController.Update();
             FruitController.Update();
             OpponentView.Update();
+            
+            byte state = mPositionController.getState();
+            sendMessage(BluetoothService.MOVE_PLAYER, String.valueOf(state));
+            Sprite spt = PlayersController.getMyPlayer().getSprite();
+            float x = spt.getX(), y = spt.getY();
+
+            if (state == PositionControler.STATE_RIGHT && x < 500) {
+                x += Constants.PLAYER_VELOCITY;
+                PlayersController.getMyPlayer().setMyPosition(x, y);
+            }
+
+            if (state == PositionControler.STATE_LEFT && x > 60) {
+                x -= Constants.PLAYER_VELOCITY;
+                PlayersController.getMyPlayer().setMyPosition(--x, y);
+            }
+            
         } else {
             DebugLog.log("Player null update");
         }
@@ -172,21 +188,6 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
         if (mCanMovePlayer) {
             if (!mPositionController.update(pSceneTouchEvent)) {
                 mCanMovePlayer = false;
-            } else {
-                byte state = mPositionController.getState();
-                sendMessage(BluetoothService.MOVE_PLAYER, String.valueOf(state));
-                Sprite spt = PlayersController.getMyPlayer().getSprite();
-                float x = spt.getX(), y = spt.getY();
-
-                if (state == PositionControler.STATE_RIGHT && x < 500) {
-                    x += Constants.PLAYER_VELOCITY;
-                    PlayersController.getMyPlayer().setMyPosition(x, y);
-                }
-
-                if (state == PositionControler.STATE_LEFT && x > 60) {
-                    x -= Constants.PLAYER_VELOCITY;
-                    PlayersController.getMyPlayer().setMyPosition(--x, y);
-                }
             }
         }
 
