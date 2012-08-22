@@ -4,6 +4,7 @@ import java.util.EventListener;
 
 import org.andengine.input.touch.TouchEvent;
 
+import tatu.bowshield.activity.BowShieldGameActivity;
 import tatu.bowshield.bluetooth.BluetoothService;
 import tatu.bowshield.bluetooth.OnDirectionChanged;
 import tatu.bowshield.screens.Game;
@@ -27,10 +28,12 @@ public class GamePhysicalData implements EventListener {
     public static int                GAME_TYPE;
 
     public boolean                   sShoted;
+    BowShieldGameActivity            mReference;
 
-    public GamePhysicalData() {
+    public GamePhysicalData(BowShieldGameActivity reference) {
+        mReference = reference;
         sShoted = false;
-        mTouch = new GameSprite("gfx/touch.png", 0, 0);
+        mTouch = new GameSprite(reference, "gfx/touch.png", 0, 0);
         mTouch.getSprite().setVisible(false);
     }
 
@@ -110,7 +113,7 @@ public class GamePhysicalData implements EventListener {
                     }
 
                     if (send) {
-                        gameReference.sendMessage(BluetoothService.SHOT, ang + "@" + getProporcionalForce(mForce) + "@"
+                        gameReference.sendMessage(BluetoothService.SHOT, ang + "@" + mForce + "@"
                                 + mDirecao + "#");
                     }
 
@@ -153,20 +156,6 @@ public class GamePhysicalData implements EventListener {
 
     public void setsShoted(boolean newShoted) {
         sShoted = newShoted;
-    }
-
-    public float getProporcionalForce(float force) {
-
-        DisplayMetrics metrics = new DisplayMetrics();
-        GameSprite.getGameReference().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-
-        float forceResult = force;
-
-        if (metrics.widthPixels == 800) {
-            forceResult -= 0.2f;
-        }
-
-        return force;
     }
 
     public static void setOnDirectionChangedListener(OnDirectionChanged listener) {

@@ -2,6 +2,7 @@ package tatu.bowshield.sprites;
 
 import java.util.EventListener;
 
+import tatu.bowshield.activity.BowShieldGameActivity;
 import tatu.bowshield.bluetooth.OnDirectionChanged;
 import tatu.bowshield.control.Constants;
 import tatu.bowshield.control.PlayersController;
@@ -25,8 +26,8 @@ public class Arrow extends GameSprite implements EventListener {
     private float                    OPP_WIDTH, OPP_HEIGHT;
     private float                    percentX, percentY;
 
-    public Arrow(final String filepath, float X, float Y) {
-        super(filepath, X, Y);
+    public Arrow(BowShieldGameActivity reference, final String filepath, float X, float Y) {
+        super(reference, filepath, X, Y);
 
         inicialX = X;
         inicialY = Y;

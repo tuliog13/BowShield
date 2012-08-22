@@ -7,6 +7,7 @@ import org.andengine.opengl.texture.Texture;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.TextureRegionFactory;
 
+import tatu.bowshield.activity.BowShieldGameActivity;
 import tatu.bowshield.control.Constants;
 import tatu.bowshield.control.ScreenManager;
 import tatu.bowshield.sprites.GameSprite;
@@ -19,8 +20,8 @@ public class CutScene extends Screen {
     private Texture        mBackgroundTexture;
     private ITextureRegion mBackgroundRegion;
 
-    public CutScene(int id) {
-        super(id);
+    public CutScene(BowShieldGameActivity reference, int id) {
+        super(reference, id);
         // TODO Auto-generated constructor stub
     }
 
@@ -79,7 +80,7 @@ public class CutScene extends Screen {
 
         getScene().setBackground(
                 new SpriteBackground(new Sprite(0, 0, Constants.CAMERA_WIDTH, Constants.CAMERA_HEIGHT,
-                        mBackgroundRegion, GameSprite.getGameReference().getVertexBufferObjectManager())));
+                        mBackgroundRegion, mReference.getVertexBufferObjectManager())));
 
     }
 

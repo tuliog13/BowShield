@@ -7,6 +7,7 @@ import org.andengine.opengl.texture.Texture;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.TextureRegionFactory;
 
+import tatu.bowshield.activity.BowShieldGameActivity;
 import tatu.bowshield.component.PopUp;
 import tatu.bowshield.control.Constants;
 import tatu.bowshield.control.OnPopupResult;
@@ -22,8 +23,8 @@ public class Splash extends Screen implements OnPopupResult {
     private Texture        mBackgroundTexture;
     private ITextureRegion mBackgroundRegion;
 
-    public Splash(int id) {
-        super(id);
+    public Splash(BowShieldGameActivity reference, int id) {
+        super(reference, id);
         // TODO Auto-generated constructor stub
     }
 
@@ -74,7 +75,7 @@ public class Splash extends Screen implements OnPopupResult {
         // TODO Auto-generated method stub
 
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            PopUp.showPopUp(new ConfirmDialog(500, 350));
+            PopUp.showPopUp(new ConfirmDialog(mReference, 500, 350));
         }
 
         return super.onKeyDown(keyCode, event);
@@ -87,7 +88,7 @@ public class Splash extends Screen implements OnPopupResult {
 
         getScene().setBackground(
                 new SpriteBackground(new Sprite(0, 0, Constants.CAMERA_WIDTH, Constants.CAMERA_HEIGHT,
-                        mBackgroundRegion, GameSprite.getGameReference().getVertexBufferObjectManager())));
+                        mBackgroundRegion, mReference.getVertexBufferObjectManager())));
 
     }
 
@@ -109,7 +110,7 @@ public class Splash extends Screen implements OnPopupResult {
         switch (result) {
             case Constants.RESULT_YES:
                 System.gc();
-                GameSprite.getGameReference().finish();
+                mReference.finish();
                 break;
 
             case Constants.RESULT_NO:

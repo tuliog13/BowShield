@@ -57,9 +57,6 @@ public class BowShieldGameActivity extends SimpleBaseGameActivity implements IUp
     public void onCreateResources() {
         mLoader = new TextureLoader(this, getAssets());
         Screen.setLoader(mLoader);
-
-        GameSprite.setGameReference(this);
-
     }
 
     @Override
@@ -82,12 +79,12 @@ public class BowShieldGameActivity extends SimpleBaseGameActivity implements IUp
 
         Screen.setScene(myScene);
 
-        PopUp.Inicialize();
+        PopUp.Inicialize(this);
 
-        Screen splash = new Splash(Constants.SCREEN_SPLASH);
-        Screen deviceListScreen = new Menu(Constants.SCREEN_DEVICE);
-        Screen cutScene = new CutScene(Constants.SCREEN_CUTSCENE);
-        Screen gameScreen = new Game(Constants.SCREEN_GAME);
+        Screen splash = new Splash(this, Constants.SCREEN_SPLASH);
+        Screen deviceListScreen = new Menu(this, Constants.SCREEN_DEVICE);
+        Screen cutScene = new CutScene(this, Constants.SCREEN_CUTSCENE);
+        Screen gameScreen = new Game(this, Constants.SCREEN_GAME);
 
         ScreenManager.addScreen(splash);
         ScreenManager.addScreen(deviceListScreen);

@@ -6,6 +6,7 @@ import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 
+import tatu.bowshield.activity.BowShieldGameActivity;
 import tatu.bowshield.component.ListView;
 import tatu.bowshield.component.PopUp;
 import tatu.bowshield.component.PopUpLayout;
@@ -25,24 +26,23 @@ public class ScanPopUp extends PopUpLayout {
 
     public static final int OK_BUTTON = 5;
 
-    public ScanPopUp(Menu menuScreen) {
+    public ScanPopUp(BowShieldGameActivity reference, Menu menuScreen) {
 
         WIDTH = 700;
         HEIGHT = 380;
 
-        mDeviceList = new ListView(300, 100);
+        mDeviceList = new ListView(reference, 300, 100);
         mDeviceList.setOnListItemClickListener(menuScreen);
 
-        BitmapTextureAtlas mTextFontTextureAtlas = new BitmapTextureAtlas(GameSprite.getGameReference()
-                .getTextureManager(), 512, 512, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        mTextFont = FontFactory.create(GameSprite.getGameReference().getFontManager(), mTextFontTextureAtlas, 32);
+        BitmapTextureAtlas mTextFontTextureAtlas = new BitmapTextureAtlas(reference.getTextureManager(), 512, 512,
+                TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        mTextFont = FontFactory.create(reference.getFontManager(), mTextFontTextureAtlas, 32);
 
-        GameSprite.getGameReference().getEngine().getFontManager().loadFont(mTextFont);
+        reference.getEngine().getFontManager().loadFont(mTextFont);
 
-        GameSprite.getGameReference().getEngine().getTextureManager().loadTexture(mTextFontTextureAtlas);
+        reference.getEngine().getTextureManager().loadTexture(mTextFontTextureAtlas);
 
-        mErrorMessage = new Text(300, 200, mTextFont, "Um erro ocorreu!", GameSprite.getGameReference()
-                .getVertexBufferObjectManager());
+        mErrorMessage = new Text(300, 200, mTextFont, "Um erro ocorreu!", reference.getVertexBufferObjectManager());
 
         mMenu = menuScreen;
 

@@ -1,5 +1,6 @@
 package tatu.bowshield.sprites;
 
+import tatu.bowshield.activity.BowShieldGameActivity;
 import tatu.bowshield.control.PlayersController;
 import tatu.bowshield.screens.Game;
 
@@ -7,10 +8,10 @@ public class Indicator extends GameSprite {
 
     private GameSprite mForceBar;
     
-    public Indicator(final String filepath, float X, float Y) {
-        super(filepath, X, Y);
+    public Indicator(BowShieldGameActivity reference, final String filepath, float X, float Y) {
+        super(reference, filepath, X, Y);
         
-        mForceBar = new GameSprite(Game.PATH_FORCE_BAR, X + 1, Y+ 1);
+        mForceBar = new GameSprite(reference, Game.PATH_FORCE_BAR, X + 1, Y+ 1);
         
     }
 

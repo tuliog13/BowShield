@@ -1,5 +1,6 @@
 package tatu.bowshield.control;
 
+import tatu.bowshield.activity.BowShieldGameActivity;
 import tatu.bowshield.sprites.GameSprite;
 import tatu.bowshield.sprites.Player;
 
@@ -24,9 +25,9 @@ public class PlayersController {
             return _PlayerOne;
     }
 
-    public static void Update() {
-        _PlayerTwo.Move();
-        _PlayerOne.Move();
+    public static void Update(boolean toAnimePlayer) {
+        _PlayerTwo.Move(toAnimePlayer);
+        _PlayerOne.Move(toAnimePlayer);
     }
 
     public static void Draw() {
@@ -76,10 +77,10 @@ public class PlayersController {
         }
     }
 
-    public static void Destroy() {
+    public static void Destroy(BowShieldGameActivity reference) {
         // TODO Auto-generated method stub
-        _PlayerOne.Destroy(GameSprite.getGameReference().getScene());
-        _PlayerTwo.Destroy(GameSprite.getGameReference().getScene());
+        _PlayerOne.Destroy(reference.getScene());
+        _PlayerTwo.Destroy(reference.getScene());
     }
 
 }

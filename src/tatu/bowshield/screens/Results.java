@@ -2,6 +2,7 @@ package tatu.bowshield.screens;
 
 import org.andengine.input.touch.TouchEvent;
 
+import tatu.bowshield.activity.BowShieldGameActivity;
 import tatu.bowshield.component.Button;
 import tatu.bowshield.component.ButtonManager;
 import tatu.bowshield.component.PopUp;
@@ -21,16 +22,16 @@ public class Results extends SimpleScreen implements OnPopupResult, IOnButtonTou
 
     ButtonManager bManager;
 
-    public Results(int id, String filepath) {
-        super(id, filepath);
+    public Results(BowShieldGameActivity reference, int id, String filepath) {
+        super(reference, id, filepath);
         // TODO Auto-generated constructor stub
 
         PopUp.setListener(this);
 
-        btnPlayAgain = new Button("gfx/buttons/create_normal.png", "gfx/buttons/create_pressed.png", 170, 288, 0);
-        btnBackToMenu = new Button("gfx/buttons/create_normal.png", "gfx/buttons/create_pressed.png", 420, 288, 1);
+        btnPlayAgain = new Button(mReference, "gfx/buttons/create_normal.png", "gfx/buttons/create_pressed.png", 170, 288, 0);
+        btnBackToMenu = new Button(mReference, "gfx/buttons/create_normal.png", "gfx/buttons/create_pressed.png", 420, 288, 1);
 
-        bManager = new ButtonManager(this);
+        bManager = new ButtonManager(mReference, this);
         bManager.addButton(btnPlayAgain);
         bManager.addButton(btnBackToMenu);
 
@@ -114,7 +115,7 @@ public class Results extends SimpleScreen implements OnPopupResult, IOnButtonTou
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // TODO Auto-generated method stub
 
-        PopUp.showPopUp(new ConfirmDialog(700, 350));
+        PopUp.showPopUp(new ConfirmDialog(mReference, 700, 350));
         PopUp.bringToFront();
 
         return false;

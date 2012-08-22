@@ -345,11 +345,13 @@ public class BluetoothService {
         byte[] mBytes = message.getBytes();
         readyToSend = false;
 
-        try {
-            r.sendType(type);
-            r.sendMenssage(mBytes);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (r != null) {
+            try {
+                r.sendType(type);
+                r.sendMenssage(mBytes);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         // DebugLog.log("Sended: Type: " + type + " Message: " + message + " - Send blocked!");

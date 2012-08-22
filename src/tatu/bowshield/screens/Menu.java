@@ -7,6 +7,7 @@ import org.andengine.opengl.texture.Texture;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.TextureRegionFactory;
 
+import tatu.bowshield.activity.BowShieldGameActivity;
 import tatu.bowshield.bluetooth.BluetoothService;
 import tatu.bowshield.component.Button;
 import tatu.bowshield.component.ButtonManager;
@@ -74,40 +75,40 @@ public class Menu extends Screen implements IOnButtonTouch, OnListItemClickListe
     private ScanPopUp           mScanPopUp;
     private WaitingPopUp        mWaitingPopUp;
 
-    public Menu(int id) {
-        super(id);
+    public Menu(BowShieldGameActivity reference, int id) {
+        super(reference, id);
     }
 
     @Override
     public void Initialize() {
         // TODO Auto-generated method stub
 
-        mButtonCreate = new Button(PATH_BUTTON_CREATE, PATH_BUTTON_CREATE_PRESSED, 100, 90, BTN_CREATE);
-        mButtonJoin = new Button(PATH_BUTTON_JOIN, PATH_BUTTON_JOIN_PRESSED, 450, 90, BTN_JOIN);
-        mButtonSkip = new Button(PATH_BUTTON_HELP, PATH_BUTTON_HELP_PRESSED, 350, 350, BTN_SKIP);
-        mButtonHelp = new Button(PATH_BUTTON_HELP, PATH_BUTTON_HELP_PRESSED, 50, 350, BTN_HELP);
-        mButtonInfo = new Button(PATH_BUTTON_ABOUT, PATH_BUTTON_ABOUT_PRESSED, 670, 350, BTN_ABOUT);
+        mButtonCreate = new Button(mReference, PATH_BUTTON_CREATE, PATH_BUTTON_CREATE_PRESSED, 100, 90, BTN_CREATE);
+        mButtonJoin = new Button(mReference, PATH_BUTTON_JOIN, PATH_BUTTON_JOIN_PRESSED, 450, 90, BTN_JOIN);
+        mButtonSkip = new Button(mReference, PATH_BUTTON_HELP, PATH_BUTTON_HELP_PRESSED, 350, 350, BTN_SKIP);
+        mButtonHelp = new Button(mReference, PATH_BUTTON_HELP, PATH_BUTTON_HELP_PRESSED, 50, 350, BTN_HELP);
+        mButtonInfo = new Button(mReference, PATH_BUTTON_ABOUT, PATH_BUTTON_ABOUT_PRESSED, 670, 350, BTN_ABOUT);
 
-        mButtonManager = new ButtonManager(this);
+        mButtonManager = new ButtonManager(mReference, this);
         mButtonManager.addButton(mButtonCreate);
         mButtonManager.addButton(mButtonJoin);
         mButtonManager.addButton(mButtonSkip);
         mButtonManager.addButton(mButtonHelp);
         mButtonManager.addButton(mButtonInfo);
 
-        helpScreen = new SimpleScreen(Constants.SIMPLE_SCREEN_HELP, PATH_IMAGE_HELP);
-        AboutScreen = new SimpleScreen(Constants.SIMPLE_SCREEN_ABOUT, PATH_IMAGE_ABOUT);
+        helpScreen = new SimpleScreen(mReference, Constants.SIMPLE_SCREEN_HELP, PATH_IMAGE_HELP);
+        AboutScreen = new SimpleScreen(mReference, Constants.SIMPLE_SCREEN_ABOUT, PATH_IMAGE_ABOUT);
 
         addSimpleScreen(helpScreen);
         addSimpleScreen(AboutScreen);
 
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        GameSprite.getGameReference().registerReceiver(mReceiver, filter);
+        mReference.registerReceiver(mReceiver, filter);
 
         filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        GameSprite.getGameReference().registerReceiver(mReceiver, filter);
+        mReference.registerReceiver(mReceiver, filter);
 
-        GameSprite.getGameReference().runOnUiThread(new Runnable() {
+        mReference.runOnUiThread(new Runnable() {
 
             @Override
             public void run() {
@@ -180,7 +181,7 @@ public class Menu extends Screen implements IOnButtonTouch, OnListItemClickListe
 
         getScene().setBackground(
                 new SpriteBackground(new Sprite(0, 0, Constants.CAMERA_WIDTH, Constants.CAMERA_HEIGHT,
-                        mBackgroundRegion, GameSprite.getGameReference().getVertexBufferObjectManager())));
+                        mBackgroundRegion, mReference.getVertexBufferObjectManager())));
 
         mButtonManager.drawButtons();
         super.Draw();
@@ -188,15 +189,13 @@ public class Menu extends Screen implements IOnButtonTouch, OnListItemClickListe
 
     @Override
     public void Destroy() {
-        GameSprite.getGameReference().unregisterReceiver(mReceiver);
+        mReference.unregisterReceiver(mReceiver);
 
-        GameSprite.getGameReference().runOnUpdateThread(new Runnable() {
-
+        mReference.runOnUpdateThread(new Runnable() {
             @Override
             public void run() {
                 mButtonManager.detach();
             }
-
         });
 
         super.Destroy();
@@ -219,7 +218,7 @@ public class Menu extends Screen implements IOnButtonTouch, OnListItemClickListe
 
             case BTN_CREATE:
 
-                PopUp.showPopUp(mWaitingPopUp = new WaitingPopUp(getScene()));
+                PopUp.showPopUp(mWaitingPopUp = new WaitingPopUp(mReference));
 
                 makeDiscoverable();
                 mChatService.start();
@@ -231,7 +230,7 @@ public class Menu extends Screen implements IOnButtonTouch, OnListItemClickListe
 
             case BTN_JOIN:
 
-                PopUp.showPopUp(mScanPopUp = new ScanPopUp(this));
+                PopUp.showPopUp(mScanPopUp = new ScanPopUp(mReference, this));
 
                 ScreenManager.reDraw();
                 scanDevices();
@@ -294,7 +293,7 @@ public class Menu extends Screen implements IOnButtonTouch, OnListItemClickListe
         // BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
         Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-        GameSprite.getGameReference().startActivity(discoverableIntent);
+        mReference.startActivity(discoverableIntent);
         // }
     }
 

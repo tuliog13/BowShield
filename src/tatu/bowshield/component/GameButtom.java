@@ -7,6 +7,7 @@ import org.andengine.opengl.texture.Texture;
 import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.opengl.texture.region.TextureRegionFactory;
 
+import tatu.bowshield.activity.BowShieldGameActivity;
 import tatu.bowshield.control.TextureLoader;
 import tatu.bowshield.sprites.GameSprite;
 import android.view.MotionEvent;
@@ -14,24 +15,26 @@ import android.view.MotionEvent;
 public class GameButtom {
 
     // variáveis criadas
-    private TextureRegion mRegion;
-    private TextureRegion mRegion2;
+    private TextureRegion           mRegion;
+    private TextureRegion           mRegion2;
 
-    private Texture       mTexture;
-    private Texture       mTexture2;
+    private Texture                 mTexture;
+    private Texture                 mTexture2;
 
-    protected float       X;
-    protected float       Y;
+    protected float                 X;
+    protected float                 Y;
 
-    protected Sprite      pSprite;
-    protected Sprite      pSprite2;
+    protected Sprite                pSprite;
+    protected Sprite                pSprite2;
+    protected BowShieldGameActivity mReference;
 
-    public GameButtom(final String filepath1, String filepath2, float X, float Y) {
+    public GameButtom(BowShieldGameActivity reference, final String filepath1, String filepath2, float X, float Y) {
 
         this.X = X;
         this.Y = Y;
+        mReference = reference;
 
-        TextureLoader loader = GameSprite.getGameReference().getTextureLoader();
+        TextureLoader loader = mReference.getTextureLoader();
 
         mTexture = loader.load(filepath1);
         mTexture.load();
@@ -42,11 +45,11 @@ public class GameButtom {
         mRegion = TextureRegionFactory.extractFromTexture(mTexture);
         mRegion2 = TextureRegionFactory.extractFromTexture(mTexture2);
 
-        pSprite = new Sprite(X, Y, mRegion, GameSprite.getGameReference().getVertexBufferObjectManager());
-        GameSprite.getGameReference().getTextureManager().loadTexture(mTexture);
+        pSprite = new Sprite(X, Y, mRegion, mReference.getVertexBufferObjectManager());
+        mReference.getTextureManager().loadTexture(mTexture);
 
-        pSprite2 = new Sprite(X, Y, mRegion2, GameSprite.getGameReference().getVertexBufferObjectManager());
-        GameSprite.getGameReference().getTextureManager().loadTexture(mTexture2);
+        pSprite2 = new Sprite(X, Y, mRegion2, mReference.getVertexBufferObjectManager());
+        mReference.getTextureManager().loadTexture(mTexture2);
     }
 
     public void Update() {
@@ -55,7 +58,7 @@ public class GameButtom {
 
     public void Draw(float percw, float perch) {
         pSprite.setPosition(X, Y);
-        GameSprite.getGameReference().getScene().attachChild(pSprite);
+        mReference.getScene().attachChild(pSprite);
     }
 
     public void setPosition(float x, float y) {
@@ -68,7 +71,7 @@ public class GameButtom {
 
         pSprite.setPosition(X, Y);
         pSprite2.setPosition(X, Y);
-        Scene scene = GameSprite.getGameReference().getScene();
+        Scene scene = mReference.getScene();
 
         try {
             scene.attachChild(pSprite2);

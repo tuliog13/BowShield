@@ -5,17 +5,20 @@ import java.util.List;
 
 import org.andengine.input.touch.TouchEvent;
 
+import tatu.bowshield.activity.BowShieldGameActivity;
 import tatu.bowshield.control.IOnButtonTouch;
 import tatu.bowshield.sprites.GameSprite;
 
 public class ButtonManager {
 
-    List<Button>   buttons;
-    IOnButtonTouch listener;
+    List<Button>          buttons;
+    IOnButtonTouch        listener;
+    BowShieldGameActivity mReference;
 
-    public ButtonManager(IOnButtonTouch listener) {
+    public ButtonManager(BowShieldGameActivity reference, IOnButtonTouch listener) {
         this.listener = listener;
         this.buttons = new ArrayList<Button>();
+        mReference = reference;
     }
 
     public void addButton(Button button) {
@@ -77,8 +80,8 @@ public class ButtonManager {
 
     public void detach() {
         for (Button button : buttons) {
-            GameSprite.getGameReference().getScene().detachChild(button.getSprite());
-            GameSprite.getGameReference().getScene().detachChild(button.getSprite2());
+            mReference.getScene().detachChild(button.getSprite());
+            mReference.getScene().detachChild(button.getSprite2());
         }
     }
 
@@ -87,8 +90,8 @@ public class ButtonManager {
     }
 
     public void removeButton(Button button) {
-        GameSprite.getGameReference().getScene().detachChild(button.getSprite());
-        GameSprite.getGameReference().getScene().detachChild(button.getSprite2());
+        mReference.getScene().detachChild(button.getSprite());
+        mReference.getScene().detachChild(button.getSprite2());
         buttons.remove(button);
     }
 }

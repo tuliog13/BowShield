@@ -2,6 +2,7 @@ package tatu.bowshield.control;
 
 import java.util.EventListener;
 
+import tatu.bowshield.activity.BowShieldGameActivity;
 import tatu.bowshield.bluetooth.OnDirectionChanged;
 import tatu.bowshield.sprites.GameSprite;
 
@@ -9,8 +10,8 @@ public class MoveControl extends GameSprite implements EventListener {
 
     public static OnDirectionChanged sListener;
 
-    public MoveControl(final String filepath, float X, float Y) {
-        super(filepath, X, Y);
+    public MoveControl(BowShieldGameActivity reference, final String filepath, float X, float Y) {
+        super(reference, filepath, X, Y);
 
     }
 

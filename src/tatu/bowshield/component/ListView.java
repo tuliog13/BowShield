@@ -8,6 +8,7 @@ import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 
+import tatu.bowshield.activity.BowShieldGameActivity;
 import tatu.bowshield.control.IOnButtonTouch;
 import tatu.bowshield.sprites.GameSprite;
 
@@ -24,19 +25,21 @@ public class ListView implements IOnButtonTouch {
     private int             mCount;
 
     OnListItemClickListener itemListener;
+    BowShieldGameActivity   mReference;
 
-    public ListView(int x, int y) {
+    public ListView(BowShieldGameActivity reference, int x, int y) {
 
-        BitmapTextureAtlas mTextFontTextureAtlas = new BitmapTextureAtlas(GameSprite.getGameReference()
-                .getTextureManager(), 512, 512, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        mTextFont = FontFactory.create(GameSprite.getGameReference().getFontManager(), mTextFontTextureAtlas, 32);
+        mReference = reference;
+        BitmapTextureAtlas mTextFontTextureAtlas = new BitmapTextureAtlas(mReference.getTextureManager(), 512, 512,
+                TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        mTextFont = FontFactory.create(mReference.getFontManager(), mTextFontTextureAtlas, 32);
 
-        GameSprite.getGameReference().getEngine().getFontManager().loadFont(mTextFont);
+        mReference.getEngine().getFontManager().loadFont(mTextFont);
 
-        GameSprite.getGameReference().getEngine().getTextureManager().loadTexture(mTextFontTextureAtlas);
+        mReference.getEngine().getTextureManager().loadTexture(mTextFontTextureAtlas);
 
         mCount = 0;
-        manager = new ButtonManager(this);
+        manager = new ButtonManager(mReference, this);
         this.mX = x;
         this.mY = y;
 
@@ -47,11 +50,11 @@ public class ListView implements IOnButtonTouch {
         int y = (50 * mCount) + mY;
         mCount++;
 
-        ListItem newItem = new ListItem(text, PATH_BUTTON, PATH_BUTTON_PRESSED, mX, y, mCount - 1);
+        ListItem newItem = new ListItem(mReference, text, PATH_BUTTON, PATH_BUTTON_PRESSED, mX, y, mCount - 1);
         newItem.setContainer(container);
 
         try {
-            Text mText = new Text(mX, y, mTextFont, text, GameSprite.getGameReference().getVertexBufferObjectManager());
+            Text mText = new Text(mX, y, mTextFont, text, mReference.getVertexBufferObjectManager());
             newItem.setTextSprite(mText);
         } catch (Exception e) {
             e.printStackTrace();
@@ -72,7 +75,7 @@ public class ListView implements IOnButtonTouch {
 
     public void draw() {
 
-        Scene scene = GameSprite.getGameReference().getScene();
+        Scene scene = mReference.getScene();
         manager.drawButtons();
 
         for (Button b : manager.getButtons()) {
@@ -93,7 +96,7 @@ public class ListView implements IOnButtonTouch {
     public void detach() {
 
         manager.detach();
-        Scene scene = GameSprite.getGameReference().getScene();
+        Scene scene = mReference.getScene();
         for (Button b : manager.getButtons()) {
             ListItem item = (ListItem) b;
             try {

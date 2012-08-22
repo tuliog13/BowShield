@@ -2,13 +2,15 @@ package tatu.bowshield.component;
 
 import org.andengine.input.touch.TouchEvent;
 
+import tatu.bowshield.activity.BowShieldGameActivity;
+
 public class Button extends GameButtom {
 
     private int     mId;
     private boolean active;
 
-    public Button(String filepath, String filepath2, float X, float Y, int id) {
-        super(filepath, filepath2, X, Y);
+    public Button(BowShieldGameActivity reference, String filepath, String filepath2, float X, float Y, int id) {
+        super(reference, filepath, filepath2, X, Y);
         this.mId = id;
         active = false;
     }

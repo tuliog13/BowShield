@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import tatu.bowshield.activity.BowShieldGameActivity;
 import tatu.bowshield.sprites.Fruit;
 import tatu.bowshield.sprites.Player;
 
@@ -13,7 +14,7 @@ public class FruitController {
     private static int         _quantidade;
     private static List<Fruit> _fruits;
 
-    public static void Initialize(int quantidade, Player player) {
+    public static void Initialize(BowShieldGameActivity reference, int quantidade, Player player) {
         _player = player;
         _quantidade = quantidade;
 
@@ -22,9 +23,9 @@ public class FruitController {
         for (int i = 0; i < _quantidade; i++) {
             Random r = new Random();
             if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
-                _fruits.add(new Fruit("gfx/apple.png", 160, (i * 65) + 165));
+                _fruits.add(new Fruit(reference, "gfx/apple.png", 160, (i * 65) + 165));
             } else {
-                _fruits.add(new Fruit("gfx/apple.png", 660, (i * 65) + 165));
+                _fruits.add(new Fruit(reference, "gfx/apple.png", 660, (i * 65) + 165));
             }
         }
     }

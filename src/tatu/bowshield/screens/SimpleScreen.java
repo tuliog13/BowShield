@@ -1,5 +1,6 @@
 package tatu.bowshield.screens;
 
+import tatu.bowshield.activity.BowShieldGameActivity;
 import tatu.bowshield.control.ScreenManager;
 import tatu.bowshield.sprites.GameSprite;
 import android.view.KeyEvent;
@@ -28,19 +29,19 @@ public class SimpleScreen extends Screen {
 
     private boolean isShowing;
 
-    public SimpleScreen(int id) {
-        super(id);
+    public SimpleScreen(BowShieldGameActivity reference, int id) {
+        super(reference, id);
         // TODO Auto-generated constructor stub
     }
 
-    public SimpleScreen(int id, String filepath) {
-        super(id + 100);
+    public SimpleScreen(BowShieldGameActivity reference, int id, String filepath) {
+        super(reference, id + 100);
         setId(id);
 
         currentAlpha = 250;
         isShowing = false;
 
-        backgroundImage = new GameSprite(filepath, 0, 0);
+        backgroundImage = new GameSprite(mReference, filepath, 0, 0);
         backgroundImage.getSprite().setAlpha(currentAlpha);
     }
 
@@ -55,7 +56,7 @@ public class SimpleScreen extends Screen {
 
     public void Show() {
         isShowing = true;
-        GameSprite.getGameReference().getScene().attachChild(backgroundImage.getSprite());
+        mReference.getScene().attachChild(backgroundImage.getSprite());
     }
 
     public void Destroy() {
@@ -85,7 +86,7 @@ public class SimpleScreen extends Screen {
                 currentAlpha += 9;
                 backgroundImage.getSprite().setAlpha(currentAlpha);
             } else {
-                GameSprite.getGameReference().getScene().detachChild(backgroundImage.getSprite());
+                mReference.getScene().detachChild(backgroundImage.getSprite());
                 if (ScreenManager.getCurrentScreen().hasSimpleScreens()) {
                     for (SimpleScreen screen : ScreenManager.getCurrentScreen().get_simpleScreens()) {
                         screen.onCallChildrenDetach();

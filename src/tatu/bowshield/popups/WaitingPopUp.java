@@ -7,6 +7,7 @@ import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 
+import tatu.bowshield.activity.BowShieldGameActivity;
 import tatu.bowshield.component.PopUp;
 import tatu.bowshield.component.PopUpLayout;
 import tatu.bowshield.sprites.GameSprite;
@@ -20,25 +21,24 @@ public class WaitingPopUp extends PopUpLayout {
     private Scene  mScene;
     public boolean attached = false;
 
-    public WaitingPopUp(Scene scene) {
+    public WaitingPopUp(BowShieldGameActivity reference) {
         WIDTH = 700;
         HEIGHT = 380;
 
-        BitmapTextureAtlas mTextFontTextureAtlas = new BitmapTextureAtlas(GameSprite.getGameReference()
-                .getTextureManager(), 512, 512, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        mTextFont = FontFactory.create(GameSprite.getGameReference().getFontManager(), mTextFontTextureAtlas, 32);
+        BitmapTextureAtlas mTextFontTextureAtlas = new BitmapTextureAtlas(reference.getTextureManager(), 512, 512,
+                TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        mTextFont = FontFactory.create(reference.getFontManager(), mTextFontTextureAtlas, 32);
 
-        GameSprite.getGameReference().getEngine().getFontManager().loadFont(mTextFont);
+        reference.getEngine().getFontManager().loadFont(mTextFont);
 
-        GameSprite.getGameReference().getEngine().getTextureManager().loadTexture(mTextFontTextureAtlas);
+        reference.getEngine().getTextureManager().loadTexture(mTextFontTextureAtlas);
 
-        mWatingText = new Text(100, 350, mTextFont, "Jogo criado, aguardando oponente.", GameSprite.getGameReference()
-                .getVertexBufferObjectManager());
+        mWatingText = new Text(100, 350, mTextFont, "Jogo criado, aguardando oponente.",
+                reference.getVertexBufferObjectManager());
 
         // mConnectingText = new Text(300, 300, mTextFont,
         // "Alguem parece estar chegando...", GameSprite
         // .getGameReference().getVertexBufferObjectManager());
-        mScene = scene;
     }
 
     @Override

@@ -7,6 +7,7 @@ import org.andengine.opengl.texture.Texture;
 import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.opengl.texture.region.TextureRegionFactory;
 
+import tatu.bowshield.activity.BowShieldGameActivity;
 import tatu.bowshield.control.TextureLoader;
 import tatu.bowshield.sprites.GameSprite;
 
@@ -40,10 +41,12 @@ public class PositionControler {
     private byte             STATE;
 
     private boolean          mLock;
+    BowShieldGameActivity    mReference;
 
-    public PositionControler(final String filepath1, String filepath2, float X, float Y) {
+    public PositionControler(BowShieldGameActivity reference, final String filepath1, String filepath2, float X, float Y) {
 
-        TextureLoader loader = GameSprite.getGameReference().getTextureLoader();
+        mReference = reference;
+        TextureLoader loader = mReference.getTextureLoader();
 
         mTexture = loader.load(filepath1);
         mTexture.load();
@@ -54,12 +57,11 @@ public class PositionControler {
         mRegion = TextureRegionFactory.extractFromTexture(mTexture);
         mRegion2 = TextureRegionFactory.extractFromTexture(mTexture2);
 
-        mBackgroundSprite = new Sprite(X, Y, mRegion, GameSprite.getGameReference().getVertexBufferObjectManager());
-        GameSprite.getGameReference().getTextureManager().loadTexture(mTexture);
+        mBackgroundSprite = new Sprite(X, Y, mRegion, mReference.getVertexBufferObjectManager());
+        mReference.getTextureManager().loadTexture(mTexture);
 
-        mControllerSprite = new Sprite(X + 5, Y + 5, mRegion2, GameSprite.getGameReference()
-                .getVertexBufferObjectManager());
-        GameSprite.getGameReference().getTextureManager().loadTexture(mTexture2);
+        mControllerSprite = new Sprite(X + 5, Y + 5, mRegion2, mReference.getVertexBufferObjectManager());
+        mReference.getTextureManager().loadTexture(mTexture2);
 
         mWidth = mBackgroundSprite.getWidth();
         mHeight = mBackgroundSprite.getHeight();
@@ -83,7 +85,7 @@ public class PositionControler {
 
     public void Draw() {
 
-        Scene scene = GameSprite.getGameReference().getScene();
+        Scene scene = mReference.getScene();
 
         try {
             scene.attachChild(mBackgroundSprite);
@@ -114,10 +116,11 @@ public class PositionControler {
         float y = event.getY();
         int toleranceY = 50;
         int toleranceX = 5;
-            
-        boolean collisionX = x > (mBackgroundX - toleranceX) && (x + mControllerSprite.getWidth()) < mBackgroundX + mWidth + toleranceX;
+
+        boolean collisionX = x > (mBackgroundX - toleranceX)
+                && (x + mControllerSprite.getWidth()) < mBackgroundX + mWidth + toleranceX;
         boolean collisionY = y > (mBackgroundY - toleranceY) && y < (mBackgroundY + mHeight + toleranceY);
-        
+
         if ((collisionX && collisionY) || mLock) {
 
             mControllerX = x;
@@ -128,9 +131,9 @@ public class PositionControler {
 
             float centerX = mControllerX + (mControllerSprite.getWidth() / 2);
 
-            if (centerX > mCenterTotal + 2) {
+            if (centerX > mCenterTotal + 20) {
                 STATE = STATE_RIGHT;
-            } else if (centerX < mCenterTotal - 2) {
+            } else if (centerX < mCenterTotal - 20) {
                 STATE = STATE_LEFT;
             } else {
                 STATE = STATE_CENTER;
@@ -176,8 +179,8 @@ public class PositionControler {
     }
 
     public void Destroy() {
-        GameSprite.getGameReference().getScene().detachChild(mBackgroundSprite);
-        GameSprite.getGameReference().getScene().detachChild(mControllerSprite);
+        mReference.getScene().detachChild(mBackgroundSprite);
+        mReference.getScene().detachChild(mControllerSprite);
     }
 
 }

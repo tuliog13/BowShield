@@ -2,6 +2,7 @@ package tatu.bowshield.popups;
 
 import org.andengine.input.touch.TouchEvent;
 
+import tatu.bowshield.activity.BowShieldGameActivity;
 import tatu.bowshield.component.Button;
 import tatu.bowshield.component.ButtonManager;
 import tatu.bowshield.component.PopUp;
@@ -13,28 +14,31 @@ import android.view.KeyEvent;
 
 public class ConfirmDialog extends PopUpLayout implements IOnButtonTouch {
 
-    private String    PATH_BUTTON         = "gfx/buttonn.png";
-    private String    PATH_BUTTON_PRESSED = "gfx/buttonp.png";
+    private String        PATH_BUTTON         = "gfx/buttonn.png";
+    private String        PATH_BUTTON_PRESSED = "gfx/buttonp.png";
 
-    private final int BTN_YES             = 0;
-    private final int BTN_NO              = 1;
+    private final int     BTN_YES             = 0;
+    private final int     BTN_NO              = 1;
 
-    Button            btnYes;
-    Button            btnNo;
-    ButtonManager     bManager;
+    Button                btnYes;
+    Button                btnNo;
+    ButtonManager         bManager;
 
-    GameSprite        sprite;
+    GameSprite            sprite;
+    BowShieldGameActivity mReference;
 
-    public ConfirmDialog(int width, int heigth) {
-        btnYes = new Button(PATH_BUTTON, PATH_BUTTON_PRESSED, 167, 270, BTN_YES);
-        btnNo = new Button(PATH_BUTTON, PATH_BUTTON_PRESSED, 413, 270, BTN_NO);
+    public ConfirmDialog(BowShieldGameActivity reference, int width, int heigth) {
+        
+        mReference = reference;
+        btnYes = new Button(mReference, PATH_BUTTON, PATH_BUTTON_PRESSED, 167, 270, BTN_YES);
+        btnNo = new Button(mReference, PATH_BUTTON, PATH_BUTTON_PRESSED, 413, 270, BTN_NO);
 
         WIDTH = width;
         HEIGHT = heigth;
 
-        sprite = new GameSprite("gfx/texto.png", 257, 120);
+        sprite = new GameSprite(mReference, "gfx/texto.png", 257, 120);
 
-        bManager = new ButtonManager(this);
+        bManager = new ButtonManager(mReference, this);
         bManager.addButton(btnYes);
         bManager.addButton(btnNo);
     }
@@ -72,7 +76,7 @@ public class ConfirmDialog extends PopUpLayout implements IOnButtonTouch {
     public void Destroy() {
         // TODO Auto-generated method stub
         bManager.detach();
-        GameSprite.getGameReference().getScene().detachChild(sprite.getSprite());
+        mReference.getScene().detachChild(sprite.getSprite());
     }
 
     @Override

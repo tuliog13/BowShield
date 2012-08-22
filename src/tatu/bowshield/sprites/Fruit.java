@@ -1,10 +1,12 @@
 package tatu.bowshield.sprites;
 
+import tatu.bowshield.activity.BowShieldGameActivity;
+
 
 public class Fruit extends GameSprite {
 
-    public Fruit(final String filepath, float X, float Y) {
-        super(filepath, X, Y);
+    public Fruit(BowShieldGameActivity reference, final String filepath, float X, float Y) {
+        super(reference, filepath, X, Y);
 
     }
 

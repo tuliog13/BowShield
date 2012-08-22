@@ -9,6 +9,7 @@ import org.andengine.opengl.texture.Texture;
 import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.opengl.texture.region.TextureRegionFactory;
 
+import tatu.bowshield.activity.BowShieldGameActivity;
 import tatu.bowshield.control.OnPopupResult;
 import tatu.bowshield.control.TextureLoader;
 import tatu.bowshield.sprites.GameSprite;
@@ -48,31 +49,35 @@ public class PopUp implements EventListener {
     private static int           currentX;
     private static int           currentY;
 
-    public static void Inicialize() {
+    static BowShieldGameActivity mReference;
+
+    public static void Inicialize(BowShieldGameActivity reference) {
+
+        mReference = reference;
         alpha = 251;
-        rec = new Rectangle(0, 0, 800, 480, GameSprite.getGameReference().getVertexBufferObjectManager());
+        rec = new Rectangle(0, 0, 800, 480, mReference.getVertexBufferObjectManager());
         rec.setColor(0f, 0f, 0f);
 
-        recCover = new Rectangle(0, 0, 800, 480, GameSprite.getGameReference().getVertexBufferObjectManager());
+        recCover = new Rectangle(0, 0, 800, 480, mReference.getVertexBufferObjectManager());
         recCover.setColor(0f, 0f, 0f);
 
-        GameSprite.getGameReference().getScene().attachChild(rec);
+        mReference.getScene().attachChild(rec);
         rec.setVisible(false);
 
-        TextureLoader loader = GameSprite.getGameReference().getTextureLoader();
+        TextureLoader loader = mReference.getTextureLoader();
 
         mTexture = loader.load(PATH_POPUP_SCAND);
         mTexture.load();
 
         mRegion = TextureRegionFactory.extractFromTexture(mTexture);
 
-        pSprite = new Sprite(0, 0, mRegion, GameSprite.getGameReference().getVertexBufferObjectManager());
-        GameSprite.getGameReference().getTextureManager().loadTexture(mTexture);
+        pSprite = new Sprite(0, 0, mRegion, mReference.getVertexBufferObjectManager());
+        mReference.getTextureManager().loadTexture(mTexture);
 
-        pSpriteCover = new Sprite(0, 0, mRegion, GameSprite.getGameReference().getVertexBufferObjectManager());
-        GameSprite.getGameReference().getTextureManager().loadTexture(mTexture);
+        pSpriteCover = new Sprite(0, 0, mRegion, mReference.getVertexBufferObjectManager());
+        mReference.getTextureManager().loadTexture(mTexture);
 
-        GameSprite.getGameReference().getScene().attachChild(pSprite);
+        mReference.getScene().attachChild(pSprite);
         pSprite.setVisible(false);
         pSprite.setWidth(0);
         pSprite.setHeight(0);
@@ -100,7 +105,7 @@ public class PopUp implements EventListener {
     }
 
     public static void setBackground(String path) {
-        TextureLoader loader = GameSprite.getGameReference().getTextureLoader();
+        TextureLoader loader = mReference.getTextureLoader();
 
         mTexture = loader.load(path);
         mTexture.load();
@@ -224,8 +229,8 @@ public class PopUp implements EventListener {
     public static void bringToFront() {
         // TODO Auto-generated method stub
 
-        GameSprite.getGameReference().getScene().attachChild(recCover);
-        GameSprite.getGameReference().getScene().attachChild(pSpriteCover);
+        mReference.getScene().attachChild(recCover);
+        mReference.getScene().attachChild(pSpriteCover);
 
     }
 

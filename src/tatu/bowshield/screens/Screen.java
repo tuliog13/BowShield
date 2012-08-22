@@ -6,20 +6,23 @@ import java.util.List;
 import org.andengine.entity.scene.Scene;
 import org.andengine.input.touch.TouchEvent;
 
+import tatu.bowshield.activity.BowShieldGameActivity;
 import tatu.bowshield.control.TextureLoader;
 import tatu.bowshield.sprites.GameSprite;
 import android.view.KeyEvent;
 
 public abstract class Screen {
 
-    private int                    _id;
+    private int                     mId;
 
-    protected static TextureLoader _loader;
-    protected static Scene         _scene;
-    protected List<SimpleScreen>   _simpleScreens;
+    protected static TextureLoader  mLoader;
+    protected static Scene          mScene;
+    protected List<SimpleScreen>    mSimpleScreen;
+    protected BowShieldGameActivity mReference;
 
-    public Screen(int id) {
-        this._id = id;
+    public Screen(BowShieldGameActivity reference, int id) {
+        this.mId = id;
+        mReference = reference;
     }
 
     public void Initialize() {
@@ -39,19 +42,19 @@ public abstract class Screen {
     }
 
     public void addSimpleScreen(SimpleScreen screen) {
-        if (_simpleScreens == null) {
-            _simpleScreens = new ArrayList<SimpleScreen>();
+        if (mSimpleScreen == null) {
+            mSimpleScreen = new ArrayList<SimpleScreen>();
         }
 
-        _simpleScreens.add(screen);
+        mSimpleScreen.add(screen);
     }
 
     public boolean hasSimpleScreens() {
-        return (_simpleScreens != null);
+        return (mSimpleScreen != null);
     }
 
     public SimpleScreen getActivedSimpleScreen() {
-        for (SimpleScreen screen : _simpleScreens) {
+        for (SimpleScreen screen : mSimpleScreen) {
             if (screen.isShowing()) {
                 return screen;
             }
@@ -60,11 +63,11 @@ public abstract class Screen {
     }
 
     public List<SimpleScreen> get_simpleScreens() {
-        return _simpleScreens;
+        return mSimpleScreen;
     }
 
     public void set_simpleScreens(List<SimpleScreen> _simpleScreens) {
-        this._simpleScreens = _simpleScreens;
+        this.mSimpleScreen = _simpleScreens;
     }
 
     public void Destroy() {
@@ -76,11 +79,11 @@ public abstract class Screen {
         return false;
     }
 
-    public static void resetScene() {
-        _scene = new Scene();
-        _scene.setOnSceneTouchListener(GameSprite.getGameReference());
-        _scene.registerUpdateHandler(GameSprite.getGameReference());
-    }
+//    public static void resetScene() {
+//        mScene = new Scene();
+//        mScene.setOnSceneTouchListener();
+//        mScene.registerUpdateHandler(mReference);
+//    }
 
     public boolean onSceneTouchEvent(TouchEvent pSceneTouchEvent) {
         // TODO Auto-generated method stub
@@ -88,23 +91,23 @@ public abstract class Screen {
     }
 
     public int getId() {
-        return this._id;
+        return this.mId;
     }
 
     public static TextureLoader getLoader() {
-        return _loader;
+        return mLoader;
     }
 
     public static void setLoader(TextureLoader _loader) {
-        Screen._loader = _loader;
+        Screen.mLoader = _loader;
     }
 
     public static Scene getScene() {
-        return _scene;
+        return mScene;
     }
 
     public static void setScene(Scene _scene) {
-        Screen._scene = _scene;
+        Screen.mScene = _scene;
     }
 
 }
