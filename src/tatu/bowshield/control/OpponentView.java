@@ -141,6 +141,7 @@ public class OpponentView {
                     _fruits.get(i).getSprite().detachSelf();
                     _fruits.remove(i);
                     PlayersController.getMyPlayer().getGameData().setsShoted(false);
+                    PlayersController.getMyPlayer().getmArrow().getSprite().setVisible(false);
                 }
             }
         }

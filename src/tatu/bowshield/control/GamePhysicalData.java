@@ -62,7 +62,7 @@ public class GamePhysicalData implements EventListener {
                 X = pSceneTouchEvent.getX();
                 Y = pSceneTouchEvent.getY();
                 sShoted = false;
-
+                PlayersController.getMyPlayer().getmArrow().getSprite().setVisible(false);
                 break;
 
             case MotionEvent.ACTION_MOVE:
@@ -116,7 +116,7 @@ public class GamePhysicalData implements EventListener {
                         gameReference.sendMessage(BluetoothService.SHOT, ang + "@" + mForce + "@"
                                 + mDirecao + "#");
                     }
-
+                    PlayersController.getMyPlayer().getmArrow().getSprite().setVisible(true);
                     sShoted = true;
                     PlayersController.getMyPlayer().setState(PlayersController.getMyPlayer().STATE_SHOTED);
                 }
