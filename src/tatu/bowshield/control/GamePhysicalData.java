@@ -102,8 +102,7 @@ public class GamePhysicalData implements EventListener {
                 DebugLog.log("UP");
                 mTouch.getSprite().setVisible(false);
                 if (PlayersController.getMyPlayer().getState() == PlayersController.getMyPlayer().STATE_AIMING) {
-                    mDistance = 0;
-                    mForce = 0;
+              
                     float ang;
 
                     if (mDirecao == 1) {
@@ -118,6 +117,8 @@ public class GamePhysicalData implements EventListener {
                     }
                     PlayersController.getMyPlayer().getmArrow().getSprite().setVisible(true);
                     sShoted = true;
+                    mDistance = 0;
+                    mForce = 0;
                     PlayersController.getMyPlayer().setState(PlayersController.getMyPlayer().STATE_SHOTED);
                 }
                 break;
@@ -179,7 +180,12 @@ public class GamePhysicalData implements EventListener {
     }
 
     public float getForca() {
-        return mForce;
+        if (mForce <= 2.5f)// Limite de força
+        {
+            return mForce;
+        } else {
+            return 2.5f;
+        }
     }
 
     public float getDistance() {
