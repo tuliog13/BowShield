@@ -47,7 +47,7 @@ public class Arc extends GameSprite {
 
                 if(this == PlayersController.getMyPlayer().getmArc())
                 {
-                    this.linha.getSprite().setWidth(-força*75);
+                    this.linha.getSprite().setWidth(-força*120);
                     linha.getSprite().setFlippedHorizontal(false);
                     linha.getSprite().setRotation(angulo);
                 }
@@ -60,7 +60,7 @@ public class Arc extends GameSprite {
                 
                 if(this == PlayersController.getMyPlayer().getmArc())
                 {
-                    this.linha.getSprite().setWidth(força*75);
+                    this.linha.getSprite().setWidth(força*120);
                     linha.getSprite().setFlippedHorizontal(true);
                     linha.getSprite().setRotation(-angulo);
                 }
