@@ -20,14 +20,31 @@ public class FruitController {
 
         _fruits = new ArrayList<Fruit>();
 
-        for (int i = 0; i < _quantidade; i++) {
-            Random r = new Random();
-            if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
-                _fruits.add(new Fruit(reference, "gfx/apple.png", 160, (i * 65) + 165));
-            } else {
-                _fruits.add(new Fruit(reference, "gfx/apple.png", 660, (i * 65) + 165));
-            }
+        // for (int i = 0; i < _quantidade; i++) {
+        // Random r = new Random();
+        // if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
+        // _fruits.add(new Fruit(reference, "gfx/apple.png", 160, (i * 65) + 165));
+        // } else {
+        // _fruits.add(new Fruit(reference, "gfx/apple.png", 660, (i * 65) + 165));
+        // }
+        // }
+
+        if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
+            _fruits.add(new Fruit(reference, "gfx/apple.png", 30, 80));
+            _fruits.add(new Fruit(reference, "gfx/apple.png", 70, 130));
+            _fruits.add(new Fruit(reference, "gfx/apple.png", 120,170 ));
+            _fruits.add(new Fruit(reference, "gfx/apple.png", 150,240 ));
+            _fruits.add(new Fruit(reference, "gfx/apple.png", 175, 100 ));
+            _fruits.add(new Fruit(reference, "gfx/apple.png", 30, 220 ));
+        } else {
+            _fruits.add(new Fruit(reference, "gfx/apple.png", 630, 80));
+            _fruits.add(new Fruit(reference, "gfx/apple.png", 570, 130));
+            _fruits.add(new Fruit(reference, "gfx/apple.png", 650,160 ));
+            _fruits.add(new Fruit(reference, "gfx/apple.png", 590,240 ));
+            _fruits.add(new Fruit(reference, "gfx/apple.png", 750, 130 ));
+            _fruits.add(new Fruit(reference, "gfx/apple.png", 750, 225 ));
         }
+
     }
 
     public static void Update() {

@@ -73,14 +73,30 @@ public class OpponentView {
 
         _fruits = new ArrayList<Fruit>();
 
-        for (int i = 0; i < 5; i++) {
-            if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
-                _fruits.add(new Fruit(mReference, "gfx/apple.png", getAlignedPositionX(660),
-                        getAlignedPositionY((i * 65) + 165)));
-            } else {
-                _fruits.add(new Fruit(mReference, "gfx/apple.png", getAlignedPositionX(160),
-                        getAlignedPositionY((i * 65) + 165)));
-            }
+//        for (int i = 0; i < 5; i++) {
+//            if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
+//                _fruits.add(new Fruit(mReference, "gfx/apple.png", getAlignedPositionX(660),
+//                        getAlignedPositionY((i * 65) + 165)));
+//            } else {
+//                _fruits.add(new Fruit(mReference, "gfx/apple.png", getAlignedPositionX(160),
+//                        getAlignedPositionY((i * 65) + 165)));
+//            }
+//        }
+        
+        if (GamePhysicalData.GAME_TYPE != GamePhysicalData.SERVER_TYPE) {
+            _fruits.add(new Fruit(reference, "gfx/apple.png",getAlignedPositionX( 30),getAlignedPositionY( 80)));
+            _fruits.add(new Fruit(reference, "gfx/apple.png",getAlignedPositionX( 70), getAlignedPositionY(130)));
+            _fruits.add(new Fruit(reference, "gfx/apple.png",getAlignedPositionX( 120),getAlignedPositionY(170 )));
+            _fruits.add(new Fruit(reference, "gfx/apple.png",getAlignedPositionX( 150),getAlignedPositionY(240 )));
+            _fruits.add(new Fruit(reference, "gfx/apple.png",getAlignedPositionX( 175), getAlignedPositionY(100 )));
+            _fruits.add(new Fruit(reference, "gfx/apple.png",getAlignedPositionX( 30), getAlignedPositionY(220 )));
+        } else {
+            _fruits.add(new Fruit(reference, "gfx/apple.png", getAlignedPositionX( 630), getAlignedPositionY(80)));
+            _fruits.add(new Fruit(reference, "gfx/apple.png",getAlignedPositionX(  570), getAlignedPositionY(130)));
+            _fruits.add(new Fruit(reference, "gfx/apple.png", getAlignedPositionX( 650),getAlignedPositionY(160 )));
+            _fruits.add(new Fruit(reference, "gfx/apple.png", getAlignedPositionX( 590),getAlignedPositionY(240 )));
+            _fruits.add(new Fruit(reference, "gfx/apple.png", getAlignedPositionX( 750), getAlignedPositionY(130) ));
+            _fruits.add(new Fruit(reference, "gfx/apple.png", getAlignedPositionX( 750),getAlignedPositionY( 225) ));
         }
 
         for (Fruit fruit : _fruits) {
