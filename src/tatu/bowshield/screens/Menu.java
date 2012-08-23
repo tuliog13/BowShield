@@ -34,13 +34,13 @@ import android.view.KeyEvent;
 
 public class Menu extends Screen implements IOnButtonTouch, OnListItemClickListener {
 
-    private static final String PATH_BUTTON_CREATE         = "gfx/buttons/create_normal.png";
+    public static final String  PATH_BUTTON_CREATE         = "gfx/buttons/create_normal.png";
     private static final String PATH_BUTTON_CREATE_PRESSED = "gfx/buttons/create_pressed.png";
     private static final String PATH_BUTTON_JOIN           = "gfx/buttons/join_normal.png";
     private static final String PATH_BUTTON_JOIN_PRESSED   = "gfx/buttons/join_pressed.png";
     private static final String PATH_BUTTON_HELP           = "gfx/buttons/help_normal.png";
     private static final String PATH_BUTTON_HELP_PRESSED   = "gfx/buttons/help_pressed.png";
-    private static final String PATH_BUTTON_ABOUT          = "gfx/buttons/info_normal.png";
+    public static final String  PATH_BUTTON_ABOUT          = "gfx/buttons/info_normal.png";
     private static final String PATH_BUTTON_ABOUT_PRESSED  = "gfx/buttons/info_pressed.png";
     private static final String PATH_IMAGE_HELP            = "gfx/telas/help.png";
     private static final String PATH_IMAGE_ABOUT           = "gfx/telas/about.png";
@@ -124,6 +124,9 @@ public class Menu extends Screen implements IOnButtonTouch, OnListItemClickListe
 
                             case BluetoothService.STATE_CONNECTING:
                                 DebugLog.log("Connecting");
+                                if (mScanPopUp != null) {
+                                    mScanPopUp.setConnecting();
+                                }
                                 break;
 
                             case BluetoothService.STATE_LISTEN:
@@ -135,6 +138,11 @@ public class Menu extends Screen implements IOnButtonTouch, OnListItemClickListe
 
                                 if (mChatService != null) {
                                     mChatService.stop();
+                                }
+                                
+                                if (mScanPopUp != null) {
+                                    mScanPopUp.setConnectionLost();
+                                    
                                 }
 
                                 break;
@@ -266,7 +274,9 @@ public class Menu extends Screen implements IOnButtonTouch, OnListItemClickListe
 
                                                           ScreenManager.reDraw();
 
-                                                          mScanPopUp.addBluetooth(device);
+                                                          if (mScanPopUp != null) {
+                                                              mScanPopUp.addBluetooth(device);
+                                                          }
 
                                                           DebugLog.log("Device found: " + device.getName());
                                                       }
@@ -274,11 +284,18 @@ public class Menu extends Screen implements IOnButtonTouch, OnListItemClickListe
                                                       else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED
                                                               .equals(action)) {
                                                           DebugLog.log("Descover finished!");
+                                                          
+                                                          if (mScanPopUp != null) {
+                                                              mScanPopUp.setDiscoveryEnd();
+                                                          }
+                                                          
+                                                          ScreenManager.reDraw();
+                                                          
                                                       }
                                                   }
                                               };
 
-    private void scanDevices() {
+    public void scanDevices() {
 
         makeDiscoverable();
 

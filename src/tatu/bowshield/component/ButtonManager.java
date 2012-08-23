@@ -79,9 +79,13 @@ public class ButtonManager {
     }
 
     public void detach() {
-        for (Button button : buttons) {
-            mReference.getScene().detachChild(button.getSprite());
-            mReference.getScene().detachChild(button.getSprite2());
+        try {
+            for (Button button : buttons) {
+                mReference.getScene().detachChild(button.getSprite());
+                mReference.getScene().detachChild(button.getSprite2());
+            }
+        } catch (Exception e) {
+
         }
     }
 
@@ -90,8 +94,13 @@ public class ButtonManager {
     }
 
     public void removeButton(Button button) {
-        mReference.getScene().detachChild(button.getSprite());
-        mReference.getScene().detachChild(button.getSprite2());
+        try {
+            mReference.getScene().detachChild(button.getSprite());
+            mReference.getScene().detachChild(button.getSprite2());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         buttons.remove(button);
     }
 }
