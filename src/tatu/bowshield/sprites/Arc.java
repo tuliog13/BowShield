@@ -18,6 +18,7 @@ public class Arc extends GameSprite {
         super(reference, filepath, X, Y);
         
         linha = new GameSprite(reference, "gfx/linha.png", 0, 0);
+        linha.getSprite().setVisible(false);
         can = false;
     }
 
@@ -67,6 +68,14 @@ public class Arc extends GameSprite {
             }
         } else if (state == PlayersController.getMyPlayer().STATE_SHOTED) {
             
+            can = false;
+            if(this == PlayersController.getMyPlayer().getmArc())
+            {
+                linha.getSprite().setVisible(false);
+            }
+        }
+        else if (state == PlayersController.getMyPlayer().STATE_STOP)
+        {
             can = false;
             if(this == PlayersController.getMyPlayer().getmArc())
             {
