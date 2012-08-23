@@ -13,50 +13,59 @@ import tatu.bowshield.sprites.GameSprite;
 
 public class OpponentView {
 
-    public static GameSprite   _background;
-    public static AnimatedGameSprite   _opponent;
-    public static GameSprite   _arrow;
-    public static GameSprite   _arrowEnemy;
+    public static GameSprite         _background;
+    public static AnimatedGameSprite _opponent;
+    public static GameSprite         _arrow;
+    public static GameSprite         _arrowEnemy;
 
-    private static List<Fruit> _fruits;
+    private static List<Fruit>       _fruits;
 
-    public static Game         _gameReference;
+    public static Game               _gameReference;
 
-    public static float        WIDTH  = 265.03f;
-    public static float        HEIGTH = 159.03f;
+    public static float              WIDTH  = 265.03f;
+    public static float              HEIGTH = 159.03f;
 
-    public static float        positionX;
-    public static float        positionY;
-    static Rectangle           rec1;
-    static Rectangle           rec2;
-    static Rectangle           rec3;
-    static Rectangle           rec4;
-    static BowShieldGameActivity                       mReference;
+    public static float              positionX;
+    public static float              positionY;
+    static Rectangle                 rec1;
+    static Rectangle                 rec2;
+    static Rectangle                 rec3;
+    static Rectangle                 rec4;
+    static BowShieldGameActivity     mReference;
 
     public static void Initialize(BowShieldGameActivity reference, int x, int y) {
-        
+
         mReference = reference;
         positionX = x;
         positionY = y;
 
-        _background = new GameSprite(mReference, _gameReference.PATH_BACKGROUND, getAlignedPositionX(0), getAlignedPositionY(0));
+        if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
+
+            _background = new GameSprite(mReference, _gameReference.PATH_BACKGROUND1, getAlignedPositionX(0),
+                    getAlignedPositionY(0));
+        } else {
+            _background = new GameSprite(mReference, _gameReference.PATH_BACKGROUND, getAlignedPositionX(0),
+                    getAlignedPositionY(0));
+        }
         _background.getSprite().setWidth(WIDTH);
         _background.getSprite().setHeight(HEIGTH);
 
-        _opponent = new AnimatedGameSprite(mReference, _gameReference.PATH_PLAYER1, getAlignedPositionX((int) PlayersController
-                .getOpponentPlayer().getSprite().getX()), getAlignedPositionY((int) PlayersController
-                .getOpponentPlayer().getSprite().getY()),8,1);
+        _opponent = new AnimatedGameSprite(mReference, _gameReference.PATH_PLAYER1,
+                getAlignedPositionX((int) PlayersController.getOpponentPlayer().getSprite().getX()),
+                getAlignedPositionY((int) PlayersController.getOpponentPlayer().getSprite().getY()), 8, 1);
         _opponent.getSprite().setWidth(getAlignedWidth(PlayersController.getOpponentPlayer().getSprite().getWidth()));
         _opponent.getSprite()
                 .setHeight(getAlignedHeigth(PlayersController.getOpponentPlayer().getSprite().getHeight()));
 
-        _arrow = new GameSprite(mReference, _gameReference.PATH_ARROW, getAlignedPositionX(-300), getAlignedPositionY(400));
+        _arrow = new GameSprite(mReference, _gameReference.PATH_ARROW, getAlignedPositionX(-300),
+                getAlignedPositionY(400));
         _arrow.getSprite().setWidth(
                 getAlignedWidth(PlayersController.getOpponentPlayer().getmArrow().getSprite().getWidth()));
         _arrow.getSprite().setHeight(
                 getAlignedWidth(PlayersController.getOpponentPlayer().getmArrow().getSprite().getHeight()));
 
-        _arrowEnemy = new GameSprite(mReference, _gameReference.PATH_ARROW, getAlignedPositionX(-300), getAlignedPositionY(400));
+        _arrowEnemy = new GameSprite(mReference, _gameReference.PATH_ARROW, getAlignedPositionX(-300),
+                getAlignedPositionY(400));
         _arrowEnemy.getSprite().setWidth(
                 getAlignedWidth(PlayersController.getOpponentPlayer().getmArrow().getSprite().getWidth()));
         _arrowEnemy.getSprite().setHeight(
@@ -66,9 +75,11 @@ public class OpponentView {
 
         for (int i = 0; i < 5; i++) {
             if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
-                _fruits.add(new Fruit(mReference, "gfx/apple.png", getAlignedPositionX(660), getAlignedPositionY((i * 65) + 165)));
+                _fruits.add(new Fruit(mReference, "gfx/apple.png", getAlignedPositionX(660),
+                        getAlignedPositionY((i * 65) + 165)));
             } else {
-                _fruits.add(new Fruit(mReference, "gfx/apple.png", getAlignedPositionX(160), getAlignedPositionY((i * 65) + 165)));
+                _fruits.add(new Fruit(mReference, "gfx/apple.png", getAlignedPositionX(160),
+                        getAlignedPositionY((i * 65) + 165)));
             }
         }
 
@@ -76,6 +87,8 @@ public class OpponentView {
             fruit.getSprite().setWidth(getAlignedWidth(fruit.getSprite().getWidth()));
             fruit.getSprite().setHeight(getAlignedWidth(fruit.getSprite().getHeight()));
         }
+
+        _opponent.animate();
 
     }
 
@@ -86,6 +99,8 @@ public class OpponentView {
         float opponentX = PlayersController.getOpponentPlayer().getmArrow().getSprite().getX();
         float opponentY = PlayersController.getOpponentPlayer().getmArrow().getSprite().getY();
 
+        _opponent.getSprite().setFlippedHorizontal(PlayersController.getOpponentPlayer().getSprite().isFlippedHorizontal());
+        
         if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
 
             _arrow.setPosition(getAlignedPositionX((int) myX - 800), getAlignedPositionY((int) myY));
@@ -179,17 +194,13 @@ public class OpponentView {
     }
 
     public static void Draw() {
-        rec1 = new Rectangle(positionX, positionY, 5, HEIGTH, mReference
-                .getVertexBufferObjectManager());
+        rec1 = new Rectangle(positionX, positionY, 5, HEIGTH, mReference.getVertexBufferObjectManager());
         rec1.setColor(0f, 0f, 0f);
-        rec2 = new Rectangle(positionX + WIDTH, positionY, 5, HEIGTH, mReference
-                .getVertexBufferObjectManager());
+        rec2 = new Rectangle(positionX + WIDTH, positionY, 5, HEIGTH, mReference.getVertexBufferObjectManager());
         rec2.setColor(0f, 0f, 0f);
-        rec3 = new Rectangle(positionX, positionY, WIDTH, 5, mReference
-                .getVertexBufferObjectManager());
+        rec3 = new Rectangle(positionX, positionY, WIDTH, 5, mReference.getVertexBufferObjectManager());
         rec3.setColor(0f, 0f, 0f);
-        rec4 = new Rectangle(positionX, positionY + HEIGTH, WIDTH + 5, 5, mReference
-                .getVertexBufferObjectManager());
+        rec4 = new Rectangle(positionX, positionY + HEIGTH, WIDTH + 5, 5, mReference.getVertexBufferObjectManager());
         rec4.setColor(0f, 0f, 0f);
 
         mReference.getScene().attachChild(_background.getSprite());

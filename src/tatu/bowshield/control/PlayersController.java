@@ -67,11 +67,11 @@ public class PlayersController {
         if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
             get_PlayerOne().setMyPosition(60, 340);
             // get_PlayerOne().setMyPosition(330, 230);
-            get_PlayerTwo().setMyPosition(1500, 340);
+            get_PlayerTwo().setMyPosition(1400, 340);
             get_PlayerTwo().flipHorizontal(2);
         } else {
             get_PlayerOne().setMyPosition(-740, 340);
-            get_PlayerTwo().setMyPosition(700, 340);
+            get_PlayerTwo().setMyPosition(600, 340);
 
             get_PlayerTwo().flipHorizontal(2);
         }

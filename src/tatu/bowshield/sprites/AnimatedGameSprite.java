@@ -73,7 +73,7 @@ public class AnimatedGameSprite {
         isLooping = loop;
     }
 
-    protected void animate() {
+    public void animate() {
         if (!isAnimating) {
             pSprite.animate(mFrameDurations, startIndex, endIndex, true);
             isAnimating = true;

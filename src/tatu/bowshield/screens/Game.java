@@ -84,7 +84,7 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
 
             mPlayerOne = new Player(mReference, PATH_PLAYER1, 60, 340, myPlayerData);
             // mPlayerOne = new Player(PATH_PLAYER1, 330, 230, myPlayerData);
-            mPlayerTwo = new Player(mReference, PATH_PLAYER1, 1500, 340, opponentPlayerData);
+            mPlayerTwo = new Player(mReference, PATH_PLAYER1, 1400, 340, opponentPlayerData);
 
         } else {
 
@@ -92,7 +92,7 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
             mPositionController = new PositionControler(mReference, PATH_CONTROLLER, PATH_CONTROL, 10, 360);
 
             mPlayerOne = new Player(mReference, PATH_PLAYER1, -740, 340, opponentPlayerData);
-            mPlayerTwo = new Player(mReference, PATH_PLAYER1, 700, 340, myPlayerData);
+            mPlayerTwo = new Player(mReference, PATH_PLAYER1, 600, 340, myPlayerData);
         }
 
         mBackgroundTexture.load();
@@ -160,7 +160,7 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
 
         // PlayersController.Update();
         if (PlayersController.getMyPlayer() != null) {
-            
+
             PlayersController.Update(isMovingPlayer);
             FruitController.Update();
             OpponentView.Update();
@@ -175,29 +175,61 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
             Sprite sptOp = PlayersController.getOpponentPlayer().getSprite();
 
             float x = spt.getX(), y = spt.getY();
-
-            if (state == PositionControler.STATE_RIGHT && x < 500) {
-                x += Constants.PLAYER_VELOCITY;
-                PlayersController.getMyPlayer().flipHorizontal(1);
-                PlayersController.getMyPlayer().setMyPosition(x, y);
-            }
-
-            if (state == PositionControler.STATE_LEFT && x > 60) {
-                x -= Constants.PLAYER_VELOCITY;
-                PlayersController.getMyPlayer().flipHorizontal(2);
-                PlayersController.getMyPlayer().setMyPosition(--x, y);
-            }
-
             float xop = sptOp.getX(), yop = sptOp.getY();
 
-            if (stateOpponent == PositionControler.STATE_RIGHT && xop < 500) {
-                xop += Constants.PLAYER_VELOCITY;
-                PlayersController.getOpponentPlayer().setMyPosition(xop, yop);
-            }
+            if (mPlayerOne == PlayersController.getMyPlayer()) {
 
-            if (stateOpponent == PositionControler.STATE_LEFT && xop > 60) {
-                xop -= Constants.PLAYER_VELOCITY;
-                PlayersController.getOpponentPlayer().setMyPosition(--xop, yop);
+                if (state == PositionControler.STATE_RIGHT && x < 500) {
+                    x += Constants.PLAYER_VELOCITY;
+                    PlayersController.getMyPlayer().flipHorizontal(1);
+                    PlayersController.getMyPlayer().setMyPosition(x, y);
+                }
+
+                if (state == PositionControler.STATE_LEFT && x > 60) {
+                    x -= Constants.PLAYER_VELOCITY;
+                    PlayersController.getMyPlayer().flipHorizontal(2);
+                    PlayersController.getMyPlayer().setMyPosition(x, y);
+                }
+
+                if (stateOpponent == PositionControler.STATE_RIGHT && xop < 1400) {
+                    xop += Constants.PLAYER_VELOCITY;
+                    PlayersController.getOpponentPlayer().flipHorizontal(1);
+                    PlayersController.getOpponentPlayer().setMyPosition(xop, yop);
+                }
+
+                if (stateOpponent == PositionControler.STATE_LEFT && xop > 960) {
+                    xop -= Constants.PLAYER_VELOCITY;
+                    PlayersController.getOpponentPlayer().setMyPosition(--xop, yop);
+                    PlayersController.getOpponentPlayer().flipHorizontal(2);
+                }
+
+            }
+            else if (mPlayerOne == PlayersController.getOpponentPlayer())
+            {
+                if (state == PositionControler.STATE_RIGHT && x < 600) {
+                    x += Constants.PLAYER_VELOCITY;
+                    PlayersController.getMyPlayer().flipHorizontal(1);
+                    PlayersController.getMyPlayer().setMyPosition(x, y);
+                }
+
+                if (state == PositionControler.STATE_LEFT && x > 160) {
+                    x -= Constants.PLAYER_VELOCITY;
+                    PlayersController.getMyPlayer().flipHorizontal(2);
+                    PlayersController.getMyPlayer().setMyPosition(x, y);
+                }
+
+                if (stateOpponent == PositionControler.STATE_RIGHT && xop < -300) {
+                    xop += Constants.PLAYER_VELOCITY;
+                    PlayersController.getOpponentPlayer().flipHorizontal(1);
+                    PlayersController.getOpponentPlayer().setMyPosition(xop, yop);
+                }
+
+                if (stateOpponent == PositionControler.STATE_LEFT && xop > -740) {
+                    xop -= Constants.PLAYER_VELOCITY;
+                    PlayersController.getOpponentPlayer().setMyPosition(xop, yop);
+                    PlayersController.getOpponentPlayer().flipHorizontal(2);
+                }
+
             }
 
         } else {
@@ -218,7 +250,7 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
         if (mCanMovePlayer) {
             if (!mPositionController.update(pSceneTouchEvent)) {
                 mCanMovePlayer = false;
-            }else{
+            } else {
                 isMovingPlayer = true;
             }
         }
