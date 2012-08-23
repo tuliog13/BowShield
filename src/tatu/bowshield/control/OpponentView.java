@@ -7,13 +7,14 @@ import org.andengine.entity.primitive.Rectangle;
 
 import tatu.bowshield.activity.BowShieldGameActivity;
 import tatu.bowshield.screens.Game;
+import tatu.bowshield.sprites.AnimatedGameSprite;
 import tatu.bowshield.sprites.Fruit;
 import tatu.bowshield.sprites.GameSprite;
 
 public class OpponentView {
 
     public static GameSprite   _background;
-    public static GameSprite   _opponent;
+    public static AnimatedGameSprite   _opponent;
     public static GameSprite   _arrow;
     public static GameSprite   _arrowEnemy;
 
@@ -42,9 +43,9 @@ public class OpponentView {
         _background.getSprite().setWidth(WIDTH);
         _background.getSprite().setHeight(HEIGTH);
 
-        _opponent = new GameSprite(mReference, _gameReference.PATH_PLAYER1, getAlignedPositionX((int) PlayersController
+        _opponent = new AnimatedGameSprite(mReference, _gameReference.PATH_PLAYER1, getAlignedPositionX((int) PlayersController
                 .getOpponentPlayer().getSprite().getX()), getAlignedPositionY((int) PlayersController
-                .getOpponentPlayer().getSprite().getY()));
+                .getOpponentPlayer().getSprite().getY()),8,1);
         _opponent.getSprite().setWidth(getAlignedWidth(PlayersController.getOpponentPlayer().getSprite().getWidth()));
         _opponent.getSprite()
                 .setHeight(getAlignedHeigth(PlayersController.getOpponentPlayer().getSprite().getHeight()));
