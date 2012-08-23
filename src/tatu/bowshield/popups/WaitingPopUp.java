@@ -11,45 +11,39 @@ import tatu.bowshield.activity.BowShieldGameActivity;
 import tatu.bowshield.component.PopUp;
 import tatu.bowshield.component.PopUpLayout;
 import tatu.bowshield.sprites.GameSprite;
+import android.graphics.Color;
 import android.view.KeyEvent;
 
 public class WaitingPopUp extends PopUpLayout {
 
+    private String PATH_FONT = "gfx/lithos.otf";
+
     private Text   mWatingText;
-    // private Text mConnectingText;
     private Font   mTextFont;
     private Scene  mScene;
-    public boolean attached = false;
+    public boolean attached  = false;
 
     public WaitingPopUp(BowShieldGameActivity reference) {
+        
         WIDTH = 700;
         HEIGHT = 380;
 
-        BitmapTextureAtlas mTextFontTextureAtlas = new BitmapTextureAtlas(reference.getTextureManager(), 512, 512,
-                TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        mTextFont = FontFactory.create(reference.getFontManager(), mTextFontTextureAtlas, 32);
+        mTextFont = FontFactory.createFromAsset(reference.getFontManager(), reference.getTextureManager(), 300, 200,
+                reference.getAssets(), PATH_FONT, 32, true, Color.rgb(84, 56, 20));
 
         reference.getEngine().getFontManager().loadFont(mTextFont);
+        mTextFont.load();
 
-        reference.getEngine().getTextureManager().loadTexture(mTextFontTextureAtlas);
+        mWatingText = new Text(190, 85, mTextFont, "Aguardando jogadores...", reference.getVertexBufferObjectManager());
 
-        mWatingText = new Text(100, 350, mTextFont, "Jogo criado, aguardando oponente.",
-                reference.getVertexBufferObjectManager());
-
-        // mConnectingText = new Text(300, 300, mTextFont,
-        // "Alguem parece estar chegando...", GameSprite
-        // .getGameReference().getVertexBufferObjectManager());
+        mScene = reference.getScene();
     }
 
     @Override
     public void onDraw() {
-        if (!attached) {
-            try {
-                mScene.attachChild(mWatingText);
-                attached = true;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        try {
+            mScene.attachChild(mWatingText);
+        } catch (Exception e) {
         }
     }
 
@@ -86,7 +80,6 @@ public class WaitingPopUp extends PopUpLayout {
 
     @Override
     public void onKeyDown(int keyCode, KeyEvent event) {
-        // TODO Auto-generated method stub
         PopUp.hidePopUp();
     }
 

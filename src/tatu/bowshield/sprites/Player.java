@@ -49,8 +49,6 @@ public class Player extends AnimatedGameSprite {
         this.mArrow = mArrow;
     }
 
-    private int mLife;
-
     // 8 and 1 are the columns and the rows of the animation sprite
     public Player(BowShieldGameActivity reference, final String filepath, float X, float Y, GamePhysicalData physicalDta) {
         super(reference, filepath, X, Y, 8, 1);
@@ -62,6 +60,7 @@ public class Player extends AnimatedGameSprite {
         mGameData = physicalDta;
         mCount = 0;
         state = STATE_STOP;
+        mArc.pSprite.setVisible(false);
     }
 
     public GamePhysicalData getGameData() {

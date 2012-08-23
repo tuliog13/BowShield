@@ -17,7 +17,7 @@ import android.view.KeyEvent;
 
 public class PopUp implements EventListener {
 
-    private static final String  PATH_POPUP_SCAND = "gfx/telas/scan.png";
+    private static final String  PATH_POPUP_SCAND = "gfx/popupbg2.png";
 
     private static float         alpha;
     private static boolean       isShowing;

@@ -14,10 +14,8 @@ import tatu.bowshield.sprites.GameSprite;
 
 public class ListView implements IOnButtonTouch {
 
-    private String          PATH_FONT           = "gfx/Arial.TTF";
-
-    private String          PATH_BUTTON         = "gfx/buttons/info_normal.png";
-    private String          PATH_BUTTON_PRESSED = "gfx/buttons/info_pressed.png";
+    private String          PATH_BUTTON         = "gfx/listItem.png";
+    private String          PATH_BUTTON_PRESSED = "gfx/listItemPressed.png";
 
     private ButtonManager   manager;
     private int             mX, mY;

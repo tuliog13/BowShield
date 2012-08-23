@@ -11,38 +11,46 @@ import tatu.bowshield.component.ListView;
 import tatu.bowshield.component.PopUp;
 import tatu.bowshield.component.PopUpLayout;
 import tatu.bowshield.screens.Menu;
-import tatu.bowshield.sprites.GameSprite;
 import android.bluetooth.BluetoothDevice;
+import android.graphics.Color;
 import android.view.KeyEvent;
 
 public class ScanPopUp extends PopUpLayout {
 
+    private String          PATH_FONT = "gfx/lithos.otf";
+
     ListView                mDeviceList;
-    private Text            mErrorMessage;
+    private Text            mScanPopUpText;
     private Font            mTextFont;
     private Menu            mMenu;
 
     // Button okButton;
 
+    BowShieldGameActivity   mReference;
     public static final int OK_BUTTON = 5;
 
     public ScanPopUp(BowShieldGameActivity reference, Menu menuScreen) {
 
+        mReference = reference;
+
         WIDTH = 700;
         HEIGHT = 380;
 
-        mDeviceList = new ListView(reference, 300, 100);
+        mDeviceList = new ListView(reference, 370, 160);
         mDeviceList.setOnListItemClickListener(menuScreen);
 
-        BitmapTextureAtlas mTextFontTextureAtlas = new BitmapTextureAtlas(reference.getTextureManager(), 512, 512,
-                TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        mTextFont = FontFactory.create(reference.getFontManager(), mTextFontTextureAtlas, 32);
+//        BitmapTextureAtlas mTextFontTextureAtlas = new BitmapTextureAtlas(reference.getTextureManager(), 512, 512,
+//                TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        
+        mTextFont = FontFactory.createFromAsset(reference.getFontManager(), reference.getTextureManager(), 300, 200,
+                reference.getAssets(), PATH_FONT, 32, true, Color.rgb(84, 56, 20));
 
         reference.getEngine().getFontManager().loadFont(mTextFont);
+//        reference.getEngine().getTextureManager().loadTexture(mTextFontTextureAtlas);
+        mTextFont.load();
 
-        reference.getEngine().getTextureManager().loadTexture(mTextFontTextureAtlas);
-
-        mErrorMessage = new Text(300, 200, mTextFont, "Um erro ocorreu!", reference.getVertexBufferObjectManager());
+        mScanPopUpText = new Text(190, 85, mTextFont, "Procurando por jogadores...",
+                reference.getVertexBufferObjectManager());
 
         mMenu = menuScreen;
 
@@ -54,6 +62,11 @@ public class ScanPopUp extends PopUpLayout {
     @Override
     public void onDraw() {
         mDeviceList.draw();
+        
+        try {
+            mReference.getScene().attachChild(mScanPopUpText);
+        } catch (Exception e) {
+        }
     }
 
     @Override
@@ -69,6 +82,11 @@ public class ScanPopUp extends PopUpLayout {
     @Override
     public void Destroy() {
         mDeviceList.clear();
+
+        try {
+            mReference.getScene().detachChild(mScanPopUpText);
+        } catch (Exception e) {
+        }
         // mMenu.mButtonManager.removeButton(okButton);
     }
 
