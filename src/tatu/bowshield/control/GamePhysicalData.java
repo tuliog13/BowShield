@@ -179,12 +179,7 @@ public class GamePhysicalData implements EventListener {
     }
 
     public float getForca() {
-        if (mForce <= 2.5f)// Limite de força
-        {
-            return mForce;
-        } else {
-            return 2.5f;
-        }
+        return mForce;
     }
 
     public float getDistance() {
