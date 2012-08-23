@@ -107,6 +107,7 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
 
         PlayersController.configureGamePlayers();
         PlayersController.getMyPlayer().stopAnimation();
+        PlayersController.getMyPlayer().getmArrow().getSprite().setVisible(false);
 
         GamePhysicalData.setOnDirectionChangedListener(this);
         PlayersController.get_PlayerOne().getmArrow().setOnDirectionChangedListener(this);

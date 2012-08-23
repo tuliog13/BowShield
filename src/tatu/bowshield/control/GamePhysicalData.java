@@ -45,8 +45,8 @@ public class GamePhysicalData implements EventListener {
         this.mTouch = mTouch;
     }
 
-    public static float X = 0;
-    public static float Y = 0;
+    public float X = 0;
+    public float Y = 0;
 
     public boolean calculateTouch(TouchEvent pSceneTouchEvent, Game gameReference, boolean send) {
 
@@ -148,6 +148,22 @@ public class GamePhysicalData implements EventListener {
         // }
 
         return true;
+    }
+
+    public float getInicialX() {
+        return X;
+    }
+
+    public void setX(float x) {
+        X = x;
+    }
+
+    public float getInicialY() {
+        return Y;
+    }
+
+    public void setY(float y) {
+        Y = y;
     }
 
     public boolean issShoted() {

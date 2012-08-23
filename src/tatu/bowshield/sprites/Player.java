@@ -58,7 +58,7 @@ public class Player extends AnimatedGameSprite {
         mArc = new Arc(reference, Game.PATH_ARC, X + Arc.DISTANCE_CORRECT_1, Y + Arc.DISTANCE_CORRECT_Y);
         mArrow = new Arrow(reference, Game.PATH_ARROW, X + 15, Y + 43);
         mIndicator = new Indicator(reference, Game.PATH_ROPE, X - 15, Y - 20);
-
+        
         mGameData = physicalDta;
         mCount = 0;
         state = STATE_STOP;
@@ -116,5 +116,10 @@ public class Player extends AnimatedGameSprite {
         s.detachChild(mArrow.getSprite());
         s.detachChild(mIndicator.getSprite());
         s.detachChild(getSprite());
+    }
+
+    public Arc getmArc() {
+        // TODO Auto-generated method stub
+        return this.mArc;
     }
 }
