@@ -8,6 +8,7 @@ public class Constants {
     public static final int   SCREEN_GAME         = 3;
 
     public static final float GRAVITY             = 0.14f;
+    
     public static final float FORCE_NUMBER        = 7;
     public static final float PLAYER_VELOCITY     = 4;
 

@@ -28,7 +28,7 @@ public class Arrow extends GameSprite implements EventListener {
 
     public Arrow(BowShieldGameActivity reference, final String filepath, float X, float Y) {
         super(reference, filepath, X, Y);
-        
+
         inicialX = X;
         inicialY = Y;
 

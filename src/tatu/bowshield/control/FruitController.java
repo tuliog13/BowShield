@@ -54,6 +54,8 @@ public class FruitController {
                     PlayersController.getOpponentPlayer().setmCount(1);
                     _fruits.get(i).getSprite().detachSelf();
                     _fruits.remove(i);
+                    PlayersController.getOpponentPlayer().getGameData().setsShoted(false);
+                    PlayersController.getOpponentPlayer().getmArrow().getSprite().setVisible(false);
                 }
             }
         }

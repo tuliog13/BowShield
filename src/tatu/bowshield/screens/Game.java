@@ -439,6 +439,7 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
             PlayersController.get_PlayerTwo().getmArrow().configPreLaunch(angle, force);
 
             PlayersController.get_PlayerTwo().getGameData().sShoted = true;
+            PlayersController.get_PlayerTwo().getmArrow().getSprite().setVisible(true);
             PlayersController.get_PlayerTwo().getGameData().mDistance = 0;
             PlayersController.get_PlayerTwo().getGameData().mDirecao = (int) direction;
             PlayersController.get_PlayerTwo().flipHorizontal((int) direction);
@@ -449,6 +450,7 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
             PlayersController.get_PlayerOne().getmArrow().configPreLaunch(angle, force);
 
             PlayersController.get_PlayerOne().getGameData().sShoted = true;
+            PlayersController.get_PlayerOne().getmArrow().getSprite().setVisible(true);
             PlayersController.get_PlayerOne().getGameData().mDistance = 0;
             PlayersController.get_PlayerOne().getGameData().mDirecao = (int) direction;
             PlayersController.get_PlayerOne().flipHorizontal((int) direction);

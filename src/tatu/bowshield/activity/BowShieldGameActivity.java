@@ -24,6 +24,7 @@ import tatu.bowshield.screens.Menu;
 import tatu.bowshield.screens.Screen;
 import tatu.bowshield.screens.Splash;
 import tatu.bowshield.sprites.GameSprite;
+import tatu.bowshield.util.DebugLog;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -44,9 +45,11 @@ public class BowShieldGameActivity extends SimpleBaseGameActivity implements IUp
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-        DEVICE_WIDTH = metrics.xdpi;
-        DEVICE_HEIGHT = metrics.ydpi;
-
+        DEVICE_WIDTH = metrics.widthPixels;
+        DEVICE_HEIGHT = metrics.heightPixels;
+        
+        DebugLog.log("" +DEVICE_WIDTH + " x " +DEVICE_HEIGHT );
+        
         final Camera camera = new Camera(0, 0, Constants.CAMERA_WIDTH, Constants.CAMERA_HEIGHT);
 
         return new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, new FillResolutionPolicy(), camera);
