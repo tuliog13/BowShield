@@ -85,7 +85,7 @@ public class AnimatedGameSprite {
     }
 
     protected void stopAnimation() {
-        pSprite.stopAnimation(2);
+        pSprite.stopAnimation(8);
         isAnimating = false;
     }
 

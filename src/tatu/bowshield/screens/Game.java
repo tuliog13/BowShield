@@ -35,8 +35,8 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
     // Game
     public static String      PATH_BACKGROUND  = "gfx/telas/gameBg.png";
     public static String      PATH_BACKGROUND1 = "gfx/telas/gameBg1.png";
-    public static String      PATH_PLAYER1     = "gfx/tirinha.png";
-    public static String      PATH_PLAYER2     = "gfx/tirinha.png";
+    public static String      PATH_PLAYER1     = "gfx/New_tirinha.png";
+    public static String      PATH_PLAYER2     = "gfx/New_tirinha.png";
     public static String      PATH_ARC         = "gfx/red_arco.png";
     public static String      PATH_ARROW       = "gfx/flecha1.png";
     public static String      PATH_ROPE        = "gfx/force bg.png";

@@ -51,7 +51,7 @@ public class Player extends AnimatedGameSprite {
 
     // 8 and 1 are the columns and the rows of the animation sprite
     public Player(BowShieldGameActivity reference, final String filepath, float X, float Y, GamePhysicalData physicalDta) {
-        super(reference, filepath, X, Y, 8, 1);
+        super(reference, filepath, X, Y, 9, 1);
 
         mArc = new Arc(reference, Game.PATH_ARC, X + Arc.DISTANCE_CORRECT_1, Y + Arc.DISTANCE_CORRECT_Y);
         mArrow = new Arrow(reference, Game.PATH_ARROW, X + 15, Y + 43);
