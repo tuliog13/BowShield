@@ -55,7 +55,6 @@ public class AnimatedGameSprite {
         mRegion = TextureRegionFactory.extractTiledFromTexture(mTexture, mColumns, mRows);
 
         // mRegion = TextureRegionFactory.extractFromTexture(mTexture);
-
         pSprite = new AnimatedSprite(X, Y, mRegion, mReference.getVertexBufferObjectManager());
         mReference.getTextureManager().loadTexture(mTexture);
         isAnimating = false;
@@ -84,8 +83,8 @@ public class AnimatedGameSprite {
         return isAnimating;
     }
 
-    protected void stopAnimation() {
-        pSprite.stopAnimation(8);
+    public void stopAnimation(int frame) {
+        pSprite.stopAnimation(frame);
         isAnimating = false;
     }
 

@@ -16,10 +16,10 @@ public class Player extends AnimatedGameSprite {
 
     private int       state;
 
-    public int        STATE_AIMING  = 0;
-    public int        STATE_STOP    = 1;
-    public int        STATE_SHOTED  = 2;
-    public int        STATE_WALKING = 3;
+    public static int STATE_AIMING  = 0;
+    public static int STATE_STOP    = 1;
+    public static int STATE_SHOTED  = 2;
+    public static int STATE_WALKING = 3;
 
     public int getState() {
         return state;
@@ -56,7 +56,7 @@ public class Player extends AnimatedGameSprite {
         mArc = new Arc(reference, Game.PATH_ARC, X + Arc.DISTANCE_CORRECT_1, Y + Arc.DISTANCE_CORRECT_Y);
         mArrow = new Arrow(reference, Game.PATH_ARROW, X + 15, Y + 43);
         mIndicator = new Indicator(reference, Game.PATH_ROPE, X - 15, Y - 20);
-        
+
         mGameData = physicalDta;
         mCount = 0;
         state = STATE_STOP;
@@ -79,11 +79,13 @@ public class Player extends AnimatedGameSprite {
         mIndicator.setPosition(x - 15, y - 20);
         animate();
         mArc.pSprite.setVisible(false);
+        state = STATE_WALKING;
     }
-    
-    public void stopAnimation(){
-        super.stopAnimation();
+
+    public void stopAnimation() {
+        super.stopAnimation(8);
         mArc.pSprite.setVisible(true);
+        state = STATE_STOP;
     }
 
     public void Move(boolean toAnime) {
@@ -92,7 +94,11 @@ public class Player extends AnimatedGameSprite {
         mIndicator.Move(mGameData.getAngulo(), mGameData.getForca(), mGameData.mDirecao, state);
         mArc.Move(mGameData.getAngulo(), mGameData.getForca(), mGameData.mDirecao, this.getSprite().getX(), this
                 .getSprite().getY(), state);
-        
+
+        if (toAnime) {
+
+        }
+
     }
 
     @Override

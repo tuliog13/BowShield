@@ -10,6 +10,7 @@ import tatu.bowshield.screens.Game;
 import tatu.bowshield.sprites.AnimatedGameSprite;
 import tatu.bowshield.sprites.Fruit;
 import tatu.bowshield.sprites.GameSprite;
+import tatu.bowshield.sprites.Player;
 
 public class OpponentView {
 
@@ -177,6 +178,7 @@ public class OpponentView {
                 }
             }
         }
+        
         _background.setPosition(positionX, positionY);
         for (int i = 0; i < _fruits.size(); i++) {
             if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
@@ -186,6 +188,13 @@ public class OpponentView {
             }
         }
 
+        int state = PlayersController.getOpponentPlayer().getState();
+        if(state == Player.STATE_STOP){
+            _opponent.stopAnimation(8);
+        }else if(state == Player.STATE_WALKING){
+            _opponent.animate();
+        }
+        
         rec1.setPosition(positionX, positionY);
         rec2.setPosition(positionX + WIDTH, positionY);
         rec3.setPosition(positionX, positionY);
@@ -208,7 +217,7 @@ public class OpponentView {
     public static void MoveY(float y) {
         positionY = y;
     }
-
+    
     public static void Draw() {
         rec1 = new Rectangle(positionX, positionY, 5, HEIGTH, mReference.getVertexBufferObjectManager());
         rec1.setColor(0f, 0f, 0f);
