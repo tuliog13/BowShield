@@ -132,7 +132,6 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
         }
 
         // font
-
         BitmapTextureAtlas mTextFontTextureAtlas = new BitmapTextureAtlas(mReference.getTextureManager(), 512, 512,
                 TextureOptions.BILINEAR_PREMULTIPLYALPHA);
         mTextFont = FontFactory.create(mReference.getFontManager(), mTextFontTextureAtlas, 32);

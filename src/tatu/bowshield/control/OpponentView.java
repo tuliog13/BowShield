@@ -52,7 +52,7 @@ public class OpponentView {
 
         _opponent = new AnimatedGameSprite(mReference, _gameReference.PATH_PLAYER1,
                 getAlignedPositionX((int) PlayersController.getOpponentPlayer().getSprite().getX()),
-                getAlignedPositionY((int) PlayersController.getOpponentPlayer().getSprite().getY()), 8, 1);
+                getAlignedPositionY((int) PlayersController.getOpponentPlayer().getSprite().getY()), 9, 1);
         _opponent.getSprite().setWidth(getAlignedWidth(PlayersController.getOpponentPlayer().getSprite().getWidth()));
         _opponent.getSprite()
                 .setHeight(getAlignedHeigth(PlayersController.getOpponentPlayer().getSprite().getHeight()));
