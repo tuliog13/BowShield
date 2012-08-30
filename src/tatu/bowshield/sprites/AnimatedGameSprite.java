@@ -43,9 +43,9 @@ public class AnimatedGameSprite {
         TextureLoader loader = mReference.getTextureLoader();
 
         // this is in the case of indio animation, otherwise, use setAnimationSettings method
-        mFrameDurations = new long[] { 100, 100, 100, 100, 100, 100, 100 };
+        mFrameDurations = new long[] { 100, 100, 100, 100, 100, 100, 100};
         startIndex = 1;
-        endIndex = columns - 1;
+        endIndex = columns - 2;
         isLooping = true;
 
         mColumns = columns;
