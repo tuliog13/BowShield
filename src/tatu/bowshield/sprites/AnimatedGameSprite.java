@@ -45,7 +45,7 @@ public class AnimatedGameSprite {
         // this is in the case of indio animation, otherwise, use setAnimationSettings method
         mFrameDurations = new long[] { 100, 100, 100, 100, 100, 100, 100 };
         startIndex = 1;
-        endIndex = 7;
+        endIndex = columns - 1;
         isLooping = true;
 
         mColumns = columns;

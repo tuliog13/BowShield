@@ -8,23 +8,38 @@ import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 
 import tatu.bowshield.activity.BowShieldGameActivity;
+import tatu.bowshield.component.Button;
+import tatu.bowshield.component.ButtonManager;
 import tatu.bowshield.component.PopUp;
 import tatu.bowshield.component.PopUpLayout;
+import tatu.bowshield.control.IOnButtonTouch;
+import tatu.bowshield.screens.Menu;
+import tatu.bowshield.sprites.AnimatedGameSprite;
 import tatu.bowshield.sprites.GameSprite;
 import android.graphics.Color;
 import android.view.KeyEvent;
 
-public class WaitingPopUp extends PopUpLayout {
+public class WaitingPopUp extends PopUpLayout implements IOnButtonTouch {
 
-    private String PATH_FONT = "gfx/lithos.otf";
+    private String             PATH_FONT           = "gfx/lithos.otf";
+    private String             PATH_LOADING        = "gfx/loading.png";
+    private String             PATH_BUTTON         = "gfx/listItem.png";
+    private String             PATH_BUTTON_PRESSED = "gfx/listItemPressed.png";
 
-    private Text   mWatingText;
-    private Font   mTextFont;
-    private Scene  mScene;
-    public boolean attached  = false;
+    private final int          OK_BUTTON           = 0;
 
-    public WaitingPopUp(BowShieldGameActivity reference) {
-        
+    private Text               mWatingText;
+    private Text               mCancelText;
+    private Font               mTextFont;
+    Button                     mCancelButton;
+    ButtonManager              mButtonManager;
+
+    private AnimatedGameSprite mLoadingSprite;
+    private Scene              mScene;
+    public boolean             attached            = false;
+
+    public WaitingPopUp(BowShieldGameActivity reference, Menu menuScreen) {
+
         WIDTH = 700;
         HEIGHT = 380;
 
@@ -35,14 +50,30 @@ public class WaitingPopUp extends PopUpLayout {
         mTextFont.load();
 
         mWatingText = new Text(190, 85, mTextFont, "Aguardando jogadores...", reference.getVertexBufferObjectManager());
+        mCancelText = new Text(480, 357, mTextFont, "Cancel", reference.getVertexBufferObjectManager());
+        
+        mLoadingSprite = new AnimatedGameSprite(reference, PATH_LOADING, 420, 200, 9, 1);
 
         mScene = reference.getScene();
+        mLoadingSprite.setAnimationSettings(new long[] { 120, 120, 120, 120, 120, 120, 120, 120 }, 1, 8, true);
+        mLoadingSprite.animate();
+
+        mButtonManager = new ButtonManager(reference, this);
+        mCancelButton = new Button(reference, PATH_BUTTON, PATH_BUTTON_PRESSED, 450, 350, OK_BUTTON);
+
+        mButtonManager.addButton(mCancelButton);
+
     }
 
     @Override
     public void onDraw() {
+
+        mButtonManager.drawButtons();
+
         try {
+            mScene.attachChild(mLoadingSprite.getSprite());
             mScene.attachChild(mWatingText);
+            mScene.attachChild(mCancelText);
         } catch (Exception e) {
         }
     }
@@ -56,23 +87,16 @@ public class WaitingPopUp extends PopUpLayout {
     @Override
     public void TouchEvent(org.andengine.input.touch.TouchEvent event) {
         // TODO Auto-generated method stub
-
-    }
-
-    public void setConnecting() {
-        try {
-            mScene.detachChild(mWatingText);
-            // mScene.attachChild(mConnectingText);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        mButtonManager.updateButtons(event);
     }
 
     @Override
     public void Destroy() {
         try {
             mScene.detachChild(mWatingText);
-            // mScene.detachChild(mConnectingText);
+            mScene.detachChild(mCancelText);
+            mScene.detachChild(mLoadingSprite.getSprite());
+            mButtonManager.detach();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -80,6 +104,11 @@ public class WaitingPopUp extends PopUpLayout {
 
     @Override
     public void onKeyDown(int keyCode, KeyEvent event) {
+        PopUp.hidePopUp();
+    }
+
+    @Override
+    public void onButtonTouch(int buttonId) {
         PopUp.hidePopUp();
     }
 

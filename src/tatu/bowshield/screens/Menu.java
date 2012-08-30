@@ -139,10 +139,10 @@ public class Menu extends Screen implements IOnButtonTouch, OnListItemClickListe
                                 if (mChatService != null) {
                                     mChatService.stop();
                                 }
-                                
+
                                 if (mScanPopUp != null) {
                                     mScanPopUp.setConnectionLost();
-                                    
+
                                 }
 
                                 break;
@@ -226,7 +226,7 @@ public class Menu extends Screen implements IOnButtonTouch, OnListItemClickListe
 
             case BTN_CREATE:
 
-                PopUp.showPopUp(mWaitingPopUp = new WaitingPopUp(mReference));
+                PopUp.showPopUp(mWaitingPopUp = new WaitingPopUp(mReference, this));
 
                 makeDiscoverable();
                 mChatService.start();
@@ -284,20 +284,20 @@ public class Menu extends Screen implements IOnButtonTouch, OnListItemClickListe
                                                       else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED
                                                               .equals(action)) {
                                                           DebugLog.log("Descover finished!");
-                                                          
+
                                                           if (mScanPopUp != null) {
                                                               mScanPopUp.setDiscoveryEnd();
                                                           }
-                                                          
+
                                                           ScreenManager.reDraw();
-                                                          
+
                                                       }
                                                   }
                                               };
 
     public void scanDevices() {
 
-        makeDiscoverable();
+//        makeDiscoverable();
 
         mBtAdapter.cancelDiscovery();
         mBtAdapter.startDiscovery();
@@ -306,12 +306,11 @@ public class Menu extends Screen implements IOnButtonTouch, OnListItemClickListe
     }
 
     private void makeDiscoverable() {
-        // if (mBtAdapter.getScanMode() !=
-        // BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
-        Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-        mReference.startActivity(discoverableIntent);
-        // }
+        if (mBtAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
+            Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+            mReference.startActivity(discoverableIntent);
+        }
     }
 
     @Override
