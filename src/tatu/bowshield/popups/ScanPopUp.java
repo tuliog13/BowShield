@@ -103,6 +103,8 @@ public class ScanPopUp extends PopUpLayout implements IOnButtonTouch {
             mReference.getScene().attachChild(mConnectingText);
             mRefreshButton.setVisibility(false);
             mReference.getScene().detachChild(mRefreshText);
+            mReference.getScene().detachChild(mCancelText);
+            mCancelButton.setVisibility(false);
         } catch (Exception e) {
         }
     }
@@ -113,6 +115,8 @@ public class ScanPopUp extends PopUpLayout implements IOnButtonTouch {
         try {
             mReference.getScene().detachChild(mConnectingText);
             mReference.getScene().attachChild(mRefreshText);
+            mReference.getScene().attachChild(mCancelText);
+            mCancelButton.setVisibility(true);
         } catch (Exception e) {
             e.printStackTrace();
         }
