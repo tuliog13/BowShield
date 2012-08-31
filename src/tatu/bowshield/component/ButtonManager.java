@@ -36,7 +36,7 @@ public class ButtonManager {
                 for (int i = 0; i < buttons.size(); i++) {
                     Button button = buttons.get(i);
                     if ((x >= button.getX() && x <= button.getX() + button.getWidth())
-                            && (y >= button.getY() && y <= button.getY() + button.getHeight())) {
+                            && (y >= button.getY() && y <= button.getY() + button.getHeight()) && button.visible) {
                         button.setTouchDown(true);
                         button.setActive(true);
                     }
@@ -49,7 +49,8 @@ public class ButtonManager {
                 for (int i = 0; i < buttons.size(); i++) {
                     Button button = buttons.get(i);
                     if (!((x >= button.getX() && x <= button.getX() + button.getWidth()) && (y >= button.getY() && y <= button
-                            .getY() + button.getHeight()))) {
+                            .getY() + button.getHeight()))
+                            && button.visible) {
                         button.setTouchDown(false);
                         button.setActive(false);
                     }
@@ -62,9 +63,10 @@ public class ButtonManager {
                     Button button = buttons.get(i);
                     if ((x >= button.getX() && x <= button.getX() + button.getWidth())
                             && (y >= button.getY() && y <= button.getY() + button.getHeight())) {
-                        if (button.isActive())
+                        if (button.isActive() && button.visible) {
+                            button.setTouchDown(false);
                             listener.onButtonTouch(button.getId());
-                        button.setTouchDown(false);
+                        }
                     }
                 }
 

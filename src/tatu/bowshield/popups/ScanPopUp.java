@@ -12,26 +12,35 @@ import tatu.bowshield.component.PopUp;
 import tatu.bowshield.component.PopUpLayout;
 import tatu.bowshield.control.IOnButtonTouch;
 import tatu.bowshield.screens.Menu;
+import tatu.bowshield.sprites.AnimatedGameSprite;
 import android.bluetooth.BluetoothDevice;
 import android.graphics.Color;
 import android.view.KeyEvent;
 
 public class ScanPopUp extends PopUpLayout implements IOnButtonTouch {
 
-    private String          PATH_FONT = "gfx/lithos.otf";
+    private String             PATH_FONT           = "gfx/lithos.otf";
+    private String             PATH_LOADING        = "gfx/loading.png";
+    private String             PATH_BUTTON         = "gfx/listItem.png";
+    private String             PATH_BUTTON_PRESSED = "gfx/listItemPressed.png";
 
-    ListView                mDeviceList;
-    private Text            mScanPopUpText;
-    private Text            mConnectingText;
-    private Font            mTextFont;
-    private Menu            mMenu;
+    ListView                   mDeviceList;
+    private Text               mScanPopUpText;
+    private Text               mConnectingText;
+    private Font               mTextFont;
+    private Menu               mMenu;
+    private Text               mCancelText;
+    private Text               mRefreshText;
+    Button                     mCancelButton;
 
-    Button                  mRefreshButton;
-    ButtonManager           mButtonManager;
+    Button                     mRefreshButton;
+    ButtonManager              mButtonManager;
+    private AnimatedGameSprite mLoadingSprite;
 
-    BowShieldGameActivity   mReference;
-    Menu                    mMenuScreen;
-    public static final int OK_BUTTON = 5;
+    BowShieldGameActivity      mReference;
+    Menu                       mMenuScreen;
+    public static final int    REFRESH_BUTTON      = 0;
+    public static final int    CANCEL_BUTTON       = 1;
 
     public ScanPopUp(BowShieldGameActivity reference, Menu menuScreen) {
 
@@ -54,22 +63,37 @@ public class ScanPopUp extends PopUpLayout implements IOnButtonTouch {
                 reference.getVertexBufferObjectManager());
 
         mConnectingText = new Text(400, 380, mTextFont, "Connecting...", reference.getVertexBufferObjectManager());
+        mLoadingSprite = new AnimatedGameSprite(reference, PATH_LOADING, 600, 260, 9, 1);
 
         mMenu = menuScreen;
 
         mButtonManager = new ButtonManager(mReference, this);
 
-        mRefreshButton = new Button(reference, mMenuScreen.PATH_BUTTON_CREATE, mMenuScreen.PATH_BUTTON_ABOUT, 500, 160,
-                OK_BUTTON);
+        mRefreshButton = new Button(reference, PATH_BUTTON, PATH_BUTTON_PRESSED, 530, 260, REFRESH_BUTTON);
+        mRefreshText = new Text(560, 267, mTextFont, "Refresh", reference.getVertexBufferObjectManager());
+
+        mCancelButton = new Button(reference, PATH_BUTTON, PATH_BUTTON_PRESSED, 530, 350, CANCEL_BUTTON);
+        mCancelText = new Text(560, 357, mTextFont, "Cancel", reference.getVertexBufferObjectManager());
+
+        mButtonManager.addButton(mRefreshButton);
+        mButtonManager.addButton(mCancelButton);
+
+        mRefreshButton.setVisibility(false);
+        mLoadingSprite.setAnimationSettings(new long[] { 120, 120, 120, 120, 120, 120, 120, 120 }, 1, 8, true);
+        mLoadingSprite.animate();
 
     }
 
     @Override
     public void onDraw() {
         mDeviceList.draw();
-
+        mButtonManager.drawButtons();
         try {
             mReference.getScene().attachChild(mScanPopUpText);
+            mReference.getScene().attachChild(mLoadingSprite.getSprite());
+            mReference.getScene().attachChild(mCancelText);
+            mRefreshButton.setVisibility(false);
+            mReference.getScene().detachChild(mRefreshText);
         } catch (Exception e) {
         }
     }
@@ -77,22 +101,28 @@ public class ScanPopUp extends PopUpLayout implements IOnButtonTouch {
     public void setConnecting() {
         try {
             mReference.getScene().attachChild(mConnectingText);
+            mRefreshButton.setVisibility(false);
+            mReference.getScene().detachChild(mRefreshText);
         } catch (Exception e) {
         }
     }
 
     public void setConnectionLost() {
         mDeviceList.clear();
+        mRefreshButton.setVisibility(true);
         try {
             mReference.getScene().detachChild(mConnectingText);
-            mButtonManager.addButton(mRefreshButton);
+            mReference.getScene().attachChild(mRefreshText);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public void setDiscoveryEnd() {
-        mButtonManager.addButton(mRefreshButton);
+        mRefreshButton.setVisibility(true);
+        mReference.getScene().detachChild(mLoadingSprite.getSprite());
+        mReference.getScene().attachChild(mRefreshText);
+
     }
 
     @Override
@@ -103,6 +133,7 @@ public class ScanPopUp extends PopUpLayout implements IOnButtonTouch {
     @Override
     public void TouchEvent(org.andengine.input.touch.TouchEvent event) {
         mDeviceList.updateItems(event);
+        mButtonManager.updateButtons(event);
     }
 
     @Override
@@ -111,6 +142,10 @@ public class ScanPopUp extends PopUpLayout implements IOnButtonTouch {
         try {
             mReference.getScene().detachChild(mScanPopUpText);
             mReference.getScene().detachChild(mConnectingText);
+            mReference.getScene().detachChild(mCancelText);
+            mReference.getScene().detachChild(mRefreshText);
+            mReference.getScene().detachChild(mLoadingSprite.getSprite());
+            mRefreshButton.setVisibility(false);
             mButtonManager.detach();
         } catch (Exception e) {
             e.printStackTrace();
@@ -123,15 +158,19 @@ public class ScanPopUp extends PopUpLayout implements IOnButtonTouch {
 
     @Override
     public void onKeyDown(int keyCode, KeyEvent event) {
-        // TODO Auto-generated method stub
         PopUp.hidePopUp();
     }
 
     @Override
     public void onButtonTouch(int buttonId) {
-        mButtonManager.removeButton(mRefreshButton);
-        mDeviceList.clear();
-        mMenuScreen.scanDevices();
+        if (buttonId == REFRESH_BUTTON) {
+            mRefreshButton.setVisibility(false);
+            mReference.getScene().detachChild(mRefreshText);
+            mReference.getScene().attachChild(mLoadingSprite.getSprite());
+            mDeviceList.clear();
+            mMenuScreen.scanDevices();
+        } else {
+            PopUp.hidePopUp();
+        }
     }
-
 }
