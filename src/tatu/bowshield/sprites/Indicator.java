@@ -27,15 +27,39 @@ public class Indicator extends GameSprite {
            head.getSprite().setVisible(true);
            mForceBar.getSprite().setWidth(força* 34);
            
-           if(angulo > -30 && angulo < 30)
-           {
+          
                if(direcao == 1)
-               head.getSprite().setRotation(angulo);
+               {
+                   if(angulo > -30 && angulo < 30)
+                   {
+                       head.getSprite().setRotation(angulo);
+                   }
+                   else
+                   {
+                       
+                       if(angulo < -30)head.getSprite().setRotation(-30);
+                       else
+                       {
+                           head.getSprite().setRotation(30);
+                       }
+                   }
+               }
                else
                {
-                   head.getSprite().setRotation(-angulo);
+                   if(angulo > -30 && angulo < 30)
+                   {
+                       head.getSprite().setRotation(-angulo);
+                   }
+                   else
+                   {
+                       
+                       if(angulo < 30)head.getSprite().setRotation(30);
+                       else
+                       {
+                           head.getSprite().setRotation(-30);
+                       }
+                   }
                }
-           }
            
            head.getSprite().setRotationCenterX( 30 );
            head.getSprite().setRotationCenterY( 40 );
