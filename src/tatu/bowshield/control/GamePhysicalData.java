@@ -69,7 +69,7 @@ public class GamePhysicalData implements EventListener {
 
                 mTouch.setPosition(X - mTouch.getSprite().getWidth() / 2, Y - mTouch.getSprite().getHeight() / 2);
                 mTouch.getSprite().setVisible(true);
-                PlayersController.getMyPlayer().flipHorizontal(mDirecao);
+                PlayersController.getMyPlayer().flipHorizontal1(mDirecao);
                 PlayersController.getMyPlayer().setState(PlayersController.getMyPlayer().STATE_AIMING);
 
                 mDistance = (float) Math.sqrt(Math.pow((X - currentX), 2) + Math.pow((Y - currentY), 2));

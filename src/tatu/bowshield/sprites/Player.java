@@ -21,7 +21,7 @@ public class Player extends AnimatedGameSprite {
     public static int STATE_SHOTED  = 2;
     public static int STATE_WALKING = 3;
 
-    public static GameSprite head;
+    
     
     public int getState() {
         return state;
@@ -64,7 +64,7 @@ public class Player extends AnimatedGameSprite {
         state = STATE_STOP;
         mArc.pSprite.setVisible(false);
         
-        head = new GameSprite(reference, "gfx/head.png", X, Y);
+        
         
     }
 
@@ -82,7 +82,6 @@ public class Player extends AnimatedGameSprite {
         }
 
         mIndicator.setPosition(x - 15, y - 20);
-        head.setPosition(x + 20, y);
         animate();
         mArc.pSprite.setVisible(false);
         state = STATE_WALKING;
@@ -111,9 +110,8 @@ public class Player extends AnimatedGameSprite {
     public void Draw() {
         mArrow.Draw();
         super.Draw();
-        mArc.Draw();
         mIndicator.Draw();
-        head.Draw();
+        mArc.Draw();
     }
 
     public void flipHorizontal1(int direction) {
