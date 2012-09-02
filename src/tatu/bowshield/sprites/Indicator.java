@@ -72,7 +72,7 @@ public class Indicator extends GameSprite {
             mForceBar.getSprite().setVisible(false);
         }
         mForceBar.setPosition(this.getSprite().getX() +1,this.getSprite().getY() + 1);
-       
+        
     }
     
     @Override
