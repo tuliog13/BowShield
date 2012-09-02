@@ -20,7 +20,11 @@ import tatu.bowshield.control.ScreenManager;
 import tatu.bowshield.control.TextureLoader;
 import tatu.bowshield.screens.CutScene;
 import tatu.bowshield.screens.Game;
+import tatu.bowshield.screens.HelpScreen;
+import tatu.bowshield.screens.InfoScreen;
 import tatu.bowshield.screens.Menu;
+import tatu.bowshield.screens.ResultScreen;
+import tatu.bowshield.screens.Results;
 import tatu.bowshield.screens.Screen;
 import tatu.bowshield.screens.Splash;
 import tatu.bowshield.sprites.GameSprite;
@@ -88,11 +92,17 @@ public class BowShieldGameActivity extends SimpleBaseGameActivity implements IUp
         Screen deviceListScreen = new Menu(this, Constants.SCREEN_DEVICE);
         Screen cutScene = new CutScene(this, Constants.SCREEN_CUTSCENE);
         Screen gameScreen = new Game(this, Constants.SCREEN_GAME);
+        Screen helpScreen = new HelpScreen(this, Constants.SCREEN_HELP);
+        Screen infoScreen = new InfoScreen(this, Constants.SCREEN_INFO);
+        Screen results = new ResultScreen(this, Constants.SCREEN_RESULTS);
 
         ScreenManager.addScreen(splash);
         ScreenManager.addScreen(deviceListScreen);
         ScreenManager.addScreen(cutScene);
         ScreenManager.addScreen(gameScreen);
+        ScreenManager.addScreen(helpScreen);
+        ScreenManager.addScreen(infoScreen);
+        ScreenManager.addScreen(results);
 
         ScreenManager.changeScreen(Constants.SCREEN_SPLASH);
 

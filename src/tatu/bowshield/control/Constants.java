@@ -6,6 +6,9 @@ public class Constants {
     public static final int   SCREEN_DEVICE       = 1;
     public static final int   SCREEN_CUTSCENE     = 2;
     public static final int   SCREEN_GAME         = 3;
+    public static final int   SCREEN_HELP         = 4;
+    public static final int   SCREEN_INFO         = 5;
+    public static final int   SCREEN_RESULTS      = 6;
 
     public static final float GRAVITY             = 0.14f;
     
@@ -20,5 +23,6 @@ public class Constants {
 
     public static final int   SIMPLE_SCREEN_HELP  = 0;
     public static final int   SIMPLE_SCREEN_ABOUT = 1;
+    
 
 }

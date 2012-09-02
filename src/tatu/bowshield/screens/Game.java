@@ -98,10 +98,6 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
         mBackgroundTexture.load();
         mBackgroundRegion = TextureRegionFactory.extractFromTexture(mBackgroundTexture);
 
-        resultsScreen = new Results(mReference, 0, "gfx/telas/game_over.png");
-
-        addSimpleScreen(resultsScreen);
-
         PlayersController.set_PlayerOne(mPlayerOne);
         PlayersController.set_PlayerTwo(mPlayerTwo);
 
@@ -270,7 +266,7 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
         }
 
         if (pSceneTouchEvent.getX() > 780 && pSceneTouchEvent.getY() < 30) {
-            ScreenManager.showSimpleScreen(0);
+            ScreenManager.changeScreen(6);
         }
 
         int myEventAction = pSceneTouchEvent.getAction();
@@ -322,7 +318,7 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
     @Override
     public void Draw() {
         // TODO Auto-generated method stub
-        super.Draw();
+        
 
         getScene().setBackground(
                 new SpriteBackground(new Sprite(0, 0, Constants.CAMERA_WIDTH, Constants.CAMERA_HEIGHT,
@@ -341,6 +337,8 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
         FruitController.Draw();
         OpponentView.Draw();
         myPlayerData.getmTouch().Draw();
+        
+        super.Draw();
     }
 
     @Override

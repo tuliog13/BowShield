@@ -3,6 +3,7 @@ package tatu.bowshield.screens;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
 import org.andengine.input.touch.TouchEvent;
 
@@ -19,14 +20,24 @@ public abstract class Screen {
     protected static Scene          mScene;
     protected List<SimpleScreen>    mSimpleScreen;
     protected BowShieldGameActivity mReference;
+    
+    private Rectangle branco;
+    private int mAlpha;
 
     public Screen(BowShieldGameActivity reference, int id) {
         this.mId = id;
         mReference = reference;
+        
+        branco = new Rectangle(0, 0, 800, 480, mReference.getVertexBufferObjectManager());
+        branco.setColor(0f, 0f, 0f);
+        mAlpha = 50;
     }
 
     public void Initialize() {
-
+        
+        mAlpha = 50;
+        branco.setVisible(true);
+        branco.setAlpha(mAlpha);
     }
 
     public void Load() {
@@ -34,11 +45,29 @@ public abstract class Screen {
     }
 
     public void Update() {
-
+        
+        
+        if(mAlpha <= 250)
+        {
+            branco.setVisible(true);
+            branco.setAlpha(mAlpha);
+            mAlpha += 15;
+        }
+        else
+        {
+            branco.setVisible(false);
+        }
     }
 
     public void Draw() {
-
+        try
+        {
+            mReference.getScene().attachChild(branco);
+        }
+        catch (Exception e) {
+            // TODO: handle exception
+        }
+        branco.setVisible(false);
     }
 
     public void addSimpleScreen(SimpleScreen screen) {
@@ -71,7 +100,7 @@ public abstract class Screen {
     }
 
     public void Destroy() {
-
+        branco.detachSelf();
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {

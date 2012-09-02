@@ -164,8 +164,11 @@ public class PopUp implements EventListener {
                 alpha -= 5;
             } else // Popup completamente carregado ..
             {
-                mPopupLayout.onDraw();
-                popupLoadDone = true;
+                if(pSprite.getWidth() >=  requiredWidth)
+                {
+                    mPopupLayout.onDraw();
+                    popupLoadDone = true;
+                }
             }
 
             if (pSprite.getWidth() < requiredWidth) {

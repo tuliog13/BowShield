@@ -253,11 +253,11 @@ public class Menu extends Screen implements IOnButtonTouch, OnListItemClickListe
                 break;
 
             case BTN_HELP:
-                ScreenManager.showSimpleScreen(Constants.SIMPLE_SCREEN_HELP);
+                ScreenManager.changeScreen(Constants.SCREEN_HELP);
                 break;
 
             case BTN_ABOUT:
-                ScreenManager.showSimpleScreen(Constants.SIMPLE_SCREEN_ABOUT);
+                ScreenManager.changeScreen(Constants.SCREEN_INFO);
                 break;
 
         }

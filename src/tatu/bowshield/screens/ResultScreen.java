@@ -8,8 +8,11 @@ import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.TextureRegionFactory;
 
 import tatu.bowshield.activity.BowShieldGameActivity;
+import tatu.bowshield.component.Button;
+import tatu.bowshield.component.ButtonManager;
 import tatu.bowshield.component.PopUp;
 import tatu.bowshield.control.Constants;
+import tatu.bowshield.control.IOnButtonTouch;
 import tatu.bowshield.control.OnPopupResult;
 import tatu.bowshield.control.ScreenManager;
 import tatu.bowshield.popups.ConfirmDialog;
@@ -17,13 +20,22 @@ import tatu.bowshield.sprites.GameSprite;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
-public class Splash extends Screen implements OnPopupResult {
+public class ResultScreen extends Screen implements OnPopupResult, IOnButtonTouch{
 
-    private String         PATH_BACKGROUND = "gfx/telas/splash.png";
+    private String         PATH_BACKGROUND = "gfx/telas/game_over.png";
     private Texture        mBackgroundTexture;
     private ITextureRegion mBackgroundRegion;
+    
 
-    public Splash(BowShieldGameActivity reference, int id) {
+    private int   id;
+
+    Button        btnPlayAgain;
+    Button        btnBackToMenu;
+
+    ButtonManager bManager;
+
+    
+    public ResultScreen(BowShieldGameActivity reference, int id) {
         super(reference, id);
         // TODO Auto-generated constructor stub
     }
@@ -39,6 +51,13 @@ public class Splash extends Screen implements OnPopupResult {
 
         PopUp.setListener(this);
 
+        btnPlayAgain = new Button(mReference, "gfx/buttons/create_normal.png", "gfx/buttons/create_pressed.png", 170, 288, 0);
+        btnBackToMenu = new Button(mReference, "gfx/buttons/create_normal.png", "gfx/buttons/create_pressed.png", 420, 288, 1);
+
+        bManager = new ButtonManager(mReference, this);
+        bManager.addButton(btnPlayAgain);
+        bManager.addButton(btnBackToMenu);
+        
     }
 
     @Override
@@ -56,16 +75,7 @@ public class Splash extends Screen implements OnPopupResult {
     @Override
     public boolean onSceneTouchEvent(TouchEvent pSceneTouchEvent) {
 
-        int myEventAction = pSceneTouchEvent.getAction();
-
-        switch (myEventAction) {
-
-            case MotionEvent.ACTION_UP:
-
-                ScreenManager.changeScreen(1);
-                break;
-
-        }
+        bManager.updateButtons(pSceneTouchEvent);
 
         return false;
     }
@@ -74,22 +84,22 @@ public class Splash extends Screen implements OnPopupResult {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // TODO Auto-generated method stub
 
-        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            PopUp.showPopUp(new ConfirmDialog(mReference, 500, 350));
-        }
-
+        //PopUp.showPopUp(new ConfirmDialog(mReference, 700, 350));
+        
         return super.onKeyDown(keyCode, event);
     }
 
     @Override
     public void Draw() {
         // TODO Auto-generated method stub
-        
+        super.Draw();
 
         getScene().setBackground(
                 new SpriteBackground(new Sprite(0, 0, Constants.CAMERA_WIDTH, Constants.CAMERA_HEIGHT,
                         mBackgroundRegion, mReference.getVertexBufferObjectManager())));
-        super.Draw();
+        
+        bManager.drawButtons();
+        
     }
 
     @Override
@@ -97,25 +107,47 @@ public class Splash extends Screen implements OnPopupResult {
         // TODO Auto-generated method stub
         super.Destroy();
 
+        // getScene().setBackground(null);
+        bManager.detach();
         mBackgroundTexture = null;
         mBackgroundRegion = null;
     }
 
     @Override
+    public void onButtonTouch(int buttonId) {
+        // TODO Auto-generated method stub
+        
+        switch (buttonId) {
+
+            case 0: // play angain
+
+                ScreenManager.changeScreen(Constants.SCREEN_GAME);
+
+                break;
+
+            case 1: // Menu
+                ScreenManager.changeScreen(Constants.SCREEN_DEVICE);
+                break;
+
+        }
+        
+    }
+
+    @Override
     public void onResultReceived(int result) {
         // TODO Auto-generated method stub
-
+        
         switch (result) {
             case Constants.RESULT_YES:
-                System.gc();
-                mReference.finish();
+                PopUp.forceClose();
+                ScreenManager.changeScreen(1);
                 break;
 
             case Constants.RESULT_NO:
                 PopUp.hidePopUp();
                 break;
         }
-
+        
     }
 
 }
