@@ -13,12 +13,13 @@ public class ScreenManager {
 
     private static List<Screen> _screens;
     private static Screen       _currentScreen;
-
+    private static boolean changingScreen;
+    
     public static void addScreen(Screen screen) {
         if (_screens == null)// Initialize
         {
             _screens = new ArrayList<Screen>();
-
+            changingScreen = false;
         }
 
         _screens.add(screen);
@@ -26,6 +27,7 @@ public class ScreenManager {
 
     public static void changeScreen(int idScreen) {
 
+        changingScreen = true;
         if (_currentScreen != null) {
             DestroySimpleScreens();
             _currentScreen.Destroy();
@@ -35,6 +37,7 @@ public class ScreenManager {
         _currentScreen.Initialize();
         _currentScreen.Load();
         _currentScreen.Draw();
+        changingScreen = false;
     }
 
     public static void showSimpleScreen(int id) {
@@ -54,11 +57,14 @@ public class ScreenManager {
     }
 
     public static void Update() {
-
-        _currentScreen.Update();
-        if (_currentScreen.get_simpleScreens() != null) {
-            for (SimpleScreen screen : _currentScreen.get_simpleScreens()) {
-                screen.Update();
+        
+        if(!changingScreen)
+        {
+            _currentScreen.Update();
+            if (_currentScreen.get_simpleScreens() != null) {
+                for (SimpleScreen screen : _currentScreen.get_simpleScreens()) {
+                    screen.Update();
+                }
             }
         }
 
