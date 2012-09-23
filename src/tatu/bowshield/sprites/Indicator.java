@@ -86,7 +86,7 @@ public class Indicator extends GameSprite {
     public void setPosition(float x, float y) {
         // TODO Auto-generated method stub
         super.setPosition(x, y);
-        head.setPosition(x + 55, y + 15);
+        head.setPosition(x + 55, y + 23);
     }
     
     @Override

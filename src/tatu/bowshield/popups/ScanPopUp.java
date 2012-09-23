@@ -20,7 +20,7 @@ import android.view.KeyEvent;
 public class ScanPopUp extends PopUpLayout implements IOnButtonTouch {
 
     private String             PATH_FONT           = "gfx/lithos.otf";
-    private String             PATH_LOADING        = "gfx/loading.png";
+    private String             PATH_LOADING        = "gfx/loading_new.png";
     private String             PATH_BUTTON         = "gfx/listItem.png";
     private String             PATH_BUTTON_PRESSED = "gfx/listItemPressed.png";
 
@@ -63,7 +63,7 @@ public class ScanPopUp extends PopUpLayout implements IOnButtonTouch {
                 reference.getVertexBufferObjectManager());
 
         mConnectingText = new Text(400, 380, mTextFont, "Connecting...", reference.getVertexBufferObjectManager());
-        mLoadingSprite = new AnimatedGameSprite(reference, PATH_LOADING, 600, 260, 9, 1);
+        mLoadingSprite = new AnimatedGameSprite(reference, PATH_LOADING, 600, 260, 8, 1);
 
         mMenu = menuScreen;
 
@@ -79,7 +79,7 @@ public class ScanPopUp extends PopUpLayout implements IOnButtonTouch {
         mButtonManager.addButton(mCancelButton);
 
         mRefreshButton.setVisibility(false);
-        mLoadingSprite.setAnimationSettings(new long[] { 120, 120, 120, 120, 120, 120, 120, 120 }, 1, 8, true);
+        mLoadingSprite.setAnimationSettings(new long[] { 120, 120, 120, 120, 120, 120 }, 1, 6, true);
         mLoadingSprite.animate();
 
     }

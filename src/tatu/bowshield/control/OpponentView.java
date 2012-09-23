@@ -11,11 +11,13 @@ import tatu.bowshield.sprites.AnimatedGameSprite;
 import tatu.bowshield.sprites.Fruit;
 import tatu.bowshield.sprites.GameSprite;
 import tatu.bowshield.sprites.Player;
+import android.util.Log;
 
 public class OpponentView {
 
     public static GameSprite         _background;
     public static AnimatedGameSprite _opponent;
+    public static AnimatedGameSprite _opponentRespire;
     public static GameSprite         _arrow;
     public static GameSprite         _arrowEnemy;
 
@@ -58,6 +60,17 @@ public class OpponentView {
         _opponent.getSprite()
                 .setHeight(getAlignedHeigth(PlayersController.getOpponentPlayer().getSprite().getHeight()));
 
+        _opponentRespire = new AnimatedGameSprite(mReference, _gameReference.PATH_RESPIRE,
+                getAlignedPositionX((int) PlayersController.getOpponentPlayer().getSprite().getX()),
+                getAlignedPositionY((int) PlayersController.getOpponentPlayer().getSprite().getY() + 3), 5, 1);
+        _opponentRespire.getSprite().setWidth(
+                getAlignedWidth(PlayersController.getOpponentPlayer().getSprite().getWidth()) - 20);
+        _opponentRespire.getSprite().setHeight(
+                getAlignedHeigth(PlayersController.getOpponentPlayer().getSprite().getHeight()) - 5);
+
+        _opponentRespire.setAnimationSettings(new long[] { 290, 290, 290, 290 }, 1, 4, true);
+        _opponentRespire.animate();
+
         _arrow = new GameSprite(mReference, _gameReference.PATH_ARROW, getAlignedPositionX(-300),
                 getAlignedPositionY(400));
         _arrow.getSprite().setWidth(
@@ -74,30 +87,30 @@ public class OpponentView {
 
         _fruits = new ArrayList<Fruit>();
 
-//        for (int i = 0; i < 5; i++) {
-//            if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
-//                _fruits.add(new Fruit(mReference, "gfx/apple.png", getAlignedPositionX(660),
-//                        getAlignedPositionY((i * 65) + 165)));
-//            } else {
-//                _fruits.add(new Fruit(mReference, "gfx/apple.png", getAlignedPositionX(160),
-//                        getAlignedPositionY((i * 65) + 165)));
-//            }
-//        }
-        
+        // for (int i = 0; i < 5; i++) {
+        // if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
+        // _fruits.add(new Fruit(mReference, "gfx/apple.png", getAlignedPositionX(660),
+        // getAlignedPositionY((i * 65) + 165)));
+        // } else {
+        // _fruits.add(new Fruit(mReference, "gfx/apple.png", getAlignedPositionX(160),
+        // getAlignedPositionY((i * 65) + 165)));
+        // }
+        // }
+
         if (GamePhysicalData.GAME_TYPE != GamePhysicalData.SERVER_TYPE) {
-            _fruits.add(new Fruit(reference, "gfx/apple.png",getAlignedPositionX( 30),getAlignedPositionY( 80)));
-            _fruits.add(new Fruit(reference, "gfx/apple.png",getAlignedPositionX( 70), getAlignedPositionY(130)));
-            _fruits.add(new Fruit(reference, "gfx/apple.png",getAlignedPositionX( 120),getAlignedPositionY(170 )));
-            _fruits.add(new Fruit(reference, "gfx/apple.png",getAlignedPositionX( 150),getAlignedPositionY(240 )));
-            _fruits.add(new Fruit(reference, "gfx/apple.png",getAlignedPositionX( 175), getAlignedPositionY(100 )));
-            _fruits.add(new Fruit(reference, "gfx/apple.png",getAlignedPositionX( 30), getAlignedPositionY(220 )));
+            _fruits.add(new Fruit(reference, "gfx/apple.png", getAlignedPositionX(30), getAlignedPositionY(80)));
+            _fruits.add(new Fruit(reference, "gfx/apple.png", getAlignedPositionX(70), getAlignedPositionY(130)));
+            _fruits.add(new Fruit(reference, "gfx/apple.png", getAlignedPositionX(120), getAlignedPositionY(170)));
+            _fruits.add(new Fruit(reference, "gfx/apple.png", getAlignedPositionX(150), getAlignedPositionY(240)));
+            _fruits.add(new Fruit(reference, "gfx/apple.png", getAlignedPositionX(175), getAlignedPositionY(100)));
+            _fruits.add(new Fruit(reference, "gfx/apple.png", getAlignedPositionX(30), getAlignedPositionY(220)));
         } else {
-            _fruits.add(new Fruit(reference, "gfx/apple.png", getAlignedPositionX( 630), getAlignedPositionY(80)));
-            _fruits.add(new Fruit(reference, "gfx/apple.png",getAlignedPositionX(  570), getAlignedPositionY(130)));
-            _fruits.add(new Fruit(reference, "gfx/apple.png", getAlignedPositionX( 650),getAlignedPositionY(160 )));
-            _fruits.add(new Fruit(reference, "gfx/apple.png", getAlignedPositionX( 590),getAlignedPositionY(240 )));
-            _fruits.add(new Fruit(reference, "gfx/apple.png", getAlignedPositionX( 750), getAlignedPositionY(130) ));
-            _fruits.add(new Fruit(reference, "gfx/apple.png", getAlignedPositionX( 750),getAlignedPositionY( 225) ));
+            _fruits.add(new Fruit(reference, "gfx/apple.png", getAlignedPositionX(630), getAlignedPositionY(80)));
+            _fruits.add(new Fruit(reference, "gfx/apple.png", getAlignedPositionX(570), getAlignedPositionY(130)));
+            _fruits.add(new Fruit(reference, "gfx/apple.png", getAlignedPositionX(650), getAlignedPositionY(160)));
+            _fruits.add(new Fruit(reference, "gfx/apple.png", getAlignedPositionX(590), getAlignedPositionY(240)));
+            _fruits.add(new Fruit(reference, "gfx/apple.png", getAlignedPositionX(750), getAlignedPositionY(130)));
+            _fruits.add(new Fruit(reference, "gfx/apple.png", getAlignedPositionX(750), getAlignedPositionY(225)));
         }
 
         for (Fruit fruit : _fruits) {
@@ -116,8 +129,9 @@ public class OpponentView {
         float opponentX = PlayersController.getOpponentPlayer().getmArrow().getSprite().getX();
         float opponentY = PlayersController.getOpponentPlayer().getmArrow().getSprite().getY();
 
-        _opponent.getSprite().setFlippedHorizontal(PlayersController.getOpponentPlayer().getSprite().isFlippedHorizontal());
-        
+        _opponent.getSprite().setFlippedHorizontal(
+                PlayersController.getOpponentPlayer().getSprite().isFlippedHorizontal());
+
         if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
 
             _arrow.setPosition(getAlignedPositionX((int) myX - 800), getAlignedPositionY((int) myY));
@@ -178,7 +192,7 @@ public class OpponentView {
                 }
             }
         }
-        
+
         _background.setPosition(positionX, positionY);
         for (int i = 0; i < _fruits.size(); i++) {
             if (GamePhysicalData.GAME_TYPE == GamePhysicalData.SERVER_TYPE) {
@@ -189,12 +203,24 @@ public class OpponentView {
         }
 
         int state = PlayersController.getOpponentPlayer().getState();
-        if(state == Player.STATE_STOP){
-            _opponent.stopAnimation(8);
-        }else if(state == Player.STATE_WALKING){
+        if (state == Player.STATE_STOP) {
+            _opponent.getSprite().setVisible(false);
+            _opponentRespire.getSprite().setVisible(true);
+            _opponentRespire.getSprite().setFlippedHorizontal(
+                    PlayersController.getOpponentPlayer().getSprite().isFlippedHorizontal());
+            
+            int correct = 0;
+            if(!PlayersController.getOpponentPlayer().getSprite().isFlippedHorizontal()){
+                correct = 10;
+            }
+            
+            _opponentRespire.getSprite().setPosition(_opponent.getX() + correct, _opponent.getY() + 3);
+        } else if (state == Player.STATE_WALKING) {
             _opponent.animate();
+            _opponent.getSprite().setVisible(true);
+            _opponentRespire.getSprite().setVisible(false);
         }
-        
+
         rec1.setPosition(positionX, positionY);
         rec2.setPosition(positionX + WIDTH, positionY);
         rec3.setPosition(positionX, positionY);
@@ -217,7 +243,7 @@ public class OpponentView {
     public static void MoveY(float y) {
         positionY = y;
     }
-    
+
     public static void Draw() {
         rec1 = new Rectangle(positionX, positionY, 5, HEIGTH, mReference.getVertexBufferObjectManager());
         rec1.setColor(0f, 0f, 0f);
@@ -232,6 +258,7 @@ public class OpponentView {
         mReference.getScene().attachChild(_opponent.getSprite());
         mReference.getScene().attachChild(_arrow.getSprite());
         mReference.getScene().attachChild(_arrowEnemy.getSprite());
+        mReference.getScene().attachChild(_opponentRespire.getSprite());
 
         for (Fruit fruit : _fruits) {
             mReference.getScene().attachChild(fruit.getSprite());

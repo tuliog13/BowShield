@@ -249,7 +249,7 @@ public class Menu extends Screen implements IOnButtonTouch, OnListItemClickListe
                 break;
 
             case BTN_SKIP:
-                ScreenManager.changeScreen(Constants.SCREEN_CUTSCENE);
+                ScreenManager.changeScreen(Constants.SCREEN_GAME);
                 break;
 
             case BTN_HELP:

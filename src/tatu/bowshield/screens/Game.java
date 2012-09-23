@@ -1,5 +1,7 @@
 package tatu.bowshield.screens;
 
+import java.util.Random;
+
 import org.andengine.entity.scene.background.SpriteBackground;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
@@ -26,6 +28,7 @@ import tatu.bowshield.control.ScreenManager;
 import tatu.bowshield.sprites.Player;
 import tatu.bowshield.util.DebugLog;
 import android.bluetooth.BluetoothAdapter;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -33,6 +36,7 @@ import android.view.MotionEvent;
 public class Game extends Screen implements OnDirectionChanged, OnMessageReceivedListener {
 
     // Game
+    private String            PATH_FONT        = "gfx/lithos.otf";
     public static String      PATH_BACKGROUND  = "gfx/telas/gameBg.png";
     public static String      PATH_BACKGROUND1 = "gfx/telas/gameBg1.png";
     public static String      PATH_PLAYER1     = "gfx/New_tirinha.png";
@@ -41,6 +45,7 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
     public static String      PATH_ARROW       = "gfx/flecha1.png";
     public static String      PATH_ROPE        = "gfx/force bg.png";
     public static String      PATH_FORCE_BAR   = "gfx/force bar.png";
+    public static String      PATH_RESPIRE     = "gfx/respir.png";
 
     public static String      PATH_CONTROLLER  = "gfx/control1.png";
     public static String      PATH_CONTROL     = "gfx/control2.png";
@@ -61,9 +66,13 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
     private GamePhysicalData  opponentPlayerData;
 
     private Text              mPointText;
+    private Text              mTimeText;
     private Font              mTextFont;
     private boolean           mCanMovePlayer   = true;
     private boolean           isMovingPlayer   = false;
+
+    private int               mMinutes         = 2, mSeconds = 59;
+    private byte              mLastState       = PositionControler.STATE_CENTER;
 
     public Game(BowShieldGameActivity reference, int id) {
         super(reference, id);
@@ -102,7 +111,7 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
         PlayersController.set_PlayerTwo(mPlayerTwo);
 
         PlayersController.configureGamePlayers();
-        PlayersController.getMyPlayer().stopAnimation();
+        PlayersController.getMyPlayer().stopAnimationAndRespire();
         PlayersController.getMyPlayer().getmArrow().getSprite().setVisible(false);
 
         GamePhysicalData.setOnDirectionChangedListener(this);
@@ -127,18 +136,51 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
             OpponentView.Initialize(mReference, 1, 2);
         }
 
+        mTextFont = FontFactory.createFromAsset(mReference.getFontManager(), mReference.getTextureManager(), 300, 200,
+                mReference.getAssets(), PATH_FONT, 34, true, Color.rgb(84, 56, 20));
+
+        mReference.getEngine().getFontManager().loadFont(mTextFont);
+        mTextFont.load();
+
         // font
         BitmapTextureAtlas mTextFontTextureAtlas = new BitmapTextureAtlas(mReference.getTextureManager(), 512, 512,
                 TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        mTextFont = FontFactory.create(mReference.getFontManager(), mTextFontTextureAtlas, 32);
 
         mReference.getEngine().getFontManager().loadFont(mTextFont);
 
         mReference.getEngine().getTextureManager().loadTexture(mTextFontTextureAtlas);
 
-        mPointText = new Text(200, 0, mTextFont, "Indio Mira " + PlayersController.getMyPlayer().getmCount() + " - "
+        mPointText = new Text(10, 5, mTextFont, "x " + PlayersController.getMyPlayer().getmCount(),
+                mReference.getVertexBufferObjectManager());
+
+        mTimeText = new Text(350, 5, mTextFont, "" + PlayersController.getMyPlayer().getmCount() + " - "
                 + PlayersController.getMyPlayer().getmCount() + " Indio Opponent",
                 mReference.getVertexBufferObjectManager());
+
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                while (true) {
+
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    mSeconds--;
+
+                    if (mSeconds == 0) {
+                        mSeconds = 60;
+                        mMinutes--;
+                    }
+                }
+
+            }
+
+        }).start();
 
     }
 
@@ -154,96 +196,95 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
         super.Update();
 
         // PlayersController.Update();
-        if (PlayersController.getMyPlayer() != null) {
 
-            PlayersController.Update(isMovingPlayer);
-            FruitController.Update();
-            OpponentView.Update();
+        PlayersController.Update(isMovingPlayer);
+        FruitController.Update(this);
+        OpponentView.Update();
 
-            byte state = mPositionController.getState();
+        byte state = mPositionController.getState();
 
-            if (isMovingPlayer) {
-                sendMessage(BluetoothService.MOVE_PLAYER, String.valueOf(state));
-            }
-
-            Sprite spt = PlayersController.getMyPlayer().getSprite();
-            Sprite sptOp = PlayersController.getOpponentPlayer().getSprite();
-
-            float x = spt.getX(), y = spt.getY();
-            float xop = sptOp.getX(), yop = sptOp.getY();
-
-            if (mPlayerOne == PlayersController.getMyPlayer()) {
-
-                if (state == PositionControler.STATE_RIGHT && x < 500) {
-                    x += Constants.PLAYER_VELOCITY;
-                    PlayersController.getMyPlayer().flipHorizontal(1);
-                    PlayersController.getMyPlayer().setMyPosition(x, y);
-                }
-
-                if (state == PositionControler.STATE_LEFT && x > 60) {
-                    x -= Constants.PLAYER_VELOCITY;
-                    PlayersController.getMyPlayer().flipHorizontal(2);
-                    PlayersController.getMyPlayer().setMyPosition(x, y);
-                }
-
-                if (stateOpponent == PositionControler.STATE_RIGHT && xop < 1400) {
-                    xop += Constants.PLAYER_VELOCITY;
-                    PlayersController.getOpponentPlayer().flipHorizontal(1);
-                    PlayersController.getOpponentPlayer().setMyPosition(xop, yop);
-                    PlayersController.getOpponentPlayer().setState(Player.STATE_WALKING);
-                }
-
-                if (stateOpponent == PositionControler.STATE_LEFT && xop > 960) {
-                    xop -= Constants.PLAYER_VELOCITY;
-                    PlayersController.getOpponentPlayer().setMyPosition(--xop, yop);
-                    PlayersController.getOpponentPlayer().flipHorizontal(2);
-                    PlayersController.getOpponentPlayer().setState(Player.STATE_WALKING);
-                }
-
-                if (stateOpponent == PositionControler.STATE_CENTER) {
-                    PlayersController.getOpponentPlayer().setState(Player.STATE_STOP);
-                }
-
-            } else if (mPlayerOne == PlayersController.getOpponentPlayer()) {
-                if (state == PositionControler.STATE_RIGHT && x < 600) {
-                    x += Constants.PLAYER_VELOCITY;
-                    PlayersController.getMyPlayer().flipHorizontal(1);
-                    PlayersController.getMyPlayer().setMyPosition(x, y);
-                }
-
-                if (state == PositionControler.STATE_LEFT && x > 160) {
-                    x -= Constants.PLAYER_VELOCITY;
-                    PlayersController.getMyPlayer().flipHorizontal(2);
-                    PlayersController.getMyPlayer().setMyPosition(x, y);
-                }
-
-                if (stateOpponent == PositionControler.STATE_RIGHT && xop < -300) {
-                    xop += Constants.PLAYER_VELOCITY;
-                    PlayersController.getOpponentPlayer().flipHorizontal(1);
-                    PlayersController.getOpponentPlayer().setMyPosition(xop, yop);
-                    PlayersController.getOpponentPlayer().setState(Player.STATE_WALKING);
-                }
-
-                if (stateOpponent == PositionControler.STATE_LEFT && xop > -740) {
-                    xop -= Constants.PLAYER_VELOCITY;
-                    PlayersController.getOpponentPlayer().setMyPosition(xop, yop);
-                    PlayersController.getOpponentPlayer().flipHorizontal(2);
-                    PlayersController.getOpponentPlayer().setState(Player.STATE_WALKING);
-                }
-
-                if (stateOpponent == PositionControler.STATE_CENTER) {
-                    PlayersController.getOpponentPlayer().setState(Player.STATE_STOP);
-                }
-
-            }
-
-        } else {
-            DebugLog.log("Player null update");
+        if (isMovingPlayer && state != mLastState) {
+            sendMessage(BluetoothService.MOVE_PLAYER, String.valueOf(state));
+            mLastState = state;
+            Log.v("TESTE", "State: " + state);
         }
 
-        mPointText.setText("Indio Mira " + PlayersController.getMyPlayer().getmCount() + " - "
-                + PlayersController.getOpponentPlayer().getmCount() + " Indio Opponent");
+        Sprite spt = PlayersController.getMyPlayer().getSprite();
+        Sprite sptOp = PlayersController.getOpponentPlayer().getSprite();
+
+        float x = spt.getX(), y = spt.getY();
+        float xop = sptOp.getX(), yop = sptOp.getY();
+
+        if (mPlayerOne == PlayersController.getMyPlayer()) {
+
+            if (state == PositionControler.STATE_RIGHT && x < 500) {
+                x += Constants.PLAYER_VELOCITY;
+                PlayersController.getMyPlayer().flipHorizontal1(1);
+                PlayersController.getMyPlayer().setMyPosition(x, y);
+            }
+
+            if (state == PositionControler.STATE_LEFT && x > 60) {
+                x -= Constants.PLAYER_VELOCITY;
+                PlayersController.getMyPlayer().flipHorizontal1(2);
+                PlayersController.getMyPlayer().setMyPosition(x, y);
+            }
+
+            if (stateOpponent == PositionControler.STATE_RIGHT && xop < 1400) {
+                xop += Constants.PLAYER_VELOCITY;
+                PlayersController.getOpponentPlayer().flipHorizontal1(1);
+                PlayersController.getOpponentPlayer().setMyPosition(xop, yop);
+                PlayersController.getOpponentPlayer().setState(Player.STATE_WALKING);
+            }
+
+            if (stateOpponent == PositionControler.STATE_LEFT && xop > 960) {
+                xop -= Constants.PLAYER_VELOCITY;
+                PlayersController.getOpponentPlayer().setMyPosition(--xop, yop);
+                PlayersController.getOpponentPlayer().flipHorizontal1(2);
+                PlayersController.getOpponentPlayer().setState(Player.STATE_WALKING);
+            }
+
+            if (stateOpponent == PositionControler.STATE_CENTER) {
+                PlayersController.getOpponentPlayer().setState(Player.STATE_STOP);
+            }
+
+        } else if (mPlayerOne == PlayersController.getOpponentPlayer()) {
+
+            if (state == PositionControler.STATE_RIGHT && x < 600) {
+                x += Constants.PLAYER_VELOCITY;
+                PlayersController.getMyPlayer().flipHorizontal1(1);
+                PlayersController.getMyPlayer().setMyPosition(x, y);
+            }
+
+            if (state == PositionControler.STATE_LEFT && x > 160) {
+                x -= Constants.PLAYER_VELOCITY;
+                PlayersController.getMyPlayer().flipHorizontal1(2);
+                PlayersController.getMyPlayer().setMyPosition(x, y);
+            }
+
+            if (stateOpponent == PositionControler.STATE_RIGHT && xop < -300) {
+                xop += Constants.PLAYER_VELOCITY;
+                PlayersController.getOpponentPlayer().flipHorizontal1(1);
+                PlayersController.getOpponentPlayer().setMyPosition(xop, yop);
+                PlayersController.getOpponentPlayer().setState(Player.STATE_WALKING);
+            }
+
+            if (stateOpponent == PositionControler.STATE_LEFT && xop > -740) {
+                xop -= Constants.PLAYER_VELOCITY;
+                PlayersController.getOpponentPlayer().setMyPosition(xop, yop);
+                PlayersController.getOpponentPlayer().flipHorizontal1(2);
+                PlayersController.getOpponentPlayer().setState(Player.STATE_WALKING);
+            }
+
+            if (stateOpponent == PositionControler.STATE_CENTER) {
+                PlayersController.getOpponentPlayer().setState(Player.STATE_STOP);
+            }
+
+        }
+
+        mPointText.setText("x " + PlayersController.getMyPlayer().getmCount());
         mPositionController.update();
+
+        mTimeText.setText(mMinutes + ":" + mSeconds);
     }
 
     public float X = 0;
@@ -306,7 +347,7 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
 
                 mCanMovePlayer = true;
                 isMovingPlayer = false;
-                PlayersController.getMyPlayer().stopAnimation();
+                PlayersController.getMyPlayer().stopAnimationAndRespire();
                 sendMessage(BluetoothService.MOVE_PLAYER, String.valueOf(PositionControler.STATE_CENTER));
 
                 break;
@@ -318,7 +359,6 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
     @Override
     public void Draw() {
         // TODO Auto-generated method stub
-        
 
         getScene().setBackground(
                 new SpriteBackground(new Sprite(0, 0, Constants.CAMERA_WIDTH, Constants.CAMERA_HEIGHT,
@@ -328,6 +368,7 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
         if (PlayersController.getMyPlayer() != null) {
             PlayersController.Draw();
             getScene().attachChild(mPointText);
+            getScene().attachChild(mTimeText);
         } else {
             DebugLog.log("Player null draw");
         }
@@ -337,7 +378,7 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
         FruitController.Draw();
         OpponentView.Draw();
         myPlayerData.getmTouch().Draw();
-        
+
         super.Draw();
     }
 
@@ -405,6 +446,18 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
                 stateOpponent = state;
 
                 DebugLog.log("Move received: " + message);
+                break;
+
+            case BluetoothService.FRUIT:
+
+                int i;
+                for (i = 0; i < message.length() && message.charAt(i) != '@'; i++)
+                    ;
+
+                int x = Integer.parseInt(message.substring(0, i));
+                int y = Integer.parseInt(message.substring(i + 1));
+
+                DebugLog.log("Fruit received: " + "X: " + x + " Y: " + y);
                 break;
         }
 
@@ -478,5 +531,12 @@ public class Game extends Screen implements OnDirectionChanged, OnMessageReceive
         } else {
             // PlayersController.get_PlayerTwo().getGameData().sShoted = false;
         }
+    }
+
+    public void onFruitGeted() {
+        Random random = new Random();
+        int x = random.nextInt(500);
+        int y = random.nextInt(300);
+        sendMessage(BluetoothService.FRUIT, x + "@" + y);
     }
 }

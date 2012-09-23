@@ -19,6 +19,8 @@ package tatu.bowshield.bluetooth;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.UUID;
 
 import tatu.bowshield.util.DebugLog;
@@ -44,6 +46,7 @@ public class BluetoothService {
     private AcceptThread           mAcceptThread;
     private ConnectThread          mConnectThread;
     private ConnectedThread        mConnectedThread;
+    private SendThread             mSendThread;
     private int                    mState;
 
     public static final int        STATE_LOST       = 0;
@@ -54,12 +57,14 @@ public class BluetoothService {
     /* ADD HERE TYPE OF BLUETOOTH MENSSAGE */
     public static final byte       SHOT             = 0;
     public static final byte       MOVE_PLAYER      = 1;
+    public static final byte       FRUIT            = 2;
+    public static final byte       READY            = 3;
     public static final byte       CONFIRM_RECIEVE  = 127;
 
     OnMessageReceivedListener      listener;
     static BluetoothService        instance;
     private Handler                mHandler;
-    private boolean                readyToSend      = true;
+    private boolean                mReadyToSend     = true;
 
     private BluetoothService(BluetoothAdapter adapter) {
         mAdapter = adapter;
@@ -93,8 +98,11 @@ public class BluetoothService {
         }
 
         if (mConnectedThread != null) {
-            mConnectedThread.cancel();
             mConnectedThread = null;
+        }
+
+        if (mSendThread != null) {
+            mSendThread = null;
         }
 
         if (mAcceptThread == null) {
@@ -118,8 +126,11 @@ public class BluetoothService {
         }
 
         if (mConnectedThread != null) {
-            mConnectedThread.cancel();
             mConnectedThread = null;
+        }
+
+        if (mSendThread != null) {
+            mSendThread = null;
         }
 
         mConnectThread = new ConnectThread(device);
@@ -135,8 +146,11 @@ public class BluetoothService {
         }
 
         if (mConnectedThread != null) {
-            mConnectedThread.cancel();
             mConnectedThread = null;
+        }
+
+        if (mSendThread != null) {
+            mSendThread = null;
         }
 
         if (mAcceptThread != null) {
@@ -147,6 +161,9 @@ public class BluetoothService {
         mConnectedThread = new ConnectedThread(socket);
         mConnectedThread.start();
 
+        mSendThread = new SendThread(socket);
+        mSendThread.start();
+
         mHandler.sendEmptyMessage(STATE_CONNECTED);
     }
 
@@ -156,9 +173,13 @@ public class BluetoothService {
             mConnectThread = null;
         }
         if (mConnectedThread != null) {
-            mConnectedThread.cancel();
             mConnectedThread = null;
         }
+
+        if (mSendThread != null) {
+            mSendThread = null;
+        }
+
         if (mAcceptThread != null) {
             mAcceptThread.cancel();
             mAcceptThread = null;
@@ -202,7 +223,6 @@ public class BluetoothService {
                     DebugLog.log("Failed: " + e.getMessage());
                     break;
                 }
-
                 connected(socket, socket.getRemoteDevice());
             }
         }
@@ -216,6 +236,7 @@ public class BluetoothService {
     }
 
     private class ConnectThread extends Thread {
+
         private final BluetoothSocket mmSocket;
         private final BluetoothDevice mmDevice;
 
@@ -260,23 +281,16 @@ public class BluetoothService {
 
     private class ConnectedThread extends Thread {
 
-        private final BluetoothSocket mmSocket;
-        private final InputStream     mmInStream;
-        private final OutputStream    mmOutStream;
+        private final InputStream mmInStream;
 
         public ConnectedThread(BluetoothSocket socket) {
-            mmSocket = socket;
             InputStream tmpIn = null;
-            OutputStream tmpOut = null;
-
             try {
                 tmpIn = socket.getInputStream();
-                tmpOut = socket.getOutputStream();
             } catch (IOException e) {
+                e.printStackTrace();
             }
-
             mmInStream = tmpIn;
-            mmOutStream = tmpOut;
         }
 
         public void run() {
@@ -290,18 +304,18 @@ public class BluetoothService {
 
                     type = (byte) mmInStream.read();
 
-                    // if (type != CONFIRM_RECIEVE) {
-                    bytes = mmInStream.read(buffer);
+                    if (type != CONFIRM_RECIEVE) {
+                        bytes = mmInStream.read(buffer);
 
-                    byte[] readBuf = (byte[]) buffer;
-                    String readMessage = new String(readBuf, 0, bytes);
+                        byte[] readBuf = (byte[]) buffer;
+                        String readMessage = new String(readBuf, 0, bytes);
 
-                    // sendType(CONFIRM_RECIEVE);
-                    listener.onMessageReceived(type, readMessage);
-                    // } else {
-                    // readyToSend = true;
-                    // DebugLog.log("Confirm recevide: ready to send");
-                    // }
+                        mSendThread.sendType(CONFIRM_RECIEVE);
+                        listener.onMessageReceived(type, readMessage);
+                    } else {
+                        mReadyToSend = true;
+                        DebugLog.log("Confirm recevide: ready to send");
+                    }
 
                 } catch (IOException e) {
                     connectionLost();
@@ -309,8 +323,44 @@ public class BluetoothService {
                 }
             }
         }
+    }
 
-        public void sendMenssage(byte[] buffer) {
+    private class SendThread extends Thread {
+
+        private final OutputStream    mmOutStream;
+        private final Queue<BMessage> mMessagesToSend;
+
+        public SendThread(BluetoothSocket socket) {
+            OutputStream tmpOut = null;
+            mMessagesToSend = new LinkedList<BluetoothService.BMessage>();
+            try {
+                tmpOut = socket.getOutputStream();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            mmOutStream = tmpOut;
+        }
+
+        public void run() {
+
+            while (true) {
+                while (!mMessagesToSend.isEmpty()) {
+                    if (mReadyToSend) {
+                        mReadyToSend = false;
+                        BMessage message = mMessagesToSend.poll();
+                        sendType(message.type);
+                        sendInfo(message.info);
+                    }
+                }
+            }
+        }
+
+        public void sendMenssage(BMessage bm) {
+            mMessagesToSend.add(bm);
+        }
+
+        private void sendInfo(byte[] buffer) {
             try {
                 mmOutStream.write(buffer);
             } catch (Exception e) {
@@ -325,39 +375,33 @@ public class BluetoothService {
                 e.printStackTrace();
             }
         }
-
-        public void cancel() {
-            // try {
-            // mmSocket.close();
-            // } catch (IOException e) {
-            // }
-        }
     }
 
     public void write(byte type, String message) {
-        ConnectedThread r;
+
+        SendThread sendThread;
         synchronized (this) {
-            r = mConnectedThread;
+            sendThread = mSendThread;
         }
 
-        // if (readyToSend) {
-
         byte[] mBytes = message.getBytes();
-        readyToSend = false;
-
-        if (r != null) {
+        if (sendThread != null) {
             try {
-                r.sendType(type);
-                r.sendMenssage(mBytes);
+                sendThread.sendMenssage(new BMessage(type, mBytes));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
-        // DebugLog.log("Sended: Type: " + type + " Message: " + message + " - Send blocked!");
-        // } else {
-        // DebugLog.log("Failed to send: Type: " + type + " Message: " + message + " - Send not done yet!");
-        // }
-
     }
+
+    public class BMessage {
+        public byte   type;
+        public byte[] info;
+
+        public BMessage(byte type, byte[] info) {
+            this.type = type;
+            this.info = info;
+        }
+    }
+
 }

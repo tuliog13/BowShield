@@ -22,7 +22,7 @@ import android.view.KeyEvent;
 public class WaitingPopUp extends PopUpLayout implements IOnButtonTouch {
 
     private String             PATH_FONT           = "gfx/lithos.otf";
-    private String             PATH_LOADING        = "gfx/loading.png";
+    private String             PATH_LOADING        = "gfx/loading_new.png";
     private String             PATH_BUTTON         = "gfx/listItem.png";
     private String             PATH_BUTTON_PRESSED = "gfx/listItemPressed.png";
 
@@ -52,10 +52,10 @@ public class WaitingPopUp extends PopUpLayout implements IOnButtonTouch {
         mWatingText = new Text(190, 85, mTextFont, "Aguardando jogadores...", reference.getVertexBufferObjectManager());
         mCancelText = new Text(480, 357, mTextFont, "Cancel", reference.getVertexBufferObjectManager());
         
-        mLoadingSprite = new AnimatedGameSprite(reference, PATH_LOADING, 420, 200, 9, 1);
+        mLoadingSprite = new AnimatedGameSprite(reference, PATH_LOADING, 420, 200, 8, 1);
 
         mScene = reference.getScene();
-        mLoadingSprite.setAnimationSettings(new long[] { 120, 120, 120, 120, 120, 120, 120, 120 }, 1, 8, true);
+        mLoadingSprite.setAnimationSettings(new long[] { 120, 120, 120, 120, 120, 120 }, 1, 6, true);
         mLoadingSprite.animate();
 
         mButtonManager = new ButtonManager(reference, this);

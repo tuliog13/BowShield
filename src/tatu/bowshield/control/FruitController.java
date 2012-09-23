@@ -2,9 +2,9 @@ package tatu.bowshield.control;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import tatu.bowshield.activity.BowShieldGameActivity;
+import tatu.bowshield.screens.Game;
 import tatu.bowshield.sprites.Fruit;
 import tatu.bowshield.sprites.Player;
 
@@ -47,7 +47,7 @@ public class FruitController {
 
     }
 
-    public static void Update() {
+    public static void Update(Game game) {
         if (_fruits != null) {
             for (int i = 0; i < _fruits.size(); i++) {
                 if (_player.getmArrow().getSprite().collidesWith(_fruits.get(i).getSprite())) {
@@ -56,6 +56,7 @@ public class FruitController {
                     _fruits.remove(i);
                     PlayersController.getOpponentPlayer().getGameData().setsShoted(false);
                     PlayersController.getOpponentPlayer().getmArrow().getSprite().setVisible(false);
+                    game.onFruitGeted();
                 }
             }
         }

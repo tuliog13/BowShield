@@ -10,19 +10,22 @@ import tatu.bowshield.screens.Game;
 
 public class Player extends AnimatedGameSprite {
 
-    private Arc       mArc;
-    private Arrow     mArrow;
-    private Indicator mIndicator;
+    private Arc          mArc;
+    private Arrow        mArrow;
+    private Indicator    mIndicator;
+    AnimatedGameSprite   mRespireSprite;
 
-    private int       state;
+    private int          state;
 
-    public static int STATE_AIMING  = 0;
-    public static int STATE_STOP    = 1;
-    public static int STATE_SHOTED  = 2;
-    public static int STATE_WALKING = 3;
+    public static String PATH_RESPIRE  = "gfx/respir.png";
 
-    
-    
+    public static int    STATE_AIMING  = 0;
+    public static int    STATE_STOP    = 1;
+    public static int    STATE_SHOTED  = 2;
+    public static int    STATE_WALKING = 3;
+
+    private int          mY            = 340;
+
     public int getState() {
         return state;
     }
@@ -64,8 +67,9 @@ public class Player extends AnimatedGameSprite {
         state = STATE_STOP;
         mArc.pSprite.setVisible(false);
         
-        
-        
+        mRespireSprite = new AnimatedGameSprite(reference, PATH_RESPIRE, pSprite.getX(), pSprite.getY(), 5, 1);
+        mRespireSprite.setAnimationSettings(new long[] { 290, 290, 290, 290 }, 1, 4, true);
+        mRespireSprite.animate();
     }
 
     public GamePhysicalData getGameData() {
@@ -73,7 +77,7 @@ public class Player extends AnimatedGameSprite {
     }
 
     public void setMyPosition(float x, float y) {
-        this.setPosition(x, y);
+        this.setPosition(x, mY);
 
         if (mGameData.mDirecao == 1) {
             mArc.setPosition(x + Arc.DISTANCE_CORRECT_1, y + Arc.DISTANCE_CORRECT_Y);
@@ -81,15 +85,20 @@ public class Player extends AnimatedGameSprite {
             mArc.setPosition(x + Arc.DISTANCE_CORRECT_2, y + Arc.DISTANCE_CORRECT_Y);
         }
 
+        pSprite.setVisible(true);
         mIndicator.setPosition(x - 15, y - 20);
         animate();
         mArc.pSprite.setVisible(false);
+        mRespireSprite.getSprite().setVisible(false);
         state = STATE_WALKING;
     }
 
-    public void stopAnimation() {
+    public void stopAnimationAndRespire() {
         super.stopAnimation(8);
-        mArc.pSprite.setVisible(true);
+        pSprite.setVisible(false);
+        mArc.pSprite.setVisible(false);
+        mRespireSprite.setPosition(pSprite.getX() + 35, mY);
+        mRespireSprite.getSprite().setVisible(true);
         state = STATE_STOP;
     }
 
@@ -97,11 +106,15 @@ public class Player extends AnimatedGameSprite {
 
         mArrow.Move(mGameData.sShoted, mGameData.getAngulo(), mGameData.getForca(), mGameData.mDirecao);
         mIndicator.Move(mGameData.getAngulo(), mGameData.getForca(), mGameData.mDirecao, state);
-        mArc.Move(mGameData.getAngulo(), mGameData.getForca(), mGameData.mDirecao, this.getSprite().getX(), this
-                .getSprite().getY(), state);
+        mArc.Move(mGameData.getAngulo(), mGameData.getForca(), mGameData.mDirecao, this.getSprite().getX(), mY + 8,
+                state);
 
-        if (toAnime) {
-
+        if (state == STATE_AIMING) {
+            mArc.pSprite.setVisible(true);
+            pSprite.setPosition(pSprite.getX(), mY + 8);
+            mRespireSprite.getSprite().setVisible(false);
+            super.stopAnimation(8);
+            pSprite.setVisible(true);
         }
 
     }
@@ -112,12 +125,14 @@ public class Player extends AnimatedGameSprite {
         super.Draw();
         mIndicator.Draw();
         mArc.Draw();
+        mRespireSprite.Draw();
     }
 
     public void flipHorizontal1(int direction) {
         mArc.flipHorizontal(direction);
         mArrow.flipHorizontal(direction);
         mIndicator.flipHorizontal(direction);
+        mRespireSprite.flipHorizontal(direction);
         this.flipHorizontal(direction);
     }
 

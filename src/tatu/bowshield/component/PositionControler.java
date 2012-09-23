@@ -131,12 +131,10 @@ public class PositionControler {
 
             float centerX = mControllerX + (mControllerSprite.getWidth() / 2);
 
-            if (centerX > mCenterTotal + 20) {
+            if (centerX > mCenterTotal) {
                 STATE = STATE_RIGHT;
-            } else if (centerX < mCenterTotal - 20) {
+            } else if (centerX < mCenterTotal) {
                 STATE = STATE_LEFT;
-            } else {
-                STATE = STATE_CENTER;
             }
 
             mLock = true;
